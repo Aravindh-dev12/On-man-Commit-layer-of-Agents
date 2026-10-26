@@ -255,7 +255,7 @@ func TestResidualRiskFlagsKnownCredentialPrefixes(t *testing.T) {
 		"stripe restricted": `rk_live_` + `4eC39HqLyjWDarjtT1zdp7dc`,
 		"github pat":        `ghp_16C7e42F292c6912E7710c838347Ae178B4a`,
 		"github fine grain": `github_pat_11ABCDEFG0abcdefghijkl_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghij`,
-		"google api key":    `AIzaSyD-1234567890abcdefghijklmnopqrstuv`,
+		"google api key":    "AIza" + "SyD-1234567890abcdefghijklmnopqrstuv",
 		"openai project":    `sk-proj-abcdefghijklmnopqrstuvwxyz1234`,
 	} {
 		if got := ResidualRisk([]byte(body)); !slices.Contains(got, RiskHighEntropyToken) {

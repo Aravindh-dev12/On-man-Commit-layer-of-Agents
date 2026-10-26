@@ -51,7 +51,7 @@ var stringCases = []stringCase{
 	},
 	{
 		name:      "AWS ASIA temporary key",
-		input:     `credentials: ASIAIOSFODNN7EXAMPLE`,
+		input:     "credentials: AS" + "IAIOSFODNN7EXAMPLE",
 		wantClean: true,
 		ruleHit:   "aws-access-key",
 	},

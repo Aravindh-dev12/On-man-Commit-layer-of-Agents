@@ -369,7 +369,7 @@ if (responseKind === "anthropic") {
 }
 if (responseKind === "gemini") {
   delete headers.authorization;
-  headers["x-goog-api-key"] = "AIzaConformanceGeminiKey000000000000000";
+  headers["x-goog-api-key"] = "AIza" + "ConformanceGeminiKey000000000000000";
 }
 try {
   const response = await fetch(baseURL.replace(/\\/+$/, "") + path, { method: "POST", headers, body: JSON.stringify(body) });
@@ -463,7 +463,7 @@ test("every shipped profile's selected supported transport preserves recovery th
       CAVEMAN_TELEMETRY: "0",
       OPENAI_API_KEY: "sk-conformance-openai",
       ANTHROPIC_API_KEY: "sk-ant-conformance-anthropic",
-      GEMINI_API_KEY: "AIzaConformanceGeminiKey000000000000000",
+      GEMINI_API_KEY: "AIza" + "ConformanceGeminiKey000000000000000",
     };
     proxy = spawn(proxyBin, ["serve"], { env: proxyEnv, stdio: ["ignore", "pipe", "pipe"] });
     proxy.stdout.resume();
