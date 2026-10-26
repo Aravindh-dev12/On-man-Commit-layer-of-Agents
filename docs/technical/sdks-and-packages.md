@@ -77,5 +77,5 @@ counter implementation, not a general savings claim.
 
 Registry packages release independently through scoped workflow inputs, while
 native binaries use a separate signed process. See
-[`PACKAGE_RELEASES.md`](../PACKAGE_RELEASES.md) and [Install and
+Package Releases and [Install and
 update](install-and-update.md).

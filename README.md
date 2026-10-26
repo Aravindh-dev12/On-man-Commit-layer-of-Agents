@@ -23,7 +23,7 @@
 <table>
 <tr>
 <th width="50%">🗣️ Normal agent · 69 tokens</th>
-<th width="50%"><img src="docs/assets/dancing-rock.svg" width="18" height="18" alt=""> Onman agent · 19 tokens</th>
+<th width="50%">🪨 Onman agent · 19 tokens</th>
 </tr>
 <tr>
 <td valign="top">
@@ -220,18 +220,10 @@ One local process. Your agent talks to it, it talks to your provider. No Onman s
 
 **Whole team? One container.** Same proxy in your VPC, one shared token, keys stay on server. [Deploy it →](docs/technical/deploy.md)
 
-<p align="center">
-  <img src="docs/assets/onman-demo.gif" alt="Terminal demo: onman compress reads a large JSON payload and emits a much smaller compressed version, byte-exact recoverable">
-</p>
-
 <details>
 <summary><strong>What the engine keeps, by payload type</strong> · and the wrap stack diagram</summary>
 
 <br>
-
-<p align="center">
-  <img src="docs/assets/wrap-stack.svg" alt="coding agent talks to a local onman proxy that forwards upstream to the provider with auth passed through byte-exact; a CCR store below the proxy keeps the original bytes and returns a recovery handle to the agent; an MCP toolkit side-channel gives the agent onman_retrieve, toon encode/decode, and browse" width="820">
-</p>
 
 `detect()` types each payload and routes it to a compressor that keeps what answers depend on:
 
@@ -260,10 +252,6 @@ Your agent re-sends its instructions (`CLAUDE.md`, skills, hooks) and the whole 
 onman learn             # Claude Code + Codex + Gemini CLI + opencode; aider via ONMAN_AIDER_ROOT
 onman learn implement   # hand the fixes to Claude Code or Codex, one diff at a time, applied only on your yes
 ```
-
-<p align="center">
-  <img src="docs/assets/learn-report.png" alt="Onman Learn report: a short summary and savings cards on the left; the biggest places tokens go, with one fix opened, and a chart of how full sessions get on the right" width="900">
-</p>
 
 **It run itself.** Once onman is on your agent (`onman claude`, `onman codex`, …), learn re-scans quietly after a session ends. Low priority, at most every 6 hours, never makes the session wait. When something new and heavy shows up, your next session opens with one line, one time:
 
@@ -407,7 +395,7 @@ Rather not touch code? Point any SDK at the proxy with a `baseURL` swap instead:
 
 **Skip it if you** are billed per request rather than per token (GitHub Copilot premium requests, for one: a shorter answer is the same request), or your workload is pure code generation with almost no prose to cut. The ruleset rides along as input tokens on every call (about 1,000 estimated for the full skill), and on terse one-liner Q&A that can cost more than it saves.
 
-**Measure it yourself.** Run the same task with and without onman and compare the provider's billing page. That A/B outranks every number on this page. If onman loses on your workload, turn it off. Full list of where it loses: [docs/HONEST-NUMBERS.md](./docs/HONEST-NUMBERS.md).
+**Measure it yourself.** Run the same task with and without onman and compare the provider's billing page. That A/B outranks every number on this page. If onman loses on your workload, turn it off. 
 
 ---
 
@@ -454,18 +442,12 @@ If onman shows up in your paper, the way it showed up in Adobe's:
 }
 ```
 
-## ⭐ Star this repo
-
-Onman save you token, save you money. Star cost zero. Fair trade. ⭐
-
 ---
 
 <sub>
 <strong>Docs:</strong>
 <a href="./docs/README.md">Technical manual</a> ·
 <a href="./INSTALL.md">Install matrix</a> ·
-<a href="./docs/HONEST-NUMBERS.md">Honest numbers</a> ·
-<a href="./docs/WRAP-BENCHMARK.md">Wrap benchmark</a> ·
 <a href="./LICENSE">License</a> ·
 <a href="./CONTRIBUTING.md">Contributing</a> ·
 <a href="./CLAUDE.md">Maintainer guide</a> ·

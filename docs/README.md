@@ -56,7 +56,6 @@ this repository. Hosted-service implementation details are outside its scope.
   provider-reported, benchmark, and `verified` labels
 - [Security and privacy](./technical/security-and-privacy.md): data flows and
   secrets; local files; SSRF controls; binary verification
-- [Testing and benchmarks](./technical/testing-and-benchmarks.md): local gates,
   benchmark boundaries, and reproducibility
 - [Extending Onman](./technical/extending.md): agent profiles, compressors,
   providers, schemas, and prices

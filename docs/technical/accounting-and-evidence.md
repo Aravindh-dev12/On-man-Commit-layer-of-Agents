@@ -98,5 +98,5 @@ Before publishing a number:
 6. avoid extrapolating across model, provider, task, or time;
 7. publish zero or `unpriced` when support is absent.
 
-See [`HONEST-NUMBERS.md`](../HONEST-NUMBERS.md) for currently supported public
+See Honest Numbers for currently supported public
 claims.

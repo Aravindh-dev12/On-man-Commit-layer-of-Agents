@@ -21,7 +21,7 @@ Preview remote skill content before installation when source is unfamiliar.
 
 Response skill affects generated prose. It does not compress request context or
 prove a token-reduction percentage. See
-[`HONEST-NUMBERS.md`](../HONEST-NUMBERS.md).
+Honest Numbers.
 
 ## Focused skills
 

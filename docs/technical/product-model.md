@@ -29,7 +29,7 @@ stay intact.
 This path affects model output. Its instruction text also consumes input
 tokens. A short task can cost more total tokens with the skill enabled. The
 correct comparison is provider-reported usage for equivalent tasks; see
-[`HONEST-NUMBERS.md`](../HONEST-NUMBERS.md).
+Honest Numbers.
 
 ## Context compression
 
