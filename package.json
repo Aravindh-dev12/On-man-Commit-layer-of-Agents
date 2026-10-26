@@ -1,0 +1,44 @@
+{
+  "name": "onman-installer",
+  "version": "3.0.0",
+  "description": "Onman installer — detects your AI coding agents and installs onman for each one.",
+  "license": "Apache-2.0",
+  "author": "Julius Brussee",
+  "homepage": "https://github.com/Aravindh-dev12/On-man-Commit-layer-of-Agents",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aravindh-dev12/On-man-Commit-layer-of-Agents.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Aravindh-dev12/On-man-Commit-layer-of-Agents/issues"
+  },
+  "bin": {
+    "onman-install": "./bin/install.js",
+    "caveman-install": "./bin/install.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node --test --test-force-exit --test-concurrency=2 tests/installer/*.test.mjs tests/hooks/*.test.mjs",
+    "test:windows": "node scripts/test-windows-compat.mjs"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "agents/",
+    "skills/",
+    "plugins/",
+    "commands/",
+    "dist/caveman.skill",
+    "README.md",
+    "LICENSE",
+    "NOTICE",
+    "!**/__pycache__/**",
+    "!**/*.py[cod]"
+  ],
+  "packageManager": "pnpm@10.14.0",
+  "dependencies": {
+    "@caveman-ai/cli": "^1.1.0"
+  }
+}
