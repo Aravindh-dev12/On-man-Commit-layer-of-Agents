@@ -20,6 +20,10 @@
 
 ## 🪨 See it
 
+<p align="center">
+  <img src="docs/terminal-demo.svg" alt="Live testing Onman locally on terminal" width="880">
+</p>
+
 <table>
 <tr>
 <th width="50%">🗣️ Normal agent · 69 tokens</th>

@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 520" width="100%" font-family="Consolas, 'Cascadia Code', 'Fira Code', Monaco, monospace">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="16" stdDeviation="24" flood-color="#000" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <!-- Window container -->
+  <rect x="10" y="10" width="960" height="500" rx="12" fill="#0d1117" stroke="#30363d" stroke-width="1" filter="url(#shadow)"/>
+
+  <!-- Title bar -->
+  <path d="M 10 22 C 10 15.37 15.37 10 22 10 L 958 10 C 964.63 10 970 15.37 970 22 L 970 48 L 10 48 Z" fill="#161b22"/>
+  <line x1="10" y1="48" x2="970" y2="48" stroke="#21262d" stroke-width="1"/>
+
+  <!-- Window control buttons -->
+  <circle cx="32" cy="29" r="6" fill="#ff5f56"/>
+  <circle cx="52" cy="29" r="6" fill="#ffbd2e"/>
+  <circle cx="72" cy="29" r="6" fill="#27c93f"/>
+
+  <!-- Title -->
+  <text x="490" y="33" fill="#8b949e" font-size="12" text-anchor="middle">terminal — aravindh@local: ~/On-man-Commit-layer-of-Agents</text>
+
+  <!-- Terminal Content -->
+  <!-- Command 1 -->
+  <text x="36" y="82" font-size="14">
+    <tspan fill="#58a6ff" font-weight="bold">aravindh@local</tspan><tspan fill="#c9d1d9">:</tspan><tspan fill="#7ee787">~/On-man-Commit-layer-of-Agents</tspan><tspan fill="#c9d1d9">$ </tspan><tspan fill="#f0f6fc" font-weight="bold">node bin/install.js --dry-run</tspan>
+  </text>
+
+  <!-- Installer Output -->
+  <text x="36" y="112" font-size="14" fill="#f0f6fc" font-weight="bold">🪨 onman installer</text>
+  <text x="56" y="134" font-size="13" fill="#58a6ff">Aravindh-dev12/On-man-Commit-layer-of-Agents (local agent detection)</text>
+
+  <text x="56" y="162" font-size="13" fill="#a371f7">→</text>
+  <text x="76" y="162" font-size="13" fill="#f0f6fc" font-weight="bold">Claude Code</text>
+  <text x="180" y="162" font-size="13" fill="#8b949e">detected</text>
+  <rect x="250" y="148" width="52" height="18" rx="4" fill="#388bfd" fill-opacity="0.15" stroke="#388bfd" stroke-opacity="0.4"/>
+  <text x="276" y="161" font-size="11" fill="#58a6ff" text-anchor="middle">ready</text>
+
+  <text x="56" y="186" font-size="13" fill="#a371f7">→</text>
+  <text x="76" y="186" font-size="13" fill="#f0f6fc" font-weight="bold">Codex CLI</text>
+  <text x="180" y="186" font-size="13" fill="#8b949e">detected</text>
+  <rect x="250" y="172" width="52" height="18" rx="4" fill="#388bfd" fill-opacity="0.15" stroke="#388bfd" stroke-opacity="0.4"/>
+  <text x="276" y="185" font-size="11" fill="#58a6ff" text-anchor="middle">ready</text>
+
+  <text x="56" y="210" font-size="13" fill="#a371f7">→</text>
+  <text x="76" y="210" font-size="13" fill="#f0f6fc" font-weight="bold">Cursor IDE</text>
+  <text x="180" y="210" font-size="13" fill="#8b949e">detected</text>
+  <rect x="250" y="196" width="52" height="18" rx="4" fill="#388bfd" fill-opacity="0.15" stroke="#388bfd" stroke-opacity="0.4"/>
+  <text x="276" y="209" font-size="11" fill="#58a6ff" text-anchor="middle">ready</text>
+
+  <text x="56" y="234" font-size="13" fill="#a371f7">→</text>
+  <text x="76" y="234" font-size="13" fill="#f0f6fc" font-weight="bold">Gemini CLI</text>
+  <text x="180" y="234" font-size="13" fill="#8b949e">detected</text>
+  <rect x="250" y="220" width="52" height="18" rx="4" fill="#388bfd" fill-opacity="0.15" stroke="#388bfd" stroke-opacity="0.4"/>
+  <text x="276" y="233" font-size="11" fill="#58a6ff" text-anchor="middle">ready</text>
+
+  <text x="36" y="264" font-size="13" fill="#3fb950" font-weight="bold">🪨 done</text>
+  <text x="96" y="264" font-size="13" fill="#8b949e">• 4 agents configured • local rules active</text>
+
+  <!-- Separator line -->
+  <line x1="36" y1="284" x2="940" y2="284" stroke="#21262d" stroke-width="1"/>
+
+  <!-- Command 2 -->
+  <text x="36" y="316" font-size="14">
+    <tspan fill="#58a6ff" font-weight="bold">aravindh@local</tspan><tspan fill="#c9d1d9">:</tspan><tspan fill="#7ee787">~/On-man-Commit-layer-of-Agents</tspan><tspan fill="#c9d1d9">$ </tspan><tspan fill="#f0f6fc" font-weight="bold">onman run claude</tspan>
+  </text>
+
+  <text x="36" y="344" font-size="12" fill="#8b949e">[onman] proxy daemon active on <tspan fill="#58a6ff">http://127.0.0.1:8787</tspan> (CCR SQLite store initialized)</text>
+
+  <text x="36" y="374" font-size="13.5">
+    <tspan fill="#f0883e" font-weight="bold">User &gt; </tspan>
+    <tspan fill="#c9d1d9">Why is my React component re-rendering on each render cycle?</tspan>
+  </text>
+
+  <text x="36" y="402" font-size="13.5">
+    <tspan fill="#58a6ff" font-weight="bold">Agent &gt; </tspan>
+    <tspan fill="#f0f6fc">New object ref each render. Inline object prop = new ref = re-render. Wrap in `useMemo`.</tspan>
+  </text>
+
+  <!-- Stats Box -->
+  <rect x="36" y="424" width="904" height="64" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <rect x="36" y="424" width="4" height="64" rx="2" fill="#3fb950"/>
+
+  <text x="56" y="449" font-size="13" fill="#3fb950" font-weight="bold">✓ Token reduction:</text>
+  <text x="200" y="449" font-size="13" fill="#c9d1d9">19 output tokens written (vs 69 standard) — <tspan fill="#3fb950" font-weight="bold">72.5% fewer tokens</tspan></text>
+
+  <text x="56" y="473" font-size="13" fill="#8b949e">⚡ CCR recovery handle:</text>
+  <text x="236" y="473" font-size="13" fill="#a371f7" font-weight="bold">ccr_9e81b204f7</text>
+  <text x="360" y="473" font-size="13" fill="#8b949e">(byte-exact raw recovery preserved in SQLite)</text>
+</svg>
