@@ -1,4 +1,4 @@
-# packages/sdk/typescript — TypeScript SDK (`@caveman-ai/sdk`)
+# packages/sdk/typescript — TypeScript SDK (`@onman-ai/sdk`)
 
 Single-file SDK (`src/index.ts`) exported as an ES module. Provides `Cave` (main client),
 `CaveTrace` (per-request tracing), and BM25-backed tool-search against the gateway. No runtime
@@ -11,7 +11,7 @@ dependencies — only `devDependencies` for TypeScript.
 - `tests/tool-search.runtime.mjs` — runtime tests using `node:test` + global fetch mock (imports from `dist/`)
 - `tests/runtime-policy.runtime.mjs` + `tests/runtime-policy.test.ts` — the runtime-policy client; drives every section of `../../parity/runtime-policy.fixtures.json` (fetch wire, signature cases, all `assignment_vectors` with exact float equality, all `guard_cases` — the shared operator truth table lives in the fixture, not in this file — and all `decision_cases`). Iterate the arrays; never hard-code their counts
 - `tests/parity.runtime.mjs` — cross-language conformance suite; drives `../../parity/fixtures.json` (shared with sdk-python). Same fixtures, two languages → a field in one SDK and not the other fails CI.
-- `src/middleware/` — the stable `@caveman-ai/sdk/middleware` subpath: `runtime.ts` (protocol client), `protocol.ts` (pure protocol 1.1 rules), `validate.ts` (capabilities/plan/page validation). `tests/middleware-v1_1.runtime.mjs` drives every client vector in `../../parity/middleware-v1_1.fixtures.json` (the Python SDK runs the same file); `tests/middleware-hardening.runtime.mjs` pins the B3–B12 hardening fixes
+- `src/middleware/` — the stable `@onman-ai/sdk/middleware` subpath: `runtime.ts` (protocol client), `protocol.ts` (pure protocol 1.1 rules), `validate.ts` (capabilities/plan/page validation). `tests/middleware-v1_1.runtime.mjs` drives every client vector in `../../parity/middleware-v1_1.fixtures.json` (the Python SDK runs the same file); `tests/middleware-hardening.runtime.mjs` pins the B3–B12 hardening fixes
 - `tests/trace-continuity.runtime.mjs` — trace/span id minting + which requests carry `x-cave-trace-id` / `x-cave-parent-span-id`; mirrors the Python `tests/test_trace_continuity.py`
 - `tsconfig.json` / `tsconfig.test.json` — separate configs; test config covers `tests/`. Both extend the **repo-root** `../../../tsconfig.base.json`.
 
@@ -48,7 +48,7 @@ dependencies — only `devDependencies` for TypeScript.
 - **byte-safe**: SDK sends request bodies to the gateway verbatim; no rewriting allowed. `compress()` is the one path that yields smaller bytes and it **delegates** to the Engine — on any problem it passes the original through
 - **context packing is connected-only and intentionally lossy**: it sends item bytes to gateway, never runs in local wrap, and relies on caller retaining every item named by `deferredIds`. It chooses what enters window; cache-optimal assembly chooses placement
 - **mirror sdk-python**: every field/method exists in both, enforced by the shared parity suite — a divergence is a CI failure, not a convention slip. Change one SDK, change both **and** the fixtures
-- published as `@caveman-ai/sdk`; the workspace name stays `@caveman-ai/sdk` until the npm redirect plan lands
+- published as `@onman-ai/sdk`; the workspace name stays `@onman-ai/sdk` until the npm redirect plan lands
 - `strategy:"deferred"` initial set = `alwaysLoad` tools + up to `initialToolCount` (default 8); never returns the full catalog without a `search()` call
 - `reductionPct` rounds to one decimal; `savedTokens` is derived (`full - sent`), not from the gateway response
 

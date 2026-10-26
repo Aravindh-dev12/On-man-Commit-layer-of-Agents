@@ -1,9 +1,9 @@
-# caveman-mcp
+# onman-mcp
 
-The Caveman MCP server: five compression tools — `caveman_compress`,
-`caveman_retrieve`, `caveman_stats`, `caveman_toon_encode`, and
-`caveman_toon_decode` — over stdio, for any MCP host. It links the
-[Caveman Engine](../engine) in-process. **Local-only** (opens no
+The Onman MCP server: five compression tools — `onman_compress`,
+`onman_retrieve`, `onman_stats`, `onman_toon_encode`, and
+`onman_toon_decode` — over stdio, for any MCP host. It links the
+[Onman Engine](../engine) in-process. **Local-only** (opens no
 network connection) and **inferred-only** (it never claims `verified` savings).
 
 ## Install (Claude Code)
@@ -12,18 +12,18 @@ network connection) and **inferred-only** (it never claims `verified` savings).
 // .mcp.json / claude mcp config
 {
   "mcpServers": {
-    "caveman": { "command": "npx", "args": ["-y", "caveman-mcp"] }
+    "onman": { "command": "npx", "args": ["-y", "onman-mcp"] }
   }
 }
 ```
 
 The launcher downloads matching binary on first run, verifies
 key-signed checksum manifest plus artifact SHA-256, and caches it under
-`~/.caveman/bin`. No Go toolchain or global Caveman install is required.
+`~/.onman/bin`. No Go toolchain or global Onman install is required.
 To use an existing reviewed binary instead:
 
 ```bash
-CAVEMAN_MCP_BIN=/path/to/caveman-mcp npx caveman-mcp
+ONMAN_MCP_BIN=/path/to/onman-mcp npx onman-mcp
 ```
 
 npm launcher and downloaded binary are both Apache-2.0; see `BINARY_LICENSE.md`.
@@ -32,14 +32,14 @@ npm launcher and downloaded binary are both Apache-2.0; see `BINARY_LICENSE.md`.
 
 | Tool | Input | Returns |
 |---|---|---|
-| `caveman_compress` | `input` (string) | compressed text, inferred `ratio`, `recovery_handle` (null on pass-through) |
-| `caveman_retrieve` | `recovery_handle` (string), optional `query` | byte-exact original without a query; ranked complete records with a query; error on unknown handle |
-| `caveman_stats` | — | this MCP process's compression-call totals, including repeated inputs and pass-throughs: tokens before/after, `requests`, `ratio`, `basis:"inferred"`, `scope:"session"` |
-| `caveman_toon_encode` | `input` (JSON string) | explicit JSON→TOON result with sizes; pass-through plus note when not encodable |
-| `caveman_toon_decode` | `input` (TOON string) | decoded JSON; error on invalid TOON |
+| `onman_compress` | `input` (string) | compressed text, inferred `ratio`, `recovery_handle` (null on pass-through) |
+| `onman_retrieve` | `recovery_handle` (string), optional `query` | byte-exact original without a query; ranked complete records with a query; error on unknown handle |
+| `onman_stats` | — | this MCP process's compression-call totals, including repeated inputs and pass-throughs: tokens before/after, `requests`, `ratio`, `basis:"inferred"`, `scope:"session"` |
+| `onman_toon_encode` | `input` (JSON string) | explicit JSON→TOON result with sizes; pass-through plus note when not encodable |
+| `onman_toon_decode` | `input` (TOON string) | decoded JSON; error on invalid TOON |
 
 Compression is lossy (S4) but **reversible**: every drop is recoverable via
-`caveman_retrieve`. Incompressible or malformed input passes through unchanged
+`onman_retrieve`. Incompressible or malformed input passes through unchanged
 with `ratio:0` — never an error.
 
 Repeated recovery calls remain available after host compaction. An empty query

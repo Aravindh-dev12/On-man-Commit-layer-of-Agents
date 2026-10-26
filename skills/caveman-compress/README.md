@@ -2,7 +2,7 @@
   <img src="https://em-content.zobj.net/source/apple/391/rock_1faa8.png" width="80" />
 </p>
 
-<h1 align="center">caveman-compress</h1>
+<h1 align="center">onman-compress</h1>
 
 <p align="center">
   <strong>shrink memory file. save token every session.</strong>
@@ -11,15 +11,15 @@
 ---
 
 A Claude Code skill that compresses project memory files (`CLAUDE.md`, todos,
-preferences) into caveman format, reducing repeated input size.
+preferences) into onman format, reducing repeated input size.
 
 Claude loads `CLAUDE.md` on every session start, so large files add repeated
-input tokens. Caveman shortens supported natural-language files.
+input tokens. Onman shortens supported natural-language files.
 
 ## What It Do
 
 ```
-/caveman-compress CLAUDE.md
+/onman-compress CLAUDE.md
 ```
 
 ```
@@ -29,8 +29,8 @@ CLAUDE.original.md ← human-readable backup (you edit this)
 
 Original remains in data directory rather than next to live file, so skill
 auto-loaders do not read it twice. Path is
-`$XDG_DATA_HOME/caveman-compress/backups/<parent-dir-name>/` on macOS and Linux,
-or `%LOCALAPPDATA%\caveman-compress\backups\<parent-dir-name>\` on Windows. Edit
+`$XDG_DATA_HOME/onman-compress/backups/<parent-dir-name>/` on macOS and Linux,
+or `%LOCALAPPDATA%\onman-compress\backups\<parent-dir-name>\` on Windows. Edit
 `.original.md` there, then run skill again to re-compress.
 
 ## Benchmarks
@@ -62,7 +62,7 @@ preserved exactly.
 </td>
 <td width="50%">
 
-### <img src="../../docs/assets/dancing-rock.svg" width="20" height="20" alt="rock"/> Caveman (285 tokens)
+### <img src="../../docs/assets/dancing-rock.svg" width="20" height="20" alt="rock"/> Onman (285 tokens)
 
 > "Prefer TypeScript strict mode always. No `any` unless unavoidable; comment why if used. Proper types catch bugs early."
 
@@ -75,18 +75,18 @@ result does not prove semantic equivalence on other files or models.
 
 ## Security
 
-`caveman-compress` is flagged as Snyk High Risk due to subprocess and file I/O
+`onman-compress` is flagged as Snyk High Risk due to subprocess and file I/O
 patterns detected by static analysis. See [SECURITY.md](./SECURITY.md) for why
 these operations exist and how paths are constrained.
 
 ## Install
 
-Compress is built into the `caveman` plugin. Install `caveman` once, then use `/caveman-compress`.
+Compress is built into the `onman` plugin. Install `onman` once, then use `/onman-compress`.
 
 If you need local files, the compress skill lives at:
 
 ```bash
-skills/caveman-compress/
+skills/onman-compress/
 ```
 
 Requires Python 3.10 or newer.
@@ -94,14 +94,14 @@ Requires Python 3.10 or newer.
 ## Usage
 
 ```
-/caveman-compress <filepath>
+/onman-compress <filepath>
 ```
 
 Examples:
 ```
-/caveman-compress CLAUDE.md
-/caveman-compress docs/preferences.md
-/caveman-compress todos.md
+/onman-compress CLAUDE.md
+/onman-compress docs/preferences.md
+/onman-compress todos.md
 ```
 
 ### What files work
@@ -116,7 +116,7 @@ Examples:
 ## How It Work
 
 ```
-/caveman-compress CLAUDE.md
+/onman-compress CLAUDE.md
         ↓
 basic checks: file exists, under 500KB, not a sensitive filename
         ↓
@@ -142,7 +142,7 @@ Only two things use tokens: initial compression + targeted fix if validation fai
 
 ## What Is Preserved
 
-Caveman compress natural language. It never touch:
+Onman compress natural language. It never touch:
 
 - Code blocks (` ``` ` fenced or indented)
 - Inline code (`` `backtick content` ``)
@@ -159,7 +159,7 @@ Caveman compress natural language. It never touch:
 `CLAUDE.md` loads on every session start. A 1,000-token project memory file adds
 1,000 input tokens each time project opens, or 100,000 across 100 sessions.
 
-Caveman reduced counted tokens by about 46% on five listed fixtures. Validators
+Onman reduced counted tokens by about 46% on five listed fixtures. Validators
 confirmed headings, code blocks, URLs, and file paths. They did not establish
 general semantic or task-quality equivalence.
 
@@ -172,9 +172,9 @@ general semantic or task-quality equivalence.
 └────────────────────────────────────────────┘
 ```
 
-## Part of Caveman
+## Part of Onman
 
-This skill is part of the [caveman](https://github.com/JuliusBrussee/caveman) toolkit.
+This skill is part of the [onman](https://github.com/Aravindh-dev12/onman) toolkit.
 
-- `caveman`: ask Claude to answer in shorter prose
-- `caveman-compress`: shorten supported project-memory files with backups and validation
+- `onman`: ask Claude to answer in shorter prose
+- `onman-compress`: shorten supported project-memory files with backups and validation

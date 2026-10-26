@@ -1,32 +1,32 @@
 # Deploy the proxy for a team (VPC and cloud)
 
-The same `caveman-proxy` binary that runs on a laptop can run as one shared
+The same `onman-proxy` binary that runs on a laptop can run as one shared
 service inside a private network. Every developer points `CAVE_GATEWAY_URL` at
 it instead of at `127.0.0.1:8787`. Provider keys live on the server, not on the
 laptops.
 
 ## What changes versus the laptop proxy
 
-| | Laptop (`caveman start`) | Shared service |
+| | Laptop (`onman start`) | Shared service |
 |---|---|---|
-| Listen | `127.0.0.1:8787` | `0.0.0.0:8787` via `CAVEMAN_LISTEN` or `listen:` |
-| Inbound auth | none | `CAVEMAN_AUTH_TOKEN`, or a [middleware identity](#identity) |
+| Listen | `127.0.0.1:8787` | `0.0.0.0:8787` via `ONMAN_LISTEN` or `listen:` |
+| Inbound auth | none | `ONMAN_AUTH_TOKEN`, or a [middleware identity](#identity) |
 | Provider credential | the developer's env or inbound header | the server's env, or an AWS role |
-| State | `~/.caveman` | a volume mounted at `CAVEMAN_HOME` |
+| State | `~/.onman` | a volume mounted at `ONMAN_HOME` |
 
 The server reads `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GEMINI_API_KEY` and
 `AWS_BEARER_TOKEN_BEDROCK` from its own environment. For Bedrock it can instead
 use the AWS default credential chain, so an ECS task role, an EKS pod role or an
 EC2 instance profile needs no keys at all.
 
-An inbound credential is the switch. With `CAVEMAN_AUTH_TOKEN`, or any
+An inbound credential is the switch. With `ONMAN_AUTH_TOKEN`, or any
 [middleware identity](#identity) source (a token map, OIDC, or a TLS client CA),
 the proxy accepts a non-loopback listen address; with none of them, a
 non-loopback address is refused at startup, exactly as before. The provider
-routes accept only `CAVEMAN_AUTH_TOKEN`, so a service without it serves the
+routes accept only `ONMAN_AUTH_TOKEN`, so a service without it serves the
 middleware and nothing else. The token is at least 16 characters, no whitespace
 or control characters, environment variable only — an `auth_token:` key in
-`caveman.yaml` is refused at startup rather than ignored.
+`onman.yaml` is refused at startup rather than ignored.
 
 Generate one, never type one — a memorable token is a guessable token:
 
@@ -48,29 +48,29 @@ that carries a real provider credential of its own (`x-api-key`, Google's key
 header, or a bearer that is not the token) still wins, exactly as on a laptop.
 
 `/health/live` and `/health/ready` stay unauthenticated so a load balancer can
-probe them; `/metrics` does too unless `CAVEMAN_METRICS_TOKEN` is set. The
+probe them; `/metrics` does too unless `ONMAN_METRICS_TOKEN` is set. The
 startup log reports `inbound_auth: token`.
 
 ## One container
 
 ```bash
-docker run -d --name caveman-proxy \
+docker run -d --name onman-proxy \
   -p 8787:8787 \
-  -v caveman-data:/data \
-  -e CAVEMAN_AUTH_TOKEN="$(openssl rand -hex 32)" \
+  -v onman-data:/data \
+  -e ONMAN_AUTH_TOKEN="$(openssl rand -hex 32)" \
   -e ANTHROPIC_API_KEY=<anthropic-key> \
-  ghcr.io/juliusbrussee/caveman-proxy:bin-v2.0.0
+  ghcr.io/aravindh-dev12/onman-proxy:bin-v2.0.0
 ```
 
-The image sets `CAVEMAN_HOME=/data` and `CAVEMAN_LISTEN=0.0.0.0:8787`, runs as
+The image sets `ONMAN_HOME=/data` and `ONMAN_LISTEN=0.0.0.0:8787`, runs as
 non-root uid 65532, and exposes 8787. It is published multi-arch (amd64, arm64)
 by the signed `bin-v*` release workflow; in production pin it by digest,
-`ghcr.io/juliusbrussee/caveman-proxy:bin-vX.Y.Z@sha256:<digest>` (find the
+`ghcr.io/aravindh-dev12/onman-proxy:bin-vX.Y.Z@sha256:<digest>` (find the
 digest with `docker buildx imagetools inspect <image>`), never `:latest`.
 `bin-v1.1.7` is the first tag that publishes the image; the middleware
 identity, TLS listener and Postgres store below need `bin-v2.0.0` or later,
 which every example here names. The Kubernetes and ECS manifests in `deploy/`
-pin the signed `bin-v2.0.0` image by digest. To build it yourself, run `docker build -t caveman-proxy .` at
+pin the signed `bin-v2.0.0` image by digest. To build it yourself, run `docker build -t onman-proxy .` at
 the repository root.
 
 A named volume inherits the right owner. A **bind** mount does not — `chown` the
@@ -97,7 +97,7 @@ curl -s http://localhost:8787/v1/messages \
 
 ```bash
 cat > deploy/.env <<EOF
-CAVEMAN_AUTH_TOKEN=$(openssl rand -hex 32)
+ONMAN_AUTH_TOKEN=$(openssl rand -hex 32)
 ANTHROPIC_API_KEY=<anthropic-key>
 EOF
 docker compose -f deploy/docker-compose.yml up -d
@@ -110,8 +110,8 @@ start with the profile:
 ```bash
 PW=$(openssl rand -hex 24)
 cat >> deploy/.env <<EOF
-CAVEMAN_POSTGRES_PASSWORD=$PW
-CAVEMAN_MIDDLEWARE_DATABASE_URL=postgres://caveman:$PW@postgres:5432/caveman?sslmode=disable
+ONMAN_POSTGRES_PASSWORD=$PW
+ONMAN_MIDDLEWARE_DATABASE_URL=postgres://onman:$PW@postgres:5432/onman?sslmode=disable
 EOF
 docker compose -f deploy/docker-compose.yml --profile postgres up -d
 ```
@@ -133,17 +133,17 @@ aws ecs register-task-definition \
 - Give the **task role** `bedrock:InvokeModel` and `bedrock:InvokeModelWithResponseStream`
   and set no AWS keys. The proxy picks the role up from the container credential
   endpoint.
-- Put `CAVEMAN_AUTH_TOKEN` in Secrets Manager or SSM and reference it from the
+- Put `ONMAN_AUTH_TOKEN` in Secrets Manager or SSM and reference it from the
   task definition's `secrets` block, not `environment`. Generate it with
   `openssl rand -hex 32`; the committed task definition carries no token value,
   only a `REPLACE_`-marked ARN that fails `register-task-definition` until you
   replace it.
 - The middleware store lives in RDS for PostgreSQL, referenced from `secrets`:
-  `CAVEMAN_MIDDLEWARE_DATABASE_URL` (with `sslmode=verify-full`),
+  `ONMAN_MIDDLEWARE_DATABASE_URL` (with `sslmode=verify-full`),
   `CAVE_POSTGRES_CA_CERT` (the
   [RDS CA bundle](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html)
   PEM, since the image trusts only public roots) and
-  `CAVEMAN_MIDDLEWARE_ENCRYPTION_KEY` (`openssl rand -base64 32`).
+  `ONMAN_MIDDLEWARE_ENCRYPTION_KEY` (`openssl rand -base64 32`).
 - `/data` is task storage, not EFS. It holds the proxy's own spend rows,
   recovery store and log, which the record-mode proxy routes do not need to
   keep. **Why not EFS:** the proxy's SQLite files on a shared EFS volume are
@@ -164,8 +164,8 @@ aws ecs register-task-definition \
   `REPLACE_` ARNs:
 
   ```bash
-  aws secretsmanager create-secret --name caveman-proxy/tls-cert --secret-string file://tls.crt
-  aws secretsmanager create-secret --name caveman-proxy/tls-key --secret-string file://tls.key
+  aws secretsmanager create-secret --name onman-proxy/tls-cert --secret-string file://tls.crt
+  aws secretsmanager create-secret --name onman-proxy/tls-key --secret-string file://tls.key
   ```
 
   The ALB does not verify target certificates, so a private-CA or self-signed
@@ -173,7 +173,7 @@ aws ecs register-task-definition \
   check included:
 
   ```bash
-  aws elbv2 create-target-group --name caveman-proxy --target-type ip \
+  aws elbv2 create-target-group --name onman-proxy --target-type ip \
     --protocol HTTPS --port 8787 --vpc-id <vpc-id> \
     --health-check-protocol HTTPS --health-check-path /health/ready
   ```
@@ -195,19 +195,19 @@ aws ecs register-task-definition \
 Service and a NetworkPolicy. For several replicas, use
 `deploy/kubernetes-ha.yaml` instead (see [High availability](#high-availability)).
 
-The Secret carries no `CAVEMAN_AUTH_TOKEN` or `CAVEMAN_METRICS_TOKEN` on
+The Secret carries no `ONMAN_AUTH_TOKEN` or `ONMAN_METRICS_TOKEN` on
 purpose: a placeholder long enough to look like a placeholder is also long
 enough to pass validation and serve as a real token. Create them first, then
 apply the file — the apply adds the provider key beside the tokens and leaves
 them alone:
 
 ```bash
-kubectl create secret generic caveman-proxy -n <namespace> \
-  --from-literal=CAVEMAN_AUTH_TOKEN="$(openssl rand -hex 32)" \
-  --from-literal=CAVEMAN_METRICS_TOKEN="$(openssl rand -hex 32)"
+kubectl create secret generic onman-proxy -n <namespace> \
+  --from-literal=ONMAN_AUTH_TOKEN="$(openssl rand -hex 32)" \
+  --from-literal=ONMAN_METRICS_TOKEN="$(openssl rand -hex 32)"
 ```
 
-The NetworkPolicy admits only pods labelled `caveman-client: "true"` (label
+The NetworkPolicy admits only pods labelled `onman-client: "true"` (label
 your Prometheus too) and lets the proxy reach DNS and HTTPS alone. EKS Pod
 Identity also needs egress to `169.254.170.23/32` on port 80.
 
@@ -222,7 +222,7 @@ The pod runs as uid 65532 with `fsGroup: 65532` so the PVC is writable, probes
 `strategy: Recreate`: SQLite on a ReadWriteOnce volume takes exactly one
 writer, and a rolling update would start the new pod on the same database. The
 PVC is 5 Gi (see [Sizing](#sizing)). The proxy routes run in `record` mode and
-the middleware in `compress` mode (`CAVEMAN_MIDDLEWARE_MODE`). See
+the middleware in `compress` mode (`ONMAN_MIDDLEWARE_MODE`). See
 [State and scaling](#state-and-scaling).
 
 For Bedrock on EKS, set no AWS keys and give the ServiceAccount the role: either
@@ -233,30 +233,30 @@ EKS Pod Identity association.
 ## Google Cloud Run
 
 ```bash
-openssl rand -hex 32 | gcloud secrets create caveman-token --data-file=-
-gcloud run deploy caveman-proxy \
-  --image ghcr.io/juliusbrussee/caveman-proxy:bin-v2.0.0 \
+openssl rand -hex 32 | gcloud secrets create onman-token --data-file=-
+gcloud run deploy onman-proxy \
+  --image ghcr.io/aravindh-dev12/onman-proxy:bin-v2.0.0 \
   --port 8787 --ingress internal --allow-unauthenticated --max-instances 1 \
-  --set-secrets CAVEMAN_AUTH_TOKEN=caveman-token:latest,ANTHROPIC_API_KEY=anthropic-key:latest
+  --set-secrets ONMAN_AUTH_TOKEN=onman-token:latest,ANTHROPIC_API_KEY=anthropic-key:latest
 ```
 
 `--allow-unauthenticated` turns off Cloud Run's own IAM check: agents authenticate
-with `CAVEMAN_AUTH_TOKEN`, not with a Google identity token. `--ingress internal`
+with `ONMAN_AUTH_TOKEN`, not with a Google identity token. `--ingress internal`
 then limits who can reach it to your VPC. `--max-instances 1` keeps a single
 SQLite writer. Cloud Run's filesystem is not durable: spend history and recovery
 originals do not survive a revision unless you mount a volume. For the framework
-middleware, either set `CAVEMAN_MIDDLEWARE_DATABASE_URL` to a Cloud SQL for
+middleware, either set `ONMAN_MIDDLEWARE_DATABASE_URL` to a Cloud SQL for
 PostgreSQL database (which also lifts the one-instance limit for middleware
-traffic) or set `CAVEMAN_MIDDLEWARE_EPHEMERAL=true` so it does not claim
+traffic) or set `ONMAN_MIDDLEWARE_EPHEMERAL=true` so it does not claim
 durable recovery it cannot keep.
 
 ## Fly.io
 
 ```bash
-fly launch --image ghcr.io/juliusbrussee/caveman-proxy:bin-v2.0.0 \
+fly launch --image ghcr.io/aravindh-dev12/onman-proxy:bin-v2.0.0 \
   --internal-port 8787 --no-deploy
-fly volumes create caveman_data --size 5
-fly secrets set CAVEMAN_AUTH_TOKEN="$(openssl rand -hex 32)" ANTHROPIC_API_KEY=<anthropic-key>
+fly volumes create onman_data --size 5
+fly secrets set ONMAN_AUTH_TOKEN="$(openssl rand -hex 32)" ANTHROPIC_API_KEY=<anthropic-key>
 fly deploy
 ```
 
@@ -264,7 +264,7 @@ Add the mount to `fly.toml` before deploying:
 
 ```toml
 [[mounts]]
-  source = "caveman_data"
+  source = "onman_data"
   destination = "/data"
 ```
 
@@ -273,10 +273,10 @@ Add the mount to `fly.toml` before deploying:
 Two variables, then the normal commands:
 
 ```bash
-export CAVE_GATEWAY_URL=http://caveman.internal:8787
+export CAVE_GATEWAY_URL=http://onman.internal:8787
 export CAVE_API_KEY=<token>
 
-caveman wrap claude      # or: caveman claude
+onman wrap claude      # or: onman claude
 ```
 
 Any off-loopback `CAVE_GATEWAY_URL` puts the CLI in managed mode: it injects
@@ -288,7 +288,7 @@ SDKs talk to it directly:
 ```python
 from openai import OpenAI
 client = OpenAI(
-    base_url="http://caveman.internal:8787/openai/v1",
+    base_url="http://onman.internal:8787/openai/v1",
     api_key="<token>",              # travels as Authorization: Bearer
 )
 ```
@@ -296,7 +296,7 @@ client = OpenAI(
 ```ts
 import Anthropic from "@anthropic-ai/sdk";
 const client = new Anthropic({
-  baseURL: "http://caveman.internal:8787",
+  baseURL: "http://onman.internal:8787",
   apiKey: "no-key-required",        // the server's ANTHROPIC_API_KEY is used
   defaultHeaders: { "x-cave-api-key": "<token>" },
 });
@@ -312,7 +312,7 @@ the request billed to your account rather than the server's.
   separated. A private or loopback upstream is blocked until it appears there;
   the error message names the entry to add. Link-local and cloud metadata
   addresses stay blocked in every mode, with no allowlist escape.
-- `CAVE_UPSTREAM_PROXY` (or `upstream_proxy:` in `caveman.yaml`) sends provider
+- `CAVE_UPSTREAM_PROXY` (or `upstream_proxy:` in `onman.yaml`) sends provider
   traffic through an egress proxy. `env` is the default and honours
   `HTTPS_PROXY`/`NO_PROXY`.
 - `CAVE_CA_BUNDLE` (or `ca_bundle:`) adds private roots when a TLS-inspecting
@@ -322,7 +322,7 @@ See [Configuration](configuration.md) and [Security and privacy](security-and-pr
 
 ## State and scaling
 
-The proxy's own state is SQLite under `CAVEMAN_HOME`: spend records, the
+The proxy's own state is SQLite under `ONMAN_HOME`: spend records, the
 recovery store, and the prefix cache. **One writer per volume.** Run one
 replica per volume, or give each team its own instance and volume. Do not scale
 horizontally behind a shared volume. If you run several instances behind one
@@ -333,26 +333,26 @@ The framework middleware's store is separate and can move to Postgres, which
 removes that limit for middleware traffic; see
 [Framework middleware](#framework-middleware).
 
-`CAVEMAN_MODE=record` is the default and is always a byte-safe pass-through.
+`ONMAN_MODE=record` is the default and is always a byte-safe pass-through.
 `compress` is the savings mode.
 
 ## Framework middleware
 
 The same binary serves the framework middleware API
-(`/caveman/v1/middleware/*`) that the SDKs and middleware adapters call. It
+(`/onman/v1/middleware/*`) that the SDKs and middleware adapters call. It
 compresses tool results inside your application's own requests and stores the
 exact originals so the model can fetch them back. The protocol is specified in
 [middleware-protocol.md](middleware-protocol.md).
 
-`CAVEMAN_MIDDLEWARE_MODE` (or `middleware.mode`) sets its mode independently of
-the proxy routes; unset, it follows `CAVEMAN_MODE`. The shipped manifests run
+`ONMAN_MIDDLEWARE_MODE` (or `middleware.mode`) sets its mode independently of
+the proxy routes; unset, it follows `ONMAN_MODE`. The shipped manifests run
 the proxy routes in `record` and the middleware in `compress`.
 
 ### Topologies
 
 | Topology | Middleware store | Replicas | Affinity needed | Manifest |
 |---|---|---|---|---|
-| Local (`caveman start`) | SQLite in `~/.caveman` | 1 | n/a | none |
+| Local (`onman start`) | SQLite in `~/.onman` | 1 | n/a | none |
 | Single shared service | SQLite on a volume | exactly 1, `Recreate` | none (one replica) | `deploy/kubernetes.yaml`, compose |
 | Sidecar per application pod | Postgres, one schema per application | one per pod | none | [recipe below](#sidecar) |
 | High availability | Postgres | 2 or more, rolling updates | none | `deploy/kubernetes-ha.yaml`, ECS template |
@@ -366,7 +366,7 @@ point two replicas at one SQLite file.
 **Durability.** Capabilities report `persistent: true` when the store survives
 a restart. SQLite on a volume and Postgres both do. If you run SQLite on
 storage that does not (an `emptyDir`, a container without a volume, Cloud Run's
-filesystem), set `CAVEMAN_MIDDLEWARE_EPHEMERAL=true`: the runtime then reports
+filesystem), set `ONMAN_MIDDLEWARE_EPHEMERAL=true`: the runtime then reports
 `persistent: false` and compresses nothing, since an original lost in a restart
 could not be recovered.
 
@@ -379,10 +379,10 @@ seccomp profile with secret files mode 0440 (readable through `fsGroup` only).
 Its header lists the four Secrets to create first; the file carries no secrets,
 so pods wait until the Secrets exist. Its one placeholder is the image digest.
 
-`CAVEMAN_MIDDLEWARE_DATABASE_URL` selects Postgres. It is read only from the
+`ONMAN_MIDDLEWARE_DATABASE_URL` selects Postgres. It is read only from the
 environment, because it carries a password; a `middleware.database_url:` key in
-`caveman.yaml` is refused at startup. The connection goes through the same
-hardened pool as the rest of Caveman. Use
+`onman.yaml` is refused at startup. The connection goes through the same
+hardened pool as the rest of Onman. Use
 `postgres://<user>:<password>@<host>:5432/<db>?sslmode=verify-full`: the server
 certificate is verified against `CAVE_POSTGRES_CA_CERT` or
 `CAVE_POSTGRES_CA_CERT_FILE` when one is set (an empty one counts as unset),
@@ -397,11 +397,11 @@ cannot reach Postgres at startup exits (and restarts) instead of serving errors
 behind a ready probe. A running replica that loses Postgres stays ready while
 its provider routes can serve (the readiness body says
 `"middleware":"degraded"` and the middleware routes answer errors); only a
-replica without `CAVEMAN_AUTH_TOKEN`, which serves the middleware alone, leaves
+replica without `ONMAN_AUTH_TOKEN`, which serves the middleware alone, leaves
 the Service. See [Health and metrics](#health-and-metrics).
 
 Tables are created in the connection's schema (the first entry of
-`search_path`, which you can set in the URL: `...?search_path=caveman`).
+`search_path`, which you can set in the URL: `...?search_path=onman`).
 Migrations run at startup under an advisory lock, so replicas starting together
 migrate one after another, and they are idempotent. The database role needs
 `CREATE` on that schema for the first start and ordinary read/write afterwards:
@@ -454,8 +454,8 @@ and database role, so applications cannot read each other's data even though
 each sidecar is an open loopback listener:
 
 ```sql
-CREATE ROLE caveman_billing LOGIN PASSWORD '<password>';
-CREATE SCHEMA billing AUTHORIZATION caveman_billing;
+CREATE ROLE onman_billing LOGIN PASSWORD '<password>';
+CREATE SCHEMA billing AUTHORIZATION onman_billing;
 ```
 
 Add to the application's pod spec (Kubernetes 1.29+ native sidecar; on older
@@ -463,25 +463,25 @@ clusters make it a regular container):
 
 ```yaml
 initContainers:
-  - name: caveman-middleware
-    image: ghcr.io/juliusbrussee/caveman-proxy:bin-v2.0.0
+  - name: onman-middleware
+    image: ghcr.io/aravindh-dev12/onman-proxy:bin-v2.0.0
     restartPolicy: Always
     env:
       # Loopback only: the application reaches it, nothing else does.
-      - name: CAVEMAN_LISTEN
+      - name: ONMAN_LISTEN
         value: 127.0.0.1:8787
-      - name: CAVEMAN_MODE
+      - name: ONMAN_MODE
         value: record
-      - name: CAVEMAN_MIDDLEWARE_MODE
+      - name: ONMAN_MIDDLEWARE_MODE
         value: compress
-      - name: CAVEMAN_MIDDLEWARE_DATABASE_URL # ...?sslmode=verify-full&search_path=billing
+      - name: ONMAN_MIDDLEWARE_DATABASE_URL # ...?sslmode=verify-full&search_path=billing
         valueFrom:
-          secretKeyRef: {name: billing-caveman, key: database-url}
-      - name: CAVEMAN_MIDDLEWARE_ENCRYPTION_KEY
+          secretKeyRef: {name: billing-onman, key: database-url}
+      - name: ONMAN_MIDDLEWARE_ENCRYPTION_KEY
         valueFrom:
-          secretKeyRef: {name: billing-caveman, key: encryption-key}
+          secretKeyRef: {name: billing-onman, key: encryption-key}
     volumeMounts:
-      - name: caveman-data
+      - name: onman-data
         mountPath: /data
     securityContext:
       runAsNonRoot: true
@@ -494,7 +494,7 @@ initContainers:
       requests: {cpu: 100m, memory: 128Mi}
       limits: {cpu: "1", memory: 512Mi}
 volumes:
-  - name: caveman-data
+  - name: onman-data
     emptyDir: {}
 ```
 
@@ -514,13 +514,13 @@ before anything is read.
 
 Four sources, checked in this order:
 
-1. **Shared token** (`CAVEMAN_AUTH_TOKEN`): principal `single_operator`, every
+1. **Shared token** (`ONMAN_AUTH_TOKEN`): principal `single_operator`, every
    namespace. Existing deployments behave exactly as before.
-2. **Token map** (`CAVEMAN_MIDDLEWARE_TOKEN_MAP_FILE` or
+2. **Token map** (`ONMAN_MIDDLEWARE_TOKEN_MAP_FILE` or
    `middleware.token_map_file`): SHA-256 hashes of tokens mapped to principals.
 3. **OIDC / JWT bearer** (`middleware.oidc`).
 4. **Client certificate** (mTLS), when the [TLS listener](#tls) has
-   `CAVEMAN_TLS_CLIENT_CA_FILE`.
+   `ONMAN_TLS_CLIENT_CA_FILE`.
 
 A bearer (`Authorization: Bearer`, or `x-cave-api-key` for static tokens)
 decides when present; otherwise a verified client certificate does; otherwise
@@ -540,7 +540,7 @@ different principal, with its own sessions:
 | OIDC | `oidc:<issuer>#<claim>`, with `issuer` exactly as configured | `oidc:https://login.example.com/#svc-a` |
 | Certificate, URI SAN | `mtls:uri:<first URI SAN, as issued>` | `mtls:uri:spiffe://example.org/ns/ci/sa/agent` |
 | Certificate, DNS SAN | `mtls:dns:<first DNS SAN>` (when there is no URI SAN) | `mtls:dns:agent.internal` |
-| Certificate, CN | `mtls:cn:<subject CN>`, only with `CAVEMAN_TLS_CLIENT_CN_FALLBACK=true` | `mtls:cn:build-agent` |
+| Certificate, CN | `mtls:cn:<subject CN>`, only with `ONMAN_TLS_CLIENT_CN_FALLBACK=true` | `mtls:cn:build-agent` |
 
 **Token map.** YAML (JSON also parses). Only hashes are stored; unknown keys
 are an error.
@@ -584,25 +584,25 @@ the new token, then remove the old hash. The file is re-read when it changes
 Secret edit only once the kubelet has refreshed the mounted volume, which
 follows its sync period and cache TTL: usually 1-2 minutes, and `SIGHUP` cannot
 speed that up. To revoke a token at once, restart the pods after editing the
-Secret (`kubectl rollout restart deployment/caveman-proxy-ha`); new pods mount
+Secret (`kubectl rollout restart deployment/onman-proxy-ha`); new pods mount
 the current version. A file that no longer parses is logged and ignored: the previous
 map stays in force, **including tokens you meant to revoke**. It is retried
-every 10 s and counted in `caveman_identity_reload_failures_total`; alert on
+every 10 s and counted in `onman_identity_reload_failures_total`; alert on
 that counter (see [Health and metrics](#health-and-metrics)).
 
-**OIDC.** In `caveman.yaml`, or as `CAVEMAN_MIDDLEWARE_OIDC_<KEY>` variables
+**OIDC.** In `onman.yaml`, or as `ONMAN_MIDDLEWARE_OIDC_<KEY>` variables
 (`ALGORITHMS` comma separated):
 
 ```yaml
 middleware:
   oidc:
     issuer: https://login.example.com/
-    audience: caveman-middleware
+    audience: onman-middleware
     jwks_url: https://login.example.com/.well-known/jwks.json  # https only
     algorithms: [RS256, ES256]       # default both; nothing else is accepted
     clock_skew_seconds: 60           # default 60
     principal_claim: sub             # default sub
-    namespaces_claim: caveman_namespaces  # optional: array, or space-separated string
+    namespaces_claim: onman_namespaces  # optional: array, or space-separated string
 ```
 
 Tokens must carry a `kid`, an `exp`, the exact `iss`, and the audience in
@@ -616,10 +616,10 @@ but https is refused. The issuer may not contain `#`. Without
 `namespaces_claim` (or when a token lacks the claim), namespaces and quota come
 from the token map entry named `oidc:<issuer>#<claim>`.
 
-**mTLS.** With `CAVEMAN_TLS_CLIENT_CA_FILE`, a client certificate that verifies
+**mTLS.** With `ONMAN_TLS_CLIENT_CA_FILE`, a client certificate that verifies
 against that CA names a principal from its first URI SAN, else its first DNS
 SAN (see the table above). The subject CN counts only with
-`CAVEMAN_TLS_CLIENT_CN_FALLBACK=true` (`tls.client_cn_fallback`); it is off by
+`ONMAN_TLS_CLIENT_CN_FALLBACK=true` (`tls.client_cn_fallback`); it is off by
 default because a CN is free text that many CAs fill carelessly. Namespaces and
 quota come from the token map entry of that name; with no entry the principal
 may use no namespace. Clients without a certificate can still connect and use a
@@ -631,9 +631,9 @@ sessions behind rotatable tokens.
 
 **Provider routes are unchanged.** The token map, OIDC and mTLS apply to the
 middleware routes only. Provider routes (`/v1/messages`, `/openai/...`) accept
-only `CAVEMAN_AUTH_TOKEN`, because a caller there spends the server's provider
+only `ONMAN_AUTH_TOKEN`, because a caller there spends the server's provider
 keys, which is the operator's shared authority. On a non-loopback listener
-without `CAVEMAN_AUTH_TOKEN`, provider routes refuse every request, so a replica
+without `ONMAN_AUTH_TOKEN`, provider routes refuse every request, so a replica
 authenticated only by a token map serves the middleware and nothing else.
 
 The capabilities document reports `trust_mode: resolver` when a token map,
@@ -646,8 +646,8 @@ and latency. Never content, credentials or raw scope values.
 
 ### Encryption at rest
 
-`CAVEMAN_MIDDLEWARE_ENCRYPTION_KEY` (comma separated) or
-`CAVEMAN_MIDDLEWARE_ENCRYPTION_KEY_FILE` (one per line) holds base64 32-byte
+`ONMAN_MIDDLEWARE_ENCRYPTION_KEY` (comma separated) or
+`ONMAN_MIDDLEWARE_ENCRYPTION_KEY_FILE` (one per line) holds base64 32-byte
 keys; generate one with `openssl rand -base64 32`. Originals are sealed with
 AES-256-GCM under the first key, bound to their session, and any listed key
 opens. Without a key, originals rely on file or database permissions. A key
@@ -668,14 +668,14 @@ answers `recovery_unavailable` for every sealed original.
 
 Adding a key to a store that already holds plaintext originals: with a key
 configured, those originals are refused (`recovery_unavailable`, counted in
-`caveman_middleware_plaintext_originals_total{outcome="refused"}`). Set
+`onman_middleware_plaintext_originals_total{outcome="refused"}`). Set
 `middleware.allow_plaintext_originals: true`
-(`CAVEMAN_MIDDLEWARE_ALLOW_PLAINTEXT_ORIGINALS=true`) to keep them readable,
+(`ONMAN_MIDDLEWARE_ALLOW_PLAINTEXT_ORIGINALS=true`) to keep them readable,
 then remove it once `max_retention_seconds` has passed since the key was added.
 
 ### Retention
 
-| Key (`middleware.*`, or `CAVEMAN_MIDDLEWARE_<KEY>`) | Default | Meaning |
+| Key (`middleware.*`, or `ONMAN_MIDDLEWARE_<KEY>`) | Default | Meaning |
 |---|---|---|
 | `retention_seconds` | 86400 | A session lives this long after its last use |
 | `max_retention_seconds` | 604800 | Hard cap from creation, whatever the use |
@@ -702,7 +702,7 @@ working. The store reports its usage in `/metrics`.
 
 For **SQLite on a volume**, size for both capped stores plus what is not
 capped: 576 MiB of middleware payload, the proxy's recovery store (512 MiB,
-`CAVEMAN_CCR_MAX_BYTES`), SQLite indexes, free pages and the write-ahead log,
+`ONMAN_CCR_MAX_BYTES`), SQLite indexes, free pages and the write-ahead log,
 the spend database (one metadata row per proxied request, never capped) and
 32 MiB of rotated `proxy.log`. `deploy/kubernetes.yaml` asks for 5 Gi; raise it
 with the caps, and alert when the volume passes 80 %.
@@ -714,8 +714,8 @@ indexes and bloat between autovacuum runs; provision at least twice
 
 ### Backup and restore
 
-- **SQLite:** scale to zero (or stop the container), copy `caveman.db` (and
-  `caveman.db-wal` if present) from the volume, or take a volume snapshot, then
+- **SQLite:** scale to zero (or stop the container), copy `onman.db` (and
+  `onman.db-wal` if present) from the volume, or take a volume snapshot, then
   scale back up. The image has no shell or `sqlite3`, so copy from a helper pod
   that mounts the volume.
 - **Postgres:** use your database's backups (`pg_dump` of the schema, or managed
@@ -725,12 +725,12 @@ indexes and bloat between autovacuum runs; provision at least twice
 
 ### TLS
 
-Set `CAVEMAN_TLS_CERT_FILE` and `CAVEMAN_TLS_KEY_FILE` (or `tls.cert_file` /
-`tls.key_file` in `caveman.yaml`) and the listener speaks TLS 1.2 or later,
+Set `ONMAN_TLS_CERT_FILE` and `ONMAN_TLS_KEY_FILE` (or `tls.cert_file` /
+`tls.key_file` in `onman.yaml`) and the listener speaks TLS 1.2 or later,
 with only forward-secret AEAD cipher suites in TLS 1.2. The files are re-read
 when they change (checked every 10 s) and on `SIGHUP`, so a renewed certificate
 applies without a restart; files that no longer load are logged and the
-current certificate stays. `CAVEMAN_TLS_CLIENT_CA_FILE` adds client certificate
+current certificate stays. `ONMAN_TLS_CLIENT_CA_FILE` adds client certificate
 verification (see [Identity](#identity)). A client certificate is checked
 against the client CA in force on every request, not only at the handshake, so
 replacing the CA file cuts off keep-alive connections opened under the old CA
@@ -746,24 +746,24 @@ does not verify the certificate.
 | Path | Purpose |
 |---|---|
 | `GET /health/live` | Process is up |
-| `GET /health/ready` | Ready to serve. The body's `middleware` is `ok`, `unavailable` (no runtime) or `degraded` (the store cannot take a write — SQLite: a write transaction; Postgres: the primary is reachable and writable). A degraded middleware answers `503` only on a listener that serves nothing else (non-loopback, no `CAVEMAN_AUTH_TOKEN`, so the provider routes refuse every request); otherwise readiness stays `200`, so a database outage does not take provider inference down with it |
-| `GET /metrics` | Prometheus text; gated by `CAVEMAN_METRICS_TOKEN` when set |
-| `POST /caveman/keepalive` | No-op beacon from older CLIs; changes nothing |
+| `GET /health/ready` | Ready to serve. The body's `middleware` is `ok`, `unavailable` (no runtime) or `degraded` (the store cannot take a write — SQLite: a write transaction; Postgres: the primary is reachable and writable). A degraded middleware answers `503` only on a listener that serves nothing else (non-loopback, no `ONMAN_AUTH_TOKEN`, so the provider routes refuse every request); otherwise readiness stays `200`, so a database outage does not take provider inference down with it |
+| `GET /metrics` | Prometheus text; gated by `ONMAN_METRICS_TOKEN` when set |
+| `POST /onman/keepalive` | No-op beacon from older CLIs; changes nothing |
 
 The health paths are unauthenticated. `/metrics` is too, unless
-`CAVEMAN_METRICS_TOKEN` is set: then it needs `Authorization: Bearer <token>`.
+`ONMAN_METRICS_TOKEN` is set: then it needs `Authorization: Bearer <token>`.
 Do not expose any of them publicly. On a LOOPBACK listener `/health/live` also
-carries an `X-Caveman-Instance` header that the local CLI uses to match a
+carries an `X-Onman-Instance` header that the local CLI uses to match a
 run-state file; a shared listener publishes no such header, and it
 authenticates nothing inbound either way.
 
 Metrics: `cave_proxy_inflight_requests`, `cave_proxy_unauthorized_total`, and
-for the middleware `caveman_middleware_requests_total` (route, status, code),
-`caveman_middleware_decisions_total`, `caveman_middleware_request_duration_seconds`,
-`caveman_middleware_unauthorized_total`, `caveman_middleware_queue_depth` /
-`_capacity`, and `caveman_middleware_store_rows` / `_bytes` / `_limit`. With a
-token map or a TLS listener, `caveman_identity_reload_failures_total{source}`
-counts reloads that failed and `caveman_identity_reload_last_success_timestamp_seconds{source}`
+for the middleware `onman_middleware_requests_total` (route, status, code),
+`onman_middleware_decisions_total`, `onman_middleware_request_duration_seconds`,
+`onman_middleware_unauthorized_total`, `onman_middleware_queue_depth` /
+`_capacity`, and `onman_middleware_store_rows` / `_bytes` / `_limit`. With a
+token map or a TLS listener, `onman_identity_reload_failures_total{source}`
+counts reloads that failed and `onman_identity_reload_last_success_timestamp_seconds{source}`
 is when the configuration in force was loaded (process start, or the last good
 reload); `source` is `token_map` or `tls`.
 
@@ -772,17 +772,17 @@ parse leaves the revoked token working. A broken file is retried every 10 s, so
 the counter keeps rising until the file is fixed. Page on it:
 
 ```yaml
-- alert: CavemanIdentityReloadFailing
-  expr: increase(caveman_identity_reload_failures_total[5m]) > 0
-- alert: CavemanTokenRotationNotApplied   # after a rotation at time T
-  expr: caveman_identity_reload_last_success_timestamp_seconds{source="token_map"} < <T>
+- alert: OnmanIdentityReloadFailing
+  expr: increase(onman_identity_reload_failures_total[5m]) > 0
+- alert: OnmanTokenRotationNotApplied   # after a rotation at time T
+  expr: onman_identity_reload_last_success_timestamp_seconds{source="token_map"} < <T>
 ```
 
 Every rejected request increments `cave_proxy_unauthorized_total` and writes one
 `inbound token rejected` warning with the request path and the caller's host —
 never the presented token. Alert on that counter: it is the only signal that
 someone is guessing at a credential. Alert on `code="forbidden_namespace"` in
-`caveman_middleware_requests_total` too: a principal is asking for another
+`onman_middleware_requests_total` too: a principal is asking for another
 team's sessions.
 
 ## Limits in this version
@@ -792,11 +792,11 @@ team's sessions.
   OAuth bearer would go. A shared proxy is the BYOK / API-key path, or the
   Bedrock role path.
 - Managed Gemini CLI routing is unsupported — the CLI cannot send a separate
-  Caveman credential and upstream credential, and `caveman wrap gemini` refuses.
-- In `compress` mode, leave `CAVEMAN_RECOVERY` unset on the server: recovery is
+  Onman credential and upstream credential, and `onman wrap gemini` refuses.
+- In `compress` mode, leave `ONMAN_RECOVERY` unset on the server: recovery is
   then served by the proxy's own retrieve loop, which runs only for API-key
   traffic, on non-streaming requests, on supported routes — everything else is
-  forwarded unchanged. The MCP recovery tool a local `caveman wrap` installs
+  forwarded unchanged. The MCP recovery tool a local `onman wrap` installs
   reads a local store and cannot reach a remote one.
 
 ## Migration notes
@@ -815,7 +815,7 @@ build with OIDC or mTLS, change the token map before you upgrade:
    |---|---|
    | `name: spiffe://example.org/ns/ci/sa/agent` (URI SAN) | `name: "mtls:uri:spiffe://example.org/ns/ci/sa/agent"` |
    | `name: agent.internal` (DNS SAN) | `name: "mtls:dns:agent.internal"` |
-   | `name: build-agent` (subject CN) | `name: "mtls:cn:build-agent"`, and set `CAVEMAN_TLS_CLIENT_CN_FALLBACK=true` |
+   | `name: build-agent` (subject CN) | `name: "mtls:cn:build-agent"`, and set `ONMAN_TLS_CLIENT_CN_FALLBACK=true` |
    | `name: svc-a` (JWT `sub`) | `name: "oidc:<middleware.oidc.issuer>#svc-a"`, e.g. `"oidc:https://login.example.com/#svc-a"` |
 
    Quote the names, and use the issuer byte for byte as configured, trailing
@@ -834,14 +834,14 @@ An entry you forget to rename fails closed: its caller gets
 token_sha256 and matches no caller` with the entry's name.
 
 **Manifests.** `deploy/kubernetes.yaml` now has a NetworkPolicy: label client
-pods (and Prometheus) `caveman-client: "true"`, and add `CAVEMAN_METRICS_TOKEN`
-to the `caveman-proxy` Secret. The ECS task definition now serves TLS to the
-task: create the `caveman-proxy/tls-cert` and `caveman-proxy/tls-key` secrets
+pods (and Prometheus) `onman-client: "true"`, and add `ONMAN_METRICS_TOKEN`
+to the `onman-proxy` Secret. The ECS task definition now serves TLS to the
+task: create the `onman-proxy/tls-cert` and `onman-proxy/tls-key` secrets
 and switch the ALB target group to HTTPS (see [AWS ECS Fargate](#aws-ecs-fargate)).
 
 ## Checklist
 
-1. `CAVEMAN_AUTH_TOKEN` generated with `openssl rand -hex 32`, set from a
+1. `ONMAN_AUTH_TOKEN` generated with `openssl rand -hex 32`, set from a
    secret store, 16+ characters, not in YAML; or a token map with one principal
    per team.
 2. Listener inside a private network, with the TLS listener or TLS terminated
@@ -850,10 +850,10 @@ and switch the ALB target group to HTTPS (see [AWS ECS Fargate](#aws-ecs-fargate
 4. `/data` on a durable volume owned by uid 65532, or the middleware store in
    Postgres.
 5. One replica per SQLite volume; any number with Postgres.
-6. Health check on `/health/ready`; `/metrics` gated by `CAVEMAN_METRICS_TOKEN`
+6. Health check on `/health/ready`; `/metrics` gated by `ONMAN_METRICS_TOKEN`
    or not publicly reachable.
 7. `CAVE_SSRF_ALLOWLIST` entries only for the private endpoints you actually use.
 8. An encryption key for middleware originals, backed up apart from the data.
 9. Image pinned by digest to a `bin-v*` release (`bin-v2.0.0` or later for the
    middleware identity, TLS and Postgres store), not `:latest`.
-10. An alert on `caveman_identity_reload_failures_total`.
+10. An alert on `onman_identity_reload_failures_total`.

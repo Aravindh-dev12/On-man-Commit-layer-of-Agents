@@ -1,4 +1,4 @@
-# Extending Caveman
+# Extending Onman
 
 Extensions should preserve original input on uncertainty, keep recovery exact,
 and label measurements by evidence source. This page maps common extension

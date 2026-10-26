@@ -1,24 +1,24 @@
 ---
-name: caveman-help
+name: onman-help
 description: >
-  Quick-reference card for caveman modes, skills and commands.
-  Trigger: /caveman-help or "caveman help".
+  Quick-reference card for onman modes, skills and commands.
+  Trigger: /onman-help or "onman help".
 ---
 
-# Caveman Help
+# Onman Help
 
-Display this reference card when invoked. One-shot — do NOT change mode, write flag files, or persist anything. Output in caveman style.
+Display this reference card when invoked. One-shot — do NOT change mode, write flag files, or persist anything. Output in onman style.
 
 ## Modes
 
 | Mode | Trigger | What change |
 |------|---------|-------------|
-| **Lite** | `/caveman lite` | Drop filler. Keep sentence structure. |
-| **Full** | `/caveman` | Drop articles, filler, pleasantries, hedging. Fragments OK. Default. |
-| **Ultra** | `/caveman ultra` | Extreme compression. Bare fragments. Tables over prose. |
-| **Wenyan-Lite** | `/caveman wenyan-lite` | Classical Chinese style, light compression. |
-| **Wenyan-Full** | `/caveman wenyan` | Full 文言文. Maximum classical terseness. |
-| **Wenyan-Ultra** | `/caveman wenyan-ultra` | Extreme. Ancient scholar on a budget. |
+| **Lite** | `/onman lite` | Drop filler. Keep sentence structure. |
+| **Full** | `/onman` | Drop articles, filler, pleasantries, hedging. Fragments OK. Default. |
+| **Ultra** | `/onman ultra` | Extreme compression. Bare fragments. Tables over prose. |
+| **Wenyan-Lite** | `/onman wenyan-lite` | Classical Chinese style, light compression. |
+| **Wenyan-Full** | `/onman wenyan` | Full 文言文. Maximum classical terseness. |
+| **Wenyan-Ultra** | `/onman wenyan-ultra` | Extreme. Ancient scholar on a budget. |
 
 Mode stick until changed or session end.
 
@@ -26,14 +26,14 @@ Mode stick until changed or session end.
 
 | Skill | Trigger | What it do |
 |-------|---------|-----------|
-| **caveman-commit** | `/caveman-commit` | Terse commit messages. Conventional Commits. ≤50 char subject. |
-| **caveman-review** | `/caveman-review` | One-line PR comments: `L42: bug: user null. Add guard.` |
-| **caveman-compress** | `/caveman-compress <file>` | Compress .md files to caveman prose. Saves ~46% input tokens. |
-| **caveman-help** | `/caveman-help` | This card. |
+| **onman-commit** | `/onman-commit` | Terse commit messages. Conventional Commits. ≤50 char subject. |
+| **onman-review** | `/onman-review` | One-line PR comments: `L42: bug: user null. Add guard.` |
+| **onman-compress** | `/onman-compress <file>` | Compress .md files to onman prose. Saves ~46% input tokens. |
+| **onman-help** | `/onman-help` | This card. |
 
 ## Deactivate
 
-Say "stop caveman" or "normal mode". Resume anytime with `/caveman`.
+Say "stop onman" or "normal mode". Resume anytime with `/onman`.
 
 ## Language
 
@@ -45,18 +45,18 @@ Default mode = `full`. Change it:
 
 **Environment variable** (highest priority):
 ```bash
-export CAVEMAN_DEFAULT_MODE=ultra
+export ONMAN_DEFAULT_MODE=ultra
 ```
 
-**Config file** (`~/.config/caveman/config.json`):
+**Config file** (`~/.config/onman/config.json`):
 ```json
 { "defaultMode": "lite" }
 ```
 
-Set `"off"` to disable auto-activation on session start. User can still activate manually with `/caveman`.
+Set `"off"` to disable auto-activation on session start. User can still activate manually with `/onman`.
 
 Resolution: env var > config file > `full`.
 
 ## More
 
-Full docs: https://github.com/JuliusBrussee/caveman
+Full docs: https://github.com/Aravindh-dev12/onman

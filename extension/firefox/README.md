@@ -1,7 +1,7 @@
-# Caveman Mode — Firefox (#810)
+# Onman Mode — Firefox (#810)
 
 Firefox port of the existing Chrome MV3 extension. It runs the **same** runtime files
-(`../src/directive.js`, `../src/caveman.js`, `../src/indicator.css`, `../popup.html`) so
+(`../src/directive.js`, `../src/onman.js`, `../src/indicator.css`, `../popup.html`) so
 behaviour is identical to Chrome; only the manifest is Firefox-tuned.
 The popup hides the review link until a verified Firefox Add-ons listing URL is available.
 
@@ -35,7 +35,7 @@ node extension/scripts/build-extension-zip.mjs firefox   # writes dist/stage/ + 
 
 1. `about:debugging#/runtime/this-firefox` → **Load Temporary Add-on**.
 2. Select `extension/dist/stage/manifest.json` (version injected, AMO-lint clean), or
-   install `dist/caveman-browser-firefox-<ver>.zip`.
+   install `dist/onman-browser-firefox-<ver>.zip`.
 
 (Loading `extension/firefox/manifest.json` directly fails by design: no `version` field.
 If you must load a folder, copy the shared referenced assets in and add a version locally —
@@ -46,8 +46,8 @@ but the staged build is the supported path.)
 The `firefox` target is wired into `extension/scripts/build-extension-zip.mjs`:
 
 ```bash
-node extension/scripts/build-extension-zip.mjs firefox   # -> dist/caveman-browser-firefox-<ver>.zip
-node extension/scripts/build-extension-zip.mjs            # -> dist/caveman-browser-<ver>.zip (Chrome, default)
+node extension/scripts/build-extension-zip.mjs firefox   # -> dist/onman-browser-firefox-<ver>.zip
+node extension/scripts/build-extension-zip.mjs            # -> dist/onman-browser-<ver>.zip (Chrome, default)
 ```
 
 The Firefox zip stages the same shared runtime files flat (`icons/`, `src/`, `popup.*`) with this
@@ -63,5 +63,5 @@ contain spaces; the runner invokes Node directly without a shell. It never insta
 
 ## Why this exists
 
-https://github.com/JuliusBrussee/caveman/issues/810 — Firefox parity with the Chrome
-extension so Firefox users also get caveman mode on ChatGPT, Claude and Gemini.---
+https://github.com/Aravindh-dev12/onman/issues/810 — Firefox parity with the Chrome
+extension so Firefox users also get onman mode on ChatGPT, Claude and Gemini.---

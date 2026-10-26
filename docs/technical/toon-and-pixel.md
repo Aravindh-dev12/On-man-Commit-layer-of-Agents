@@ -33,8 +33,8 @@ program behavior even when data appears structurally similar.
 ### CLI
 
 ```bash
-caveman tools toon encode < data.json
-caveman tools toon decode < data.toon
+onman tools toon encode < data.json
+onman tools toon decode < data.toon
 ```
 
 Decoder rejects malformed input rather than inventing missing structure.
@@ -58,7 +58,7 @@ recognition and visual-layout risk.
 Enable for one session:
 
 ```bash
-caveman wrap --pixel <agent>
+onman wrap --pixel <agent>
 ```
 
 Pixel requires explicit model allowlisting:
@@ -81,7 +81,7 @@ a model to read.
 ### Model compatibility
 
 Vision capability alone is insufficient because image dimensions, detail
-settings, provider token accounting, and text-reading quality differ. Caveman
+settings, provider token accounting, and text-reading quality differ. Onman
 does not infer support from model name.
 
 ### Recovery

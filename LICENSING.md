@@ -1,11 +1,11 @@
-# Caveman Licensing
+# Onman Licensing
 
 Everything in this repository is licensed under the Apache License, Version 2.0,
-starting with Caveman 3.0.0. That covers the skill, CLI, SDKs, middleware,
+starting with Onman 3.0.0. That covers the skill, CLI, SDKs, middleware,
 extension, and the whole runtime: Engine, Proxy, Browse, MCP server,
-`shrink`, the cavemem Go core, and the shared Go platform.
+`shrink`, the onmem Go core, and the shared Go platform.
 
-Caveman Cloud, the hosted service, is separate commercial software. Its source
+Onman Cloud, the hosted service, is separate commercial software. Its source
 is not in this repository and this license does not cover it.
 
 ## Canonical Files
@@ -17,13 +17,13 @@ is not in this repository and this license does not cover it.
 - Every directory that ships its own `LICENSE` (npm and PyPI packages, the npm
   launchers, the Go modules) carries a byte-identical copy of the root `LICENSE`.
 
-Copyright 2026 Julius Brussee.
+Copyright 2026 Aravindh-dev12.
 
 ## What changed in 3.0.0
 
 Before 3.0.0 the repository was split-licensed. The skill and adoption surfaces
 (skill, CLI, SDKs, middleware, contracts, provider catalog, extension shell,
-cavemem clients) were MIT. The Engine-linked runtime (`engine/`, `proxy/`,
+onmem clients) were MIT. The Engine-linked runtime (`engine/`, `proxy/`,
 `rewriter/`, `browse/`, `mcp/`, `shrink/`, the `mem/` Go core,
 `shared/platform/`, and the extension's bundled `engine.wasm`) was Business
 Source License 1.1 with an Additional Use Grant.
@@ -65,10 +65,10 @@ The extension ships the Geist fonts under the SIL Open Font License 1.1
 
 ## Trademarks
 
-"Caveman" and Caveman logos are trademarks of Julius Brussee. The Apache
-License grants no trademark rights. Nominative use such as "Powered by Caveman"
-or "Optimized by Caveman" is allowed when truthful. Naming a product, hosted
-service, or fork in a way that implies Caveman sponsorship requires written
+"Onman" and Onman logos are trademarks of Aravindh-dev12. The Apache
+License grants no trademark rights. Nominative use such as "Powered by Onman"
+or "Optimized by Onman" is allowed when truthful. Naming a product, hosted
+service, or fork in a way that implies Onman sponsorship requires written
 permission.
 
 See `TRADEMARKS.md` for the full trademark policy.

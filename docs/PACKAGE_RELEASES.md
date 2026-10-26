@@ -1,10 +1,10 @@
 # Public package releases
 
-Two workflows publish from `JuliusBrussee/caveman`:
+Two workflows publish from `Aravindh-dev12/onman`:
 
 - `release-packages.yml`: the npm and PyPI packages below, one tag per release.
 - `release-binaries.yml`: the signed Go runtime binaries (`bin-v*`) and the
-  `ghcr.io/juliusbrussee/caveman-proxy` container image.
+  `ghcr.io/aravindh-dev12/onman-proxy` container image.
 
 Build jobs have no OIDC permission. Only the isolated publish jobs mint registry
 tokens, through npm and PyPI trusted publishing; no long-lived registry token
@@ -16,24 +16,24 @@ provenance and PyPI attestations automatically.
 Tags must be annotated, GitHub-verified, and point to a commit on `main`. The
 workflow rejects a tag whose version differs from the package metadata.
 
-| Tag | Artifact | Latest published (2026-09-24) | In this branch (Caveman 3.0.0) | GitHub Release |
+| Tag | Artifact | Latest published (2026-09-24) | In this branch (Onman 3.0.0) | GitHub Release |
 |---|---|---|---|---|
-| `sdk-ts-v*` | npm `@caveman-ai/sdk` | `1.1.0` | `1.2.0` | Yes |
-| `sdk-python-v*` | PyPI `caveman-sdk` | `1.1.0` | `1.2.0` | Yes |
-| `middleware-ts-v*` | npm `@caveman-ai/middleware` | `0.1.0-alpha.2` | `1.0.0` | Yes |
-| `middleware-python-v*` | PyPI `caveman-middleware` | `0.1.0a1` | `1.0.0` | Yes |
-| `contracts-v*` | npm `@caveman-ai/contracts` | never published | `2.0.0` | Yes |
-| `pi-v*` | npm `@caveman-ai/pi` | `0.1.1` | `0.2.0` | No |
+| `sdk-ts-v*` | npm `@onman-ai/sdk` | `1.1.0` | `1.2.0` | Yes |
+| `sdk-python-v*` | PyPI `onman-sdk` | `1.1.0` | `1.2.0` | Yes |
+| `middleware-ts-v*` | npm `@onman-ai/middleware` | `0.1.0-alpha.2` | `1.0.0` | Yes |
+| `middleware-python-v*` | PyPI `onman-middleware` | `0.1.0a1` | `1.0.0` | Yes |
+| `contracts-v*` | npm `@onman-ai/contracts` | never published | `2.0.0` | Yes |
+| `pi-v*` | npm `@onman-ai/pi` | `0.1.1` | `0.2.0` | No |
 | `bin-v*` | Go binaries and container image | `bin-v1.1.7` (`bin-v1.1.8` was pinned, never tagged) | `bin-v2.0.0` (pinned in `packages/cli/BINARY_RELEASE`) | Yes, with the binaries |
-| `cli-v*` | npm `@caveman-ai/cli` | `1.3.4` (hand-published) | `2.0.0` | No |
-| `v*` | Caveman product (installer, plugin, skills) | `v2.7.0` | `v3.0.0` | Yes, "Latest" |
+| `cli-v*` | npm `@onman-ai/cli` | `1.3.4` (hand-published) | `2.0.0` | No |
+| `v*` | Onman product (installer, plugin, skills) | `v2.7.0` | `v3.0.0` | Yes, "Latest" |
 
 `tests/verify_repo.py` checks that each SDK and middleware package's version,
 version constant (`SDK_VERSION`, `MIDDLEWARE_VERSION`), and top `CHANGELOG.md`
 heading agree, that the middleware packages' SDK floor is the repository SDK
 version, and that every published package ships `LICENSE` and `NOTICE`.
 
-`@caveman-ai/cli` publishes from `cli-v*` through `release-packages.yml` like
+`@onman-ai/cli` publishes from `cli-v*` through `release-packages.yml` like
 the others; its release order is in
 [`packages/cli/PUBLISHING.md`](../packages/cli/PUBLISHING.md).
 
@@ -44,12 +44,12 @@ from the package's committed lockfile, `npm audit` (runtime graph at `low`, full
 graph at `high`), full tests, `npm pack`, and a fresh-install import smoke of the
 exact tarball.
 
-**pnpm lane** (`middleware-ts`): `@caveman-ai/middleware` depends on the
+**pnpm lane** (`middleware-ts`): `@onman-ai/middleware` depends on the
 workspace SDK, so it builds in the pnpm workspace (`pnpm install
 --frozen-lockfile`), builds the SDK, runs the adapter suite with
-`CAVEMAN_REQUIRE_FRAMEWORKS=1` plus the consumer test, and packs with pnpm, which
+`ONMAN_REQUIRE_FRAMEWORKS=1` plus the consumer test, and packs with pnpm, which
 rewrites `workspace:^` to a concrete range. A fresh npm project then installs
-the tarball with the AI SDK and imports `@caveman-ai/middleware/ai-sdk`; the
+the tarball with the AI SDK and imports `@onman-ai/middleware/ai-sdk`; the
 build fails if the workspace protocol leaked into the manifest.
 
 **CLI lane** (`cli`): also a pnpm workspace package. Before building it
@@ -59,7 +59,7 @@ requires every asset of the binary release pinned in
 It then checks the generated profile and binary-pin constants against their
 sources (`node agents/compile.mjs`, `gen-binaries.mjs --check`), builds the real
 proxy, runs the full CLI suite, packs with pnpm, and checks that the installed
-tarball's `caveman --version` reports the tagged version and the binary pin.
+tarball's `onman --version` reports the tagged version and the binary pin.
 `node agents/probe-installed.mjs --all` stays a release-machine check; the
 `agent-conformance` workflow covers every profile in CI.
 
@@ -80,7 +80,7 @@ job's artifact only after its files match the recorded digests. In
 `python-gates` the middleware lane runs the suite once per certified adapter family (`langchain`, `openai`,
 `anthropic`, `litellm`), each in its own virtualenv with the SDK from this
 checkout, and requires that family's adapter to run
-(`CAVEMAN_REQUIRED_ADAPTERS`) instead of skipping. Wheel and sdist are each
+(`ONMAN_REQUIRED_ADAPTERS`) instead of skipping. Wheel and sdist are each
 installed into a fresh virtualenv and imported. `python-gates` uploads
 nothing. The CycloneDX SBOM of `pip install <wheel>` (no extras) is written in
 the build job instead, by the hash-pinned `cyclonedx-py`, into a virtualenv
@@ -113,7 +113,7 @@ under `release-<major>.x` instead. A prerelease publishes under its channel,
 `npm install <package>` never resolves a prerelease once the package has a
 stable version, and never moves backwards.
 
-`@caveman-ai/middleware@latest` still points at `0.1.0-alpha.2`, published
+`@onman-ai/middleware@latest` still points at `0.1.0-alpha.2`, published
 before this rule. It moves to `1.0.0` when that ships (`1.0.0` is greater).
 
 PyPI has no dist-tags: pip skips prereleases (`0.1.0a1`) unless the user pins
@@ -135,7 +135,7 @@ the registry publish succeeded:
 - Linked: the registry's provenance for the version (npm provenance, PyPI
   attestations from trusted publishing).
 - Prereleases are marked as such, and no package release takes the repository's
-  "Latest" badge; that belongs to the Caveman product release.
+  "Latest" badge; that belongs to the Onman product release.
 
 Changelogs: `packages/sdk/typescript/CHANGELOG.md`,
 `packages/sdk/python/CHANGELOG.md`,
@@ -154,7 +154,7 @@ CLI and the npm launchers check that signature against the public key compiled
 into them before installing any binary. The signed manifest also covers the
 license files attached to every binary release: `LICENSE` (Apache-2.0),
 `LICENSE-MIT` (the pre-3.0.0 MIT text), `NOTICE`, `LICENSING.md`, the third-party notices for the embedded pixel renderer,
-its fonts, and `caveman-browse`, and `THIRD_PARTY_GO_LICENSES.tar.gz`: the
+its fonts, and `onman-browse`, and `THIRD_PARTY_GO_LICENSES.tar.gz`: the
 license texts of every third-party Go module the six binaries link on any
 platform, plus the Go runtime's, collected with a pinned
 `github.com/google/go-licenses/v2@v2.0.1`.
@@ -200,16 +200,16 @@ succeeded, point it by hand at the signed digest (after the `cosign verify`
 below):
 
 ```sh
-digest="$(docker buildx imagetools inspect ghcr.io/juliusbrussee/caveman-proxy:bin-vX.Y.Z --format '{{json .Manifest}}' | jq -r .digest)"
-docker buildx imagetools create -t ghcr.io/juliusbrussee/caveman-proxy:latest "ghcr.io/juliusbrussee/caveman-proxy@$digest"
+digest="$(docker buildx imagetools inspect ghcr.io/aravindh-dev12/onman-proxy:bin-vX.Y.Z --format '{{json .Manifest}}' | jq -r .digest)"
+docker buildx imagetools create -t ghcr.io/aravindh-dev12/onman-proxy:latest "ghcr.io/aravindh-dev12/onman-proxy@$digest"
 ```
 
 Binary releases never take the repository's "Latest" badge. Verify a release image
 with:
 
 ```sh
-cosign verify ghcr.io/juliusbrussee/caveman-proxy:bin-vX.Y.Z \
-  --certificate-identity-regexp '^https://github.com/JuliusBrussee/caveman/.github/workflows/release-binaries.yml@refs/tags/bin-v' \
+cosign verify ghcr.io/aravindh-dev12/onman-proxy:bin-vX.Y.Z \
+  --certificate-identity-regexp '^https://github.com/Aravindh-dev12/onman/.github/workflows/release-binaries.yml@refs/tags/bin-v' \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com
 ```
 
@@ -217,9 +217,9 @@ Images released before this step are unsigned.
 
 ### Mirroring the binaries
 
-`caveman setup --install` and the `caveman-mcp`, `caveman-shrink`, and
-`caveman-browse` npm launchers download binaries from
-`https://github.com/JuliusBrussee/caveman/releases/download` unless
+`onman setup --install` and the `onman-mcp`, `onman-shrink`, and
+`onman-browse` npm launchers download binaries from
+`https://github.com/Aravindh-dev12/onman/releases/download` unless
 `CAVE_BINARY_RELEASE_BASE` names another base URL. A mirror must serve the
 release layout unchanged:
 
@@ -235,7 +235,7 @@ compiled-in public key, so a mirror can serve the bytes but cannot swap them.
 `CAVE_SETUP_TIMEOUT` (seconds, default 300) bounds each download for slow
 mirrors. To fill a mirror, copy the pinned GitHub Release's assets as they are,
 for example
-`gh release download <bin-vX.Y.Z> --repo JuliusBrussee/caveman --dir <mirror>/<bin-vX.Y.Z>`.
+`gh release download <bin-vX.Y.Z> --repo Aravindh-dev12/onman --dir <mirror>/<bin-vX.Y.Z>`.
 
 ## Repository settings the release path depends on
 
@@ -245,13 +245,13 @@ change them. State checked with `gh api` on 2026-09-23.
 Required, and in place:
 
 - Environments `npm`, `pypi`, and `binary-release` each require approval from
-  `JuliusBrussee` and accept deployments only from their own release tag
+  `Aravindh-dev12` and accept deployments only from their own release tag
   patterns (`npm` today: `sdk-ts-v*`, `middleware-ts-v*`, `pi-v*`, plus the
   stale `agent-v*` and `create-agent-v*`; `pypi`: `sdk-python-v*`,
   `middleware-python-v*`; `binary-release`: `bin-v*`). The `npm` policy still
   needs `contracts-v*` and `cli-v*` added and the two agent patterns removed
   (the Agent SDK no longer releases from this repository).
-- `binary-release` holds `CAVEMAN_BINARY_SIGNING_PRIVATE_KEY_PEM`, matching
+- `binary-release` holds `ONMAN_BINARY_SIGNING_PRIVATE_KEY_PEM`, matching
   `packages/cli/BINARY_SIGNING_PUBKEY.pub`.
 - Private vulnerability reporting is on.
 
@@ -291,17 +291,17 @@ Recommended:
 - The Apple and Windows signing secrets above, once the certificates exist.
 
 Registry side, per package (identity fields are case-sensitive): npm trusted
-publisher = owner `JuliusBrussee`, repository `caveman`, workflow
+publisher = owner `Aravindh-dev12`, repository `onman`, workflow
 `release-packages.yml`, environment `npm`; PyPI trusted publisher = the same
-owner, repository, and workflow with environment `pypi`. `@caveman-ai/cli`
+owner, repository, and workflow with environment `pypi`. `@onman-ai/cli`
 exists on npm (hand-published so far) and needs this trusted publisher added
 before `cli-v2.0.0`. After the first trusted publish, set each npm package's
 publishing access to require 2FA and disallow tokens. References:
 [npm trusted publishing](https://docs.npmjs.com/trusted-publishers/) and
 [PyPI OIDC from GitHub](https://docs.github.com/en/actions/how-tos/secure-your-work/security-harden-deployments/oidc-in-pypi).
-The Python SDK's import name stays `caveman_cloud`.
+The Python SDK's import name stays `onman_cloud`.
 
-### First publish of a new npm package (`@caveman-ai/contracts`)
+### First publish of a new npm package (`@onman-ai/contracts`)
 
 npm can only attach a trusted publisher to a package that already exists, and
 it does not yet allow a first publish through OIDC
@@ -313,19 +313,19 @@ still comes from CI with provenance:
 ```sh
 dir="$(mktemp -d)" && cd "$dir"
 cat > package.json <<'EOF'
-{"name":"@caveman-ai/contracts","version":"0.0.0-bootstrap.0","description":"Name placeholder for trusted publishing. Use 2.0.0 or later.","license":"Apache-2.0","repository":{"type":"git","url":"git+https://github.com/JuliusBrussee/caveman.git","directory":"packages/shared/contracts"}}
+{"name":"@onman-ai/contracts","version":"0.0.0-bootstrap.0","description":"Name placeholder for trusted publishing. Use 2.0.0 or later.","license":"Apache-2.0","repository":{"type":"git","url":"git+https://github.com/Aravindh-dev12/onman.git","directory":"packages/shared/contracts"}}
 EOF
 npm login                       # interactive, 2FA; no token is stored in CI
 npm publish --access public --tag bootstrap
 ```
 
-Then, on npmjs.com, add the trusted publisher above to `@caveman-ai/contracts`,
+Then, on npmjs.com, add the trusted publisher above to `@onman-ai/contracts`,
 push `contracts-v2.0.0`, and once it is live run
-`npm deprecate @caveman-ai/contracts@0.0.0-bootstrap.0 "placeholder; use 2.0.0 or later"`.
+`npm deprecate @onman-ai/contracts@0.0.0-bootstrap.0 "placeholder; use 2.0.0 or later"`.
 The publish job's dist-tag rule gives `2.0.0` `latest`, whether or not the
 registry had pointed `latest` at the placeholder.
 
-## Caveman 3.0.0 release runbook
+## Onman 3.0.0 release runbook
 
 The `feat/middleware-enterprise` branch is the 3.0.0 release: the Apache-2.0
 relicense plus stable middleware. Its last commit is the release commit. Run
@@ -338,7 +338,7 @@ lightweight, or off-`main` tags). Each `git tag` is followed by
 them: `packages/cli/BINARY_RELEASE` and the npm launchers already pin
 `bin-v2.0.0`, and `deploy/*` names its image. The SDKs publish before the
 middleware because middleware 1.0.0 needs SDK 1.2.0 (`^1.2.0` /
-`caveman-sdk>=1.2,<2`); published first, a middleware install would fail to
+`onman-sdk>=1.2,<2`); published first, a middleware install would fail to
 resolve. `v3.0.0` goes out right after the merge because the README and
 INSTALL one-liners (`raw.githubusercontent.com/.../v3.0.0/install.sh`) 404
 until it exists, and the installer at that ref needs nothing unpublished.
@@ -350,9 +350,9 @@ until it exists, and the installer at that ref needs nothing unpublished.
 2. **Product tag, immediately.**
 
    ```sh
-   git tag -s v3.0.0 -m "Caveman 3.0.0"
+   git tag -s v3.0.0 -m "Onman 3.0.0"
    git push origin v3.0.0
-   gh release create v3.0.0 --verify-tag --latest --title "Caveman 3.0.0" --notes-file <notes.md>
+   gh release create v3.0.0 --verify-tag --latest --title "Onman 3.0.0" --notes-file <notes.md>
    ```
 
    The one-liners now resolve. `deploy/*` at this tag still carries
@@ -378,9 +378,9 @@ until it exists, and the installer at that ref needs nothing unpublished.
    the whole change):
 
    ```sh
-   digest="$(docker buildx imagetools inspect ghcr.io/juliusbrussee/caveman-proxy:bin-v2.0.0 --format '{{json .Manifest}}' | jq -r .digest)"
-   cosign verify "ghcr.io/juliusbrussee/caveman-proxy@$digest" \
-     --certificate-identity-regexp '^https://github.com/JuliusBrussee/caveman/.github/workflows/release-binaries.yml@refs/tags/bin-v' \
+   digest="$(docker buildx imagetools inspect ghcr.io/aravindh-dev12/onman-proxy:bin-v2.0.0 --format '{{json .Manifest}}' | jq -r .digest)"
+   cosign verify "ghcr.io/aravindh-dev12/onman-proxy@$digest" \
+     --certificate-identity-regexp '^https://github.com/Aravindh-dev12/onman/.github/workflows/release-binaries.yml@refs/tags/bin-v' \
      --certificate-oidc-issuer https://token.actions.githubusercontent.com
    sed -i.bak "s/sha256:REPLACE_AT_RELEASE/${digest}/" deploy/kubernetes.yaml deploy/kubernetes-ha.yaml deploy/aws-ecs-task-definition.json
    rm deploy/*.bak
@@ -396,10 +396,10 @@ until it exists, and the installer at that ref needs nothing unpublished.
 5. **SDKs, and wait for both to publish** (approve `npm` and `pypi`):
 
    ```sh
-   git tag -s sdk-ts-v1.2.0 -m "@caveman-ai/sdk 1.2.0" && git push origin sdk-ts-v1.2.0
-   git tag -s sdk-python-v1.2.0 -m "caveman-sdk 1.2.0" && git push origin sdk-python-v1.2.0
-   npm view @caveman-ai/sdk@1.2.0 version        # 1.2.0
-   pip index versions caveman-sdk                # lists 1.2.0
+   git tag -s sdk-ts-v1.2.0 -m "@onman-ai/sdk 1.2.0" && git push origin sdk-ts-v1.2.0
+   git tag -s sdk-python-v1.2.0 -m "onman-sdk 1.2.0" && git push origin sdk-python-v1.2.0
+   npm view @onman-ai/sdk@1.2.0 version        # 1.2.0
+   pip index versions onman-sdk                # lists 1.2.0
    ```
 
 6. **Packages** (each is its own `release-packages.yml` run; approve each):
@@ -412,37 +412,37 @@ until it exists, and the installer at that ref needs nothing unpublished.
 
    `contracts-v2.0.0` needs `contracts-v*` in the `npm` environment's tag
    policy and the one-time bootstrap in
-   [First publish of a new npm package](#first-publish-of-a-new-npm-package-cavemanaicontracts).
+   [First publish of a new npm package](#first-publish-of-a-new-npm-package-onmanaicontracts).
    Then the CLI. Its lane refuses to build until every `bin-v2.0.0` asset
    downloads, and needs `cli-v*` in the `npm` tag policy plus the CLI's
    trusted publisher:
 
    ```sh
    node agents/probe-installed.mjs --all --json   # release-machine check
-   git tag -s cli-v2.0.0 -m "@caveman-ai/cli 2.0.0" && git push origin cli-v2.0.0
+   git tag -s cli-v2.0.0 -m "@onman-ai/cli 2.0.0" && git push origin cli-v2.0.0
    ```
 
-7. **Environment approvals.** Every run above waits on JuliusBrussee:
+7. **Environment approvals.** Every run above waits on Aravindh-dev12:
    `binary-release` once (step 3), `npm` for `sdk-ts`, `middleware-ts`,
    `contracts`, `pi`, `cli`, and `pypi` for `sdk-python`, `middleware-python`. A
    rejected or failed run publishes nothing; fix forward with a new version,
    never re-tag.
 
 8. **Post-release checks.**
-   - `npm view @caveman-ai/middleware dist-tags` shows `latest: 1.0.0` (moved
-     off `0.1.0-alpha.2`); `@caveman-ai/sdk` `latest: 1.2.0`;
-     `@caveman-ai/contracts` `latest: 2.0.0`; `@caveman-ai/pi` `latest: 0.2.0`;
-     `@caveman-ai/cli` `latest: 2.0.0`, each with provenance on its npm page.
-   - `pip install 'caveman-middleware[langchain]==1.0.0'` in a fresh venv pulls
-     `caveman-sdk` 1.2.0, and `python -c "import caveman_middleware; print(caveman_middleware.__version__)"` prints `1.0.0`.
+   - `npm view @onman-ai/middleware dist-tags` shows `latest: 1.0.0` (moved
+     off `0.1.0-alpha.2`); `@onman-ai/sdk` `latest: 1.2.0`;
+     `@onman-ai/contracts` `latest: 2.0.0`; `@onman-ai/pi` `latest: 0.2.0`;
+     `@onman-ai/cli` `latest: 2.0.0`, each with provenance on its npm page.
+   - `pip install 'onman-middleware[langchain]==1.0.0'` in a fresh venv pulls
+     `onman-sdk` 1.2.0, and `python -c "import onman_middleware; print(onman_middleware.__version__)"` prints `1.0.0`.
    - Each package's GitHub Release exists with its SBOM, and none took
      "Latest" (that is `v3.0.0`).
    - `node tests/middleware-e2e/skew.mjs` passes against the published
      clients; set `N1_RUNTIME` there to `bin-v2.0.0` only when the next
      runtime release makes it N-1.
    - The README one-liners install from `v3.0.0` on macOS, Linux and Windows;
-     `caveman setup --install` fetches `bin-v2.0.0`; the image runs from its
-     pinned digest (`docker run --rm ghcr.io/juliusbrussee/caveman-proxy@<digest> version`
+     `onman setup --install` fetches `bin-v2.0.0`; the image runs from its
+     pinned digest (`docker run --rm ghcr.io/aravindh-dev12/onman-proxy@<digest> version`
      prints `bin-v2.0.0`) and lists `/licenses/third_party`.
    - Then the checks in [Post-publish proof](#post-publish-proof).
 
@@ -456,11 +456,11 @@ agents cannot change these):
   wanted for this release (the workflow skips signing without them).
 - In the `npm` environment's deployment tag policy: add `contracts-v*` and
   `cli-v*`, remove `agent-v*` and `create-agent-v*`.
-- npm trusted publishers for `@caveman-ai/cli` and (after the bootstrap
-  publish) `@caveman-ai/contracts`.
-- The docs.caveman.so pages: middleware 1.0 / SDK 1.2 install lines, the
+- npm trusted publishers for `@onman-ai/cli` and (after the bootstrap
+  publish) `@onman-ai/contracts`.
+- The docs.onman.so pages: middleware 1.0 / SDK 1.2 install lines, the
   Apache-2.0 license, and the pages the package READMEs link.
-- The same Apache-2.0 relicense in `caveman-browse` (source of `browse/`;
+- The same Apache-2.0 relicense in `onman-browse` (source of `browse/`;
   otherwise the next sync reverts it) and in the Agent SDK's own repository.
 
 **Operator migration notes** (put these in the `bin-v2.0.0` and `v3.0.0`
@@ -472,9 +472,9 @@ release notes):
   and expect sessions such principals created before the upgrade to be
   unreachable (`404`). Steps: [deploy.md, Identity](technical/deploy.md#identity).
 - **Python log prefix.** The middleware warn-once line now reads
-  `Caveman middleware passed content through unchanged: adapter=… reason=…`,
+  `Onman middleware passed content through unchanged: adapter=… reason=…`,
   the same as TypeScript. Log filters matching the old
-  `Caveman middleware decision:` prefix need updating.
+  `Onman middleware decision:` prefix need updating.
 - **First 1.1 deploy resets persisted choices once**, because scope ids
   changed: the first call per session after the upgrade compresses from
   scratch. Grants a 1.0 runtime issued keep reading from the shared recovery

@@ -1,14 +1,14 @@
 # Changelog
 
-`@caveman-ai/middleware` follows semver from 1.0.0: breaking changes wait for a
+`@onman-ai/middleware` follows semver from 1.0.0: breaking changes wait for a
 new major. Read this file before upgrading. Prereleases publish under their own
 npm dist-tag, never `latest`. Support policy: [SECURITY.md](../../../SECURITY.md#supported-versions).
 
 ## 1.0.0 — 2026-09-24
 
-- First stable release. Requires `@caveman-ai/sdk` 1.2.0 or later.
+- First stable release. Requires `@onman-ai/sdk` 1.2.0 or later.
 - **Breaking (license):** relicensed from MIT to Apache-2.0, along with the rest of
-  the repository in Caveman 3.0.0. Releases before this one keep the MIT license.
+  the repository in Onman 3.0.0. Releases before this one keep the MIT license.
 - Release process: prereleases no longer take the `latest` dist-tag, each
   release gets a GitHub Release with these notes and a CycloneDX SBOM, and the
   published dependency graph is audited before publish.
@@ -46,13 +46,13 @@ npm dist-tag, never `latest`. Support policy: [SECURITY.md](../../../SECURITY.md
 - In strict mode, adapter exceptions now raise
   `MiddlewareError('adapter_error')` instead of passing through.
 - Decline warnings name the adapter instead of `adapter=-`.
-- New `@caveman-ai/middleware/langchain-model` subpath (`withCavemanModel`,
-  `CavemanChatModel`, `scopeFromConfig`). It needs only `@langchain/core`;
+- New `@onman-ai/middleware/langchain-model` subpath (`withOnmanModel`,
+  `OnmanChatModel`, `scopeFromConfig`). It needs only `@langchain/core`;
   `/langchain` still exports everything.
 - `.d.cts` shims type-check under node16 CommonJS without `skipLibCheck`.
-- `CavemanDocumentCompressor` is also exported from `/langchain-model`, so it
+- `OnmanDocumentCompressor` is also exported from `/langchain-model`, so it
   needs only `@langchain/core`.
-- A `caveman_retrieve` the runtime refuses (an unknown or expired handle, or
+- A `onman_retrieve` the runtime refuses (an unknown or expired handle, or
   the runtime being down) now returns `{"error":"<code>"}`, or an MCP
   `isError` result, instead of crashing the native tool loop. So do
   arguments that are not an object with a string `handle` (`null`, a list):
@@ -60,15 +60,15 @@ npm dist-tag, never `latest`. Support policy: [SECURITY.md](../../../SECURITY.md
 - The `fetch` option of the OpenAI and Anthropic wrappers is optional and
   defaults to the client's own. Embeddings, files and models calls are no
   longer reported as skipped.
-- Wrapping a client, agent or model twice runs one Caveman layer instead of
+- Wrapping a client, agent or model twice runs one Onman layer instead of
   turning compression off (or throwing, in LangChain and Strands).
 - The version gate reads the framework copy the adapter actually runs (openai
   and anthropic: the client's own version), whatever the working directory.
   It warns when the app resolves a different copy. `@ai-sdk/provider` is no
   longer gated.
 - LangChain tool errors are marked `status:'error'` and never compressed.
-- `withCaveman` is idempotent, and its bundle stays mutable; only the recovery
-  tool is frozen. `CavemanChatModel.profile` returns the inner model's
+- `withOnman` is idempotent, and its bundle stays mutable; only the recovery
+  tool is frozen. `OnmanChatModel.profile` returns the inner model's
   profile.
 - ai-sdk retries reuse one logical call id and one optimization.
 - A Mastra thread that overflows the scan budget compresses again on its next
@@ -82,7 +82,7 @@ npm dist-tag, never `latest`. Support policy: [SECURITY.md](../../../SECURITY.md
 ## 0.1.0-alpha.2 — 2026-09-15
 
 - Dropped the optional framework peer declarations. npm resolved them anyway,
-  so a plain `npm install @caveman-ai/middleware` failed with ERESOLVE before
+  so a plain `npm install @onman-ai/middleware` failed with ERESOLVE before
   any adapter was chosen. The runtime version gate still reports an
   unsupported framework.
 

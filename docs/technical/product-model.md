@@ -1,6 +1,6 @@
 # Product model
 
-Caveman has two local adoption paths. Install the response skill when you want
+Onman has two local adoption paths. Install the response skill when you want
 shorter answers. Install the runtime when you want to reduce context sent to a
 model, keep local measurements, or give an agent recovery tools. They can run
 independently.
@@ -21,7 +21,7 @@ The whole repository is Apache-2.0; see [`LICENSING.md`](../../LICENSING.md).
 
 ## Response compression
 
-The [`caveman` skill](../../skills/caveman/SKILL.md) changes response style.
+The [`onman` skill](../../skills/onman/SKILL.md) changes response style.
 It removes filler, shortens common phrasing, and permits fragments at stronger
 levels. Code blocks, exact errors, commands, identifiers, and technical detail
 stay intact.
@@ -38,7 +38,7 @@ old tool results and logs plus files, schemas or history. Engine classifies each
 candidate and applies a content-specific compressor. Every lossy result follows
 this sequence:
 
-1. Store exact original bytes in Caveman Context Recovery (CCR).
+1. Store exact original bytes in Onman Context Recovery (CCR).
 2. Return a smaller model-visible representation.
 3. Include a handle that can recover the original.
 4. Pass original bytes through if storage, parsing, or size checks fail.
@@ -60,20 +60,20 @@ Copy-ready recipes cover Anthropic, OpenAI, Google Gen AI, Vercel AI SDK,
 LangChain, LiteLLM, CrewAI, Pydantic AI, OpenAI Agents SDK, and raw HTTP. Run:
 
 ```bash
-caveman tools sdk
-caveman snippets
-caveman snippets openai-ts --app my-service
+onman tools sdk
+onman snippets
+onman snippets openai-ts --app my-service
 ```
 
 ## Local and connected boundaries
 
-Local compression requires no Caveman account. Signing in adds connected
+Local compression requires no Onman account. Signing in adds connected
 commands and can persist a hosted gateway URL. Command discovery keeps these
 surfaces separate:
 
 ```bash
-caveman help tools   # local commands
-caveman help cloud   # authenticated commands
+onman help tools   # local commands
+onman help cloud   # authenticated commands
 ```
 
 Managed traffic has a different data flow from local wrap. Local wrap sends
@@ -83,7 +83,7 @@ gateway necessarily receives request and response content while proxying it.
 
 ## Evidence labels
 
-Caveman uses labels that identify how a number was produced:
+Onman uses labels that identify how a number was produced:
 
 - `inferred`: local estimate, usually from the offline `o200k_base`
   tokenizer or catalog list prices
@@ -98,13 +98,13 @@ stays `inferred` even when its result looks plausible.
 
 | Goal | Command or component |
 |---|---|
-| Shorter answers | Install skill; run `/caveman` |
-| Byte-identical local metering | `caveman wrap --off <agent>` |
-| Recoverable local compression | `caveman <agent>` |
-| Dense text rendered for a supported vision model | `caveman wrap --pixel <agent>` |
-| Provider SDK integration | Change base URL or use `@caveman-ai/sdk` |
-| Durable local memory | `caveman tools mem` |
-| Compressed browser context | `caveman tools browse` |
+| Shorter answers | Install skill; run `/onman` |
+| Byte-identical local metering | `onman wrap --off <agent>` |
+| Recoverable local compression | `onman <agent>` |
+| Dense text rendered for a supported vision model | `onman wrap --pixel <agent>` |
+| Provider SDK integration | Change base URL or use `@onman-ai/sdk` |
+| Durable local memory | `onman tools mem` |
+| Compressed browser context | `onman tools browse` |
 
 Start with one layer. Add another only when its measured result clears its
 overhead for your workload.

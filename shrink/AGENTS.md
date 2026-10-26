@@ -1,4 +1,4 @@
-# shrink — caveman-shrink, the tool-catalog compressor (Go core + launcher, Apache-2.0)
+# shrink — onman-shrink, the tool-catalog compressor (Go core + launcher, Apache-2.0)
 
 Compress MCP/OpenAI **tool definitions** before they fill the context window. A thin Go wrapper
 over the [engine](../engine/CLAUDE.md)'s `toolschema` compressor: it drops annotation metadata
@@ -8,9 +8,9 @@ enums, required) and argument-construction value (`default`, `const`, `$ref` tar
 byte-for-byte. Everything is `inferred`.
 
 ## Layout
-- `shrink.go` — the library: `Shrink` (catalog → compressed, fail-open S4 transform, durable-CCR-backed), `Recover` (handle → original bytes), `Lint` (per-tool inferred token reductions), `SelectionProfile` (the structural surface — what must survive). `WithStore`/`WithStorePath` select recovery storage; default is `CAVEMAN_CCR_DB` / `~/.caveman/ccr.db`.
-- `cmd/caveman-shrink/` — the CLI: `caveman-shrink` / `shrink` (stdin→stdout), `lint <file>`, and `recover <handle>`.
-- `bin/caveman-shrink.mjs` + `package.json` — the `npx caveman-shrink` launcher around the prebuilt binary.
+- `shrink.go` — the library: `Shrink` (catalog → compressed, fail-open S4 transform, durable-CCR-backed), `Recover` (handle → original bytes), `Lint` (per-tool inferred token reductions), `SelectionProfile` (the structural surface — what must survive). `WithStore`/`WithStorePath` select recovery storage; default is `ONMAN_CCR_DB` / `~/.onman/ccr.db`.
+- `cmd/onman-shrink/` — the CLI: `onman-shrink` / `shrink` (stdin→stdout), `lint <file>`, and `recover <handle>`.
+- `bin/onman-shrink.mjs` + `package.json` — the `npx onman-shrink` launcher around the prebuilt binary.
 
 ## Two correctness boundaries
 `SelectionProfile(input)` == `SelectionProfile(Shrink(input).Output)` always. This proves the
@@ -37,7 +37,7 @@ adversarial conformance tests lock these construction surfaces; over-keep is saf
 - **inferred-only** — token counts are estimates via the engine's offline counter; never `verified`, never re-projected.
 - **reversible for real** — a compressing shrink commits the exact original to the durable shared
   CCR store before returning a handle. A separate process resolves it through `Recover` /
-  `caveman-shrink recover`; failure to open storage makes library `Shrink` return an error, while
+  `onman-shrink recover`; failure to open storage makes library `Shrink` return an error, while
   the CLI catches that error and forwards the original bytes with no handle.
 
 See ../../CLAUDE.md (root) · ../engine/CLAUDE.md

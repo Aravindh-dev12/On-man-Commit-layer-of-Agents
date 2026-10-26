@@ -1,7 +1,7 @@
 # Agent wrapping
 
-Agent wrapping starts an existing coding agent with local Caveman endpoints,
-hooks, skills, and recovery tools. Caveman does not replace the agent. The agent
+Agent wrapping starts an existing coding agent with local Onman endpoints,
+hooks, skills, and recovery tools. Onman does not replace the agent. The agent
 still owns its model calls, user interface, permissions, and project workflow.
 
 ## Supported agents
@@ -20,24 +20,24 @@ still owns its model calls, user interface, permissions, and project workflow.
 | Qwen Code | OpenAI Chat Completions | Temporary system-settings overlay | None |
 
 Profiles record tested upstream versions, but upstream CLIs change independently.
-Run `caveman setup` to inspect installed support before relying on a profile.
+Run `onman setup` to inspect installed support before relying on a profile.
 
 ## Start an agent
 
 ```bash
-caveman claude
-caveman codex
-caveman gemini
-caveman aider
-caveman hermes
-caveman kilo
-caveman qwen
-caveman openclaw
-caveman opencode
-caveman pi
+onman claude
+onman codex
+onman gemini
+onman aider
+onman hermes
+onman kilo
+onman qwen
+onman openclaw
+onman opencode
+onman pi
 ```
 
-`caveman kilocode` is an alias for the second binary published by Kilo's CLI
+`onman kilocode` is an alias for the second binary published by Kilo's CLI
 package. Both launch the same `kilo` profile. CLI wrapping does not reconfigure
 an already-running Kilo editor extension.
 
@@ -45,11 +45,11 @@ Install the verified Kilo CLI version before using either shortcut:
 
 ```bash
 npm install -g @kilocode/cli@7.5.6
-caveman kilo
+onman kilo
 ```
 
-The wrapper confines Kilo's active providers to the injected `caveman` provider.
-An explicit non-Caveman `--model`/`--m`/`-m`, top-level `attach`, `cloud`, or
+The wrapper confines Kilo's active providers to the injected `onman` provider.
+An explicit non-Onman `--model`/`--m`/`-m`, top-level `attach`, `cloud`, or
 `roll-call`, or `run --attach` launches directly with a warning. Attached and cloud
 sessions execute outside Kilo's local routed process; `roll-call` deliberately spans
 models instead of honoring one routed model.
@@ -63,7 +63,7 @@ Install Qwen Code's CLI before using its shortcut:
 
 ```bash
 npm i -g @qwen-code/qwen-code@0.22.3
-caveman qwen
+onman qwen
 ```
 
 The Qwen profile reads the existing system-settings source named by
@@ -80,19 +80,19 @@ managed modes.
 Arguments after the shortcut are passed through:
 
 ```bash
-caveman codex --full-auto
+onman codex --full-auto
 ```
 
 Equivalent explicit form:
 
 ```bash
-caveman wrap codex --full-auto
+onman wrap codex --full-auto
 ```
 
 For an unlisted command, use:
 
 ```bash
-caveman run -- my-agent --flag value
+onman run -- my-agent --flag value
 ```
 
 Generic wrapping supplies proxy environment but cannot infer every agent's
@@ -126,7 +126,7 @@ transformations require recovery storage or an equivalent recovery path.
 ### Record
 
 ```bash
-caveman wrap --off claude
+onman wrap --off claude
 ```
 
 Record mode observes local traffic without changing model-visible request
@@ -135,12 +135,12 @@ bytes. Use it to establish a baseline or troubleshoot an integration.
 ### Pixel
 
 ```bash
-caveman wrap --pixel gemini
+onman wrap --pixel gemini
 ```
 
 Pixel mode can encode text as an image for configured vision-capable models. It
 is lossy and model-dependent. The selected model must appear in
-`think.pixel.models`; Caveman does not assume image compatibility from a model
+`think.pixel.models`; Onman does not assume image compatibility from a model
 name.
 
 ## Agent-native setup
@@ -148,18 +148,18 @@ name.
 Claude Code and Codex can use explicit native setup:
 
 ```bash
-caveman setup --agent-native claude
-caveman setup --agent-native codex
+onman setup --agent-native claude
+onman setup --agent-native codex
 ```
 
 Remove it with:
 
 ```bash
-caveman setup --agent-native claude --remove
+onman setup --agent-native claude --remove
 ```
 
-Native setup installs only files needed by that agent. Caveman hooks and plugins
-keep local state under Caveman directories or agent-owned configuration paths.
+Native setup installs only files needed by that agent. Onman hooks and plugins
+keep local state under Onman directories or agent-owned configuration paths.
 Review changes before committing dotfiles or project configuration.
 
 ## Recovery during an agent run
@@ -169,14 +169,14 @@ Agents with the MCP integration can retrieve exact source through a tool call.
 Operators can retrieve the same source from a terminal:
 
 ```bash
-caveman tools retrieve <handle>
+onman tools retrieve <handle>
 ```
 
 Install or remove the recovery MCP registration for Qwen with:
 
 ```bash
-caveman tools mcp install qwen --server caveman
-caveman tools mcp uninstall qwen --server caveman
+onman tools mcp install qwen --server onman
+onman tools mcp uninstall qwen --server onman
 ```
 
 The installer preserves sibling entries and refuses to overwrite or remove a
@@ -200,8 +200,8 @@ trust boundaries.
 
 ## Troubleshooting
 
-1. Run `caveman status` and confirm selected mode.
-2. Run `caveman setup` and confirm runtime binaries.
+1. Run `onman status` and confirm selected mode.
+2. Run `onman setup` and confirm runtime binaries.
 3. Start in `--off` mode. If failure remains, problem is outside request
    transformation.
 4. Inspect provider credential variables without printing secret values.
@@ -209,16 +209,16 @@ trust boundaries.
 6. Use installed-version help because upstream profile requirements can change.
 
 If a transform cannot parse input, cannot store recovery data, or cannot produce
-smaller safe output, Caveman sends original input.
+smaller safe output, Onman sends original input.
 
 ### Claude Code Remote Control
 
 Claude Code 2.1.196 and later only allows Remote Control when
 `ANTHROPIC_BASE_URL` points at `api.anthropic.com`; its first-party escape
 hatch does not cover this check. A proxied session therefore cannot start
-Remote Control. `caveman claude remote-control` and
-`caveman wrap claude remote-control` detect the subcommand and launch Claude
-Code directly, uncompressed. If `caveman enable claude` has written the route
-into `settings.json`, run `caveman disable claude` before starting a Remote
-Control session from a plain `claude` command, then `caveman enable claude`
+Remote Control. `onman claude remote-control` and
+`onman wrap claude remote-control` detect the subcommand and launch Claude
+Code directly, uncompressed. If `onman enable claude` has written the route
+into `settings.json`, run `onman disable claude` before starting a Remote
+Control session from a plain `claude` command, then `onman enable claude`
 again afterwards.

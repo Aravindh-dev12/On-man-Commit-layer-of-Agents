@@ -1,4 +1,4 @@
-# Publishing @caveman-ai/cli
+# Publishing @onman-ai/cli
 
 Founder sign-off remains required: the `npm` environment approval. CI publishes
 from the `cli-v*` tag through `release-packages.yml`; never publish from a
@@ -6,10 +6,10 @@ laptop or an unpacked tarball.
 
 ## Package name
 
-- Publishes as **`@caveman-ai/cli`** (`--access public`), with npm provenance
+- Publishes as **`@onman-ai/cli`** (`--access public`), with npm provenance
   from trusted publishing.
-- Never publish under bare `caveman`; that npm name is unrelated.
-- Package bin entries install both `caveman` and `cave`.
+- Never publish under bare `onman`; that npm name is unrelated.
+- Package bin entries install both `onman` and `cave`.
 
 ## Release trains
 
@@ -18,22 +18,22 @@ laptop or an unpacked tarball.
 | `cli-v*` | npm publication of this zero-runtime-dependency JS CLI through `release-packages.yml` |
 | `bin-v*` | Signed Go companions through `release-binaries.yml` |
 
-(Caveman Cloud server images release from the Caveman Cloud repository, not
+(Onman Cloud server images release from the Onman Cloud repository, not
 from here.)
 
 The binary workflow publishes compiled artifacts and signed manifests to this
 repository's Releases at
-`https://github.com/JuliusBrussee/caveman/releases/download`.
+`https://github.com/Aravindh-dev12/onman/releases/download`.
 `packages/cli/BINARY_RELEASE` independently pins the binary release consumed by
 the CLI build; CLI semver does not imply binary version.
 
 The repository environment `binary-release` needs one founder-controlled
-secret: `CAVEMAN_BINARY_SIGNING_PRIVATE_KEY_PEM`, matching the committed public
+secret: `ONMAN_BINARY_SIGNING_PRIVATE_KEY_PEM`, matching the committed public
 key. Release upload uses the workflow's own `GITHUB_TOKEN` with job-scoped
 `contents: write`; no cross-repo PAT exists. Windows assets use
 `win32/{arm64,amd64}` names and are installed with `.exe` filenames.
 
-`caveman setup --install` verifies checksum manifest against public key compiled
+`onman setup --install` verifies checksum manifest against public key compiled
 into CLI, then verifies SHA-256 of each streamed artifact before atomic install.
 This local check covers key-signed manifest chain. Workflow derives public key
 from private key before signing and verifies generated bundle locally before
@@ -58,21 +58,21 @@ Ordering is load-bearing: assets must exist before npm package naming them.
    the tag (annotated, signed, on `main`):
 
    ```bash
-   git tag -s cli-v<version> -m "@caveman-ai/cli <version>"
+   git tag -s cli-v<version> -m "@onman-ai/cli <version>"
    git push origin cli-v<version>
    ```
 
    `release-packages.yml` repeats step 3's asset check and fails if any pinned
    binary asset is missing, checks the generated constants, runs the full
-   suite against a freshly built proxy, packs, smoke-tests `caveman --version`
+   suite against a freshly built proxy, packs, smoke-tests `onman --version`
    from the installed tarball, audits and writes a CycloneDX SBOM, then
    publishes behind the `npm` environment approval. Repository settings it
    needs: `cli-v*` in the `npm` environment's tag policy, and an npm trusted
-   publisher for `@caveman-ai/cli` (`docs/PACKAGE_RELEASES.md`).
+   publisher for `@onman-ai/cli` (`docs/PACKAGE_RELEASES.md`).
 
 5. Post-publish smoke on clean machines (macOS ARM, Linux x64, Windows x64),
-   pinned to the exact npm version: install the CLI, `caveman setup --install`,
-   `caveman --version`, `caveman wrap --off`, one compression plus byte-exact
+   pinned to the exact npm version: install the CLI, `onman setup --install`,
+   `onman --version`, `onman wrap --off`, one compression plus byte-exact
    retrieval, then uninstall without damaging user config.
 
 If smoke fails, deprecate the npm version, revert quickstart install text, and
@@ -83,7 +83,7 @@ an ordinary binary Release; remove assets only for an active security risk.
 
 Tarball remains JS only: `dist/`, `README.md`, `LICENSE`, and package metadata.
 No `postinstall` network fetch exists. Users explicitly run
-`caveman setup --install`; package-manager script policy cannot silently block
+`onman setup --install`; package-manager script policy cannot silently block
 runtime setup.
 
 To inspect the tarball before tagging:

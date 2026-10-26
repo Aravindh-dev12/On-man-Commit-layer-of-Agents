@@ -1,7 +1,7 @@
 # Exploration and delegation
 
 Broad repository search can consume main agent context before editing begins.
-Caveman offers read-only explorer and compact delegation guides that keep search
+Onman offers read-only explorer and compact delegation guides that keep search
 transcripts separate and return only evidence needed by solver.
 
 ## FastContext-style explorer
@@ -25,7 +25,7 @@ cave explore install --user
 `explore` is legacy alias for:
 
 ```bash
-caveman tools skills install caveman-explore --no-pixel
+onman tools skills install onman-explore --no-pixel
 ```
 
 Current installer supports Claude Code. Codex integration is withheld until
@@ -52,9 +52,9 @@ already names exact file or symbol, or earlier evidence provides usable location
 Isolation is mechanism, not outcome guarantee. Explorer call adds model usage.
 Compare total task usage and resolution quality before claiming net benefit.
 
-## Cavecrew
+## Oncrew
 
-`cavecrew` is a decision guide for three compact Claude Code subagents:
+`oncrew` is a decision guide for three compact Claude Code subagents:
 
 | Subagent | Permission and output | Intended scope |
 |---|---|---|
@@ -68,9 +68,9 @@ refactors and cross-component decisions.
 Model overrides:
 
 ```text
-CAVECREW_REVIEWER_MODEL
-CAVECREW_BUILDER_MODEL
-CAVECREW_INVESTIGATOR_MODEL
+ONCREW_REVIEWER_MODEL
+ONCREW_BUILDER_MODEL
+ONCREW_INVESTIGATOR_MODEL
 ```
 
 Overrides patch only installed agent frontmatter model line; empty variables do
@@ -78,12 +78,12 @@ nothing. A plugin update or reinstall can replace patch.
 
 ## Optional delegate tool
 
-CLI can register `caveman-delegate` MCP server when `execute.delegate` is enabled.
+CLI can register `onman-delegate` MCP server when `execute.delegate` is enabled.
 It is opt-in because delegated work consumes separate permissions and model usage.
 
 ```bash
-caveman tools config set execute.delegate true
-caveman tools mcp install claude --server caveman-delegate
+onman tools config set execute.delegate true
+onman tools mcp install claude --server onman-delegate
 ```
 
 Host agent and server own exact sandbox and approval behavior. Enabling feature

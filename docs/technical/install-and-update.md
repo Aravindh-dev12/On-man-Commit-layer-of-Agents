@@ -1,6 +1,6 @@
 # Install and update
 
-Caveman ships a response-skill installer and a separate local-runtime CLI.
+Onman ships a response-skill installer and a separate local-runtime CLI.
 Choose either one or install both.
 
 ## Requirements
@@ -8,33 +8,33 @@ Choose either one or install both.
 | Surface | Minimum runtime |
 |---|---|
 | Skill installer | Node.js 18 |
-| `@caveman-ai/cli` | Node.js 22.13 |
+| `@onman-ai/cli` | Node.js 22.13 |
 | Source build | Go version in [`go.mod`](../../go.mod), Node.js, and pnpm |
 | Browser extension development | Node.js plus pinned Playwright dependencies |
 
 Prebuilt companion binaries cover macOS, Linux, and Windows on amd64 and arm64.
-Run `caveman setup` to inspect current machine support.
+Run `onman setup` to inspect current machine support.
 
 ## Skill-only install
 
 Run installer directly from GitHub:
 
 ```bash
-npx -y github:JuliusBrussee/caveman
+npx -y github:Aravindh-dev12/onman
 ```
 
 It detects installed agents and installs only matching integrations. List every
 known target:
 
 ```bash
-npx -y github:JuliusBrussee/caveman -- --list
+npx -y github:Aravindh-dev12/onman -- --list
 ```
 
 Install one target:
 
 ```bash
-npx -y github:JuliusBrussee/caveman -- --only claude
-npx -y github:JuliusBrussee/caveman -- --only codex
+npx -y github:Aravindh-dev12/onman -- --only claude
+npx -y github:Aravindh-dev12/onman -- --only codex
 ```
 
 Claude Code uses its plugin system, while Gemini CLI uses its extension system.
@@ -60,20 +60,20 @@ Full command reference lives in [`INSTALL.md`](../../INSTALL.md).
 ## Local runtime install
 
 ```bash
-npm install -g @caveman-ai/cli
-caveman setup --install
+npm install -g @onman-ai/cli
+onman setup --install
 ```
 
 `setup --install` downloads the release checksum manifest and signature. It
 verifies the pinned public key, checks each artifact SHA-256, and installs by
-atomic rename under `~/.caveman/bin`. A failed verification leaves the
+atomic rename under `~/.onman/bin`. A failed verification leaves the
 candidate binary uninstalled.
 
 Inspect result:
 
 ```bash
-caveman setup
-caveman setup --json
+onman setup
+onman setup --json
 ```
 
 Required binaries power proxy, Engine, MCP recovery, and memory. Browser and
@@ -82,61 +82,61 @@ tool-catalog shrink binaries are optional.
 ## First run
 
 ```bash
-caveman claude
+onman claude
 ```
 
-The command persistently enables Claude's native Caveman integration, then runs
-Claude. Undo with `caveman disable claude`. Use `caveman wrap claude` for one
+The command persistently enables Claude's native Onman integration, then runs
+Claude. Undo with `onman disable claude`. Use `onman wrap claude` for one
 ephemeral session with no persistent host-config changes. An interactive first
 run can install missing signed binaries and continue. Non-interactive runs never
-silently download a runtime; prepare them with `caveman setup --install`.
+silently download a runtime; prepare them with `onman setup --install`.
 
 Check direct pass-through before enabling transforms:
 
 ```bash
-caveman wrap --off claude
-caveman status
+onman wrap --off claude
+onman status
 ```
 
 Then use default recoverable compression:
 
 ```bash
-caveman claude
+onman claude
 ```
 
-No Caveman account is required for either local mode.
+No Onman account is required for either local mode.
 
 ## Build from source
 
 Clone repository and run platform installer:
 
 ```bash
-git clone https://github.com/JuliusBrussee/caveman.git
-cd caveman
+git clone https://github.com/Aravindh-dev12/onman.git
+cd onman
 ./scripts/install-local-cli.sh
 ```
 
 Windows PowerShell:
 
 ```powershell
-git clone https://github.com/JuliusBrussee/caveman.git
-Set-Location caveman
+git clone https://github.com/Aravindh-dev12/onman.git
+Set-Location onman
 pwsh -File scripts/install-local-cli.ps1
 ```
 
 Source build uses versions pinned by repository manifests. Do not mix an old
-CLI with newer companion binaries; `caveman setup` reports version drift.
+CLI with newer companion binaries; `onman setup` reports version drift.
 
 ## Existing reviewed binaries
 
 Every companion accepts an environment override:
 
 ```bash
-export CAVEMAN_PROXY_BIN=/reviewed/path/caveman-proxy
-export CAVEMAN_ENGINE_BIN=/reviewed/path/caveman-engine
-export CAVEMAN_MCP_BIN=/reviewed/path/caveman-mcp
-export CAVEMAN_BROWSE_BIN=/reviewed/path/caveman-browse
-export CAVEMAN_SHRINK_BIN=/reviewed/path/caveman-shrink
+export ONMAN_PROXY_BIN=/reviewed/path/onman-proxy
+export ONMAN_ENGINE_BIN=/reviewed/path/onman-engine
+export ONMAN_MCP_BIN=/reviewed/path/onman-mcp
+export ONMAN_BROWSE_BIN=/reviewed/path/onman-browse
+export ONMAN_SHRINK_BIN=/reviewed/path/onman-shrink
 ```
 
 This bypasses download lookup and is useful for source builds or controlled
@@ -147,9 +147,9 @@ deployment images.
 Update JavaScript CLI through npm, then repair binary bundle:
 
 ```bash
-npm install -g @caveman-ai/cli@latest
-caveman setup --install
-caveman setup
+npm install -g @onman-ai/cli@latest
+onman setup --install
+onman setup
 ```
 
 Skill/plugin updates follow host's plugin or Skills CLI update flow. Re-running
@@ -158,29 +158,29 @@ GitHub installer is idempotent for installer-owned files.
 ## Uninstall
 
 Remove installer-managed skill integrations **and** native agent routing. Order
-matters: this step shells out to `caveman disable --all`, so it needs the CLI
+matters: this step shells out to `onman disable --all`, so it needs the CLI
 still installed.
 
 ```bash
-npx -y github:JuliusBrussee/caveman -- --uninstall
+npx -y github:Aravindh-dev12/onman -- --uninstall
 ```
 
 Then remove global CLI through npm:
 
 ```bash
-npm uninstall -g @caveman-ai/cli
+npm uninstall -g @onman-ai/cli
 ```
 
 Reversed, the native route survives — for Claude Code that leaves
 `ANTHROPIC_BASE_URL` and `_CLAUDE_CODE_ASSUME_FIRST_PARTY_BASE_URL` in
 `~/.claude/settings.json` and Remote Control unavailable (see
 [agent wrapping](agent-wrapping.md)). The installer names any agent still routed
-when it finds one; recover with `caveman disable --all` after reinstalling the
+when it finds one; recover with `onman disable --all` after reinstalling the
 CLI, or delete those two keys by hand.
 
 These commands do not delete local usage, CCR, or account state. Review
 [`SECURITY.md`](../../SECURITY.md#local-storage) before deleting
-`~/.caveman` or `~/.caveman-cloud`.
+`~/.onman` or `~/.onman-cloud`.
 
 ## Windows notes
 

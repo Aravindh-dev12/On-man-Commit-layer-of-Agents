@@ -80,5 +80,5 @@ in").
 
 Method, labeling rules, per-harness variants, and limitations: [METHOD.md](METHOD.md).
 
-Part of [Caveman](https://caveman.so) — measurement first, claims never ahead
+Part of [Onman](https://onman.so) — measurement first, claims never ahead
 of evidence.

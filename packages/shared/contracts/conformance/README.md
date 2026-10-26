@@ -1,14 +1,14 @@
 # Middleware conformance kit
 
-A black-box check of any Caveman middleware runtime against the protocol in
+A black-box check of any Onman middleware runtime against the protocol in
 [`docs/technical/middleware-protocol.md`](../../../../docs/technical/middleware-protocol.md).
-It speaks only HTTP, so it tests `caveman-proxy`, a Postgres-backed replica set, or
+It speaks only HTTP, so it tests `onman-proxy`, a Postgres-backed replica set, or
 another implementation the same way.
 
 ```sh
-pnpm install --filter @caveman-ai/contracts   # ajv is its only dependency
+pnpm install --filter @onman-ai/contracts   # ajv is its only dependency
 node packages/shared/contracts/conformance/run.mjs http://127.0.0.1:8787 \
-  --token "$CAVEMAN_AUTH_TOKEN" [--namespace N] [--foreign-token T2] [--legacy-only]
+  --token "$ONMAN_AUTH_TOKEN" [--namespace N] [--foreign-token T2] [--legacy-only]
 ```
 
 Output is TAP. Exit 0 means conformant, 1 a failed check, 2 bad usage, 3 ajv missing.
@@ -18,7 +18,7 @@ Output is TAP. Exit 0 means conformant, 1 a failed check, 2 bad usage, 3 ajv mis
 | `--token` | Runtime credential sent as `Authorization: Bearer`. Without it the runtime is assumed open: the `unauthorized` checks and its catalog entry report `# SKIP`, and the run can still pass. |
 | `--namespace` | Namespace for every scope the kit creates (default `conformance`). Session ids are random per run. |
 | `--foreign-token` | A second principal that may **not** use `--namespace`. Enables the cross-namespace `403 forbidden_namespace` checks, and proves a refused delete left the owner's data intact. |
-| `--legacy-only` | Behave as a protocol 1.0 client only (never send `Caveman-Middleware-Features`) and hold the runtime to 1.0 obligations: `Retry-After` is not required and the stalled-body check skips, because 1.0 never delivered that answer; so do the 1.1 input-handling checks (`sessions/delete` `unsupported_version`, case-variant keys, routing before the body). Use it against a 1.0 runtime such as `bin-v1.1.7`. |
+| `--legacy-only` | Behave as a protocol 1.0 client only (never send `Onman-Middleware-Features`) and hold the runtime to 1.0 obligations: `Retry-After` is not required and the stalled-body check skips, because 1.0 never delivered that answer; so do the 1.1 input-handling checks (`sessions/delete` `unsupported_version`, case-variant keys, routing before the body). Use it against a 1.0 runtime such as `bin-v1.1.7`. |
 
 ## What it checks
 

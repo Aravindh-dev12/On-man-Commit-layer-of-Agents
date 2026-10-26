@@ -3,7 +3,7 @@
 ## Accessibility tree
 
 Browser-provided semantic representation of page roles, names, states, and
-relationships. Caveman browser bridge uses it as compact alternative to full
+relationships. Onman browser bridge uses it as compact alternative to full
 page markup when visual pixels are unnecessary.
 
 ## Agent profile
@@ -31,14 +31,14 @@ is a proposal and does not establish verified savings.
 Connected product score summarizing measured efficiency signals under its
 published contract. It is distinct from local Engine token reduction.
 
-## Caveman Cloud
+## Onman Cloud
 
 Optional connected account, evidence, and governance service. Local compression
 does not require it.
 
 ## CCR
 
-Caveman Context Recovery. Content-addressed store mapping compact references to
+Onman Context Recovery. Content-addressed store mapping compact references to
 exact original bytes or typed objects.
 
 ## Compressor
@@ -77,7 +77,7 @@ invoice.
 
 ## MCP
 
-Model Context Protocol. Caveman uses local standard-I/O server to expose
+Model Context Protocol. Onman uses local standard-I/O server to expose
 compression, recovery, stats, and TOON operations to compatible agents.
 
 ## Observed

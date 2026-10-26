@@ -1,10 +1,10 @@
-# Caveman Engine
+# Onman Engine
 
 Local, recoverable context compression for AI agents.
 
 Agents keep sending conversation history and tool results back to model. Large
 logs, JSON, tables, code listings, diffs, and terminal output can be reread many
-times during one task. Caveman Engine detects those shapes and uses a matching
+times during one task. Onman Engine detects those shapes and uses a matching
 compressor before next model call.
 
 Compression changes what model sees, so Engine stores original bytes locally
@@ -12,7 +12,7 @@ before emitting lossy result. Agent can retrieve exact original later. If input
 cannot be parsed, recovery storage is unavailable, or result is not smaller in
 tokens, Engine returns original unchanged and claims nothing.
 
-Engine runs locally without Caveman account. Token reductions are local
+Engine runs locally without Onman account. Token reductions are local
 `o200k_base` estimates labeled `inferred`; they are not provider bills or verified
 savings.
 
@@ -21,8 +21,8 @@ savings.
 End users install thin CLI, then launch supported agent through local runtime:
 
 ```bash
-npm i -g @caveman-ai/cli
-caveman claude
+npm i -g @onman-ai/cli
+onman claude
 ```
 
 Claude Code, Codex, Gemini, Aider, Hermes, OpenClaw, and opencode have registered
@@ -56,14 +56,14 @@ Unknown graders return `passed: false`.
 ## Engine CLI
 
 ```text
-caveman-engine compress < input
-caveman-engine detect < input
-caveman-engine retrieve <handle>
-caveman-engine stats
-caveman-engine registry
-caveman-engine toon encode|decode
-caveman-engine pixel render|simulate
-caveman-engine evals run [--fixtures DIR]
+onman-engine compress < input
+onman-engine detect < input
+onman-engine retrieve <handle>
+onman-engine stats
+onman-engine registry
+onman-engine toon encode|decode
+onman-engine pixel render|simulate
+onman-engine evals run [--fixtures DIR]
 ```
 
 Commands reading stdin enforce a 64 MiB input limit and fail with
@@ -71,7 +71,7 @@ Commands reading stdin enforce a 64 MiB input limit and fail with
 `DIR`; traversal and escaping symlinks fail closed.
 
 Persistent CCR storage retains at most 512 MiB of payloads by default. Set
-`CAVEMAN_CCR_MAX_BYTES` to a positive byte count before startup to choose a
+`ONMAN_CCR_MAX_BYTES` to a positive byte count before startup to choose a
 different cap. At cap, new lossy transforms fail closed to original-byte
 pass-through; existing handles are never evicted and remain recoverable.
 

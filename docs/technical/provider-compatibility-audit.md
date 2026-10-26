@@ -70,10 +70,10 @@ it does not replace the wider completion requirements above.
 | P7 | Hermes and API-key Codex append resource paths to a base missing `/v1`, causing native 404s | Add `/v1` to wrap and native configuration/journal/status routes; retain Codex's dedicated unversioned ChatGPT root. Conformance stubs now append the actual SDK resources | Actual Hermes 0.19.1 and Codex 0.153.4 reproduced the failures. Route regressions and native Codex streamed recovery pass; independent review pending |
 | P8 | opencode wrap discarded its entire existing inline configuration, losing model, permissions, account settings and MCP servers | Merge the routing overlay into native JSONC; preserve environment/file references and reject malformed input without disclosing values | Six regressions failed before the fix; 19 focused cases and pinned native opencode 1.18.27 configuration checks pass. Independent review pending |
 | P9 | Hermes and opencode can retain the original provider credential while replacing its custom endpoint with a different proxy destination | Open: preserve the original provider/account contract and require proof of the effective destination before routing | Actual Hermes requests reached provider B using provider A's synthetic key; pinned opencode configuration and SDK resolution prove the same endpoint/key mismatch |
-| P10 | Hermes direct fallback retained Caveman's forced `--provider custom`, overriding the user's configured provider when proxy startup failed | Strip Hermes's injected provider prefix on direct fallback while retaining the user's original arguments | Both permanent cases failed before the fix; 172 Hermes/Qwen regression cases pass. Independent review pending |
+| P10 | Hermes direct fallback retained Onman's forced `--provider custom`, overriding the user's configured provider when proxy startup failed | Strip Hermes's injected provider prefix on direct fallback while retaining the user's original arguments | Both permanent cases failed before the fix; 172 Hermes/Qwen regression cases pass. Independent review pending |
 | A9 | Provider-specific custom headers disappeared, while header forwarding lacked per-mount scope | Publish `forward_headers` names per configured compatibility mount; preserve declared headers and supported SDK attribution/affinity headers; unrelated mount secrets remain blocked | Reviewed with actual HTTP gateways and SDK header behavior |
 | A10 | `Connection` nominations could reach upstream after the `Connection` field itself was discarded | Remove nominated hop-by-hop headers before transport, including after authentication fallback and retries | Reviewed; custom and native header regressions |
-| E1 | `stop caveman` still received reminders | Explicit stop-state behavior and provider composer regressions | Reviewed |
+| E1 | `stop onman` still received reminders | Explicit stop-state behavior and provider composer regressions | Reviewed |
 | E2 | Delayed send replay could target a changed draft, editor or conversation | Transaction-bound replay; text, rich-content and input changes cancel pending send | Reviewed |
 | E3 | Document-wide Send selectors could choose feedback controls | Composer-scoped actions and provider-specific fixtures | Reviewed |
 | E4 | Firefox launcher interpolated an unquoted temp path through a shell | Structured argv, process failure reporting and actual addon execution | Reviewed |
@@ -86,7 +86,7 @@ it does not replace the wider completion requirements above.
 | M2 | MCP “session” stats returned lifetime database totals and missed repeat/pass-through calls | Process-local call accounting independent of shared-store history/concurrent servers; Engine lifetime stats unchanged | Reviewed |
 | M3 | Repeat recovery assumed old results remained visible after host compaction | Every valid handle/query stays retrievable; no process-lifetime repeat denial or query-count widening; actual binary repeat/restart tests | Reviewed |
 | M4 | SQLite replacement let recovery writes succeed against retired files and could let cleanup alter replacement journals | Any observed main/WAL/SHM identity change permanently invalidates that Store; withhold handles and retain unsafe connections until exit. Failed initial opens also retain opened disk connections; no automatic replacement adoption | Reviewed; real old/fresh process operations, journal-byte preservation and fresh CCR race tests pass. Concurrent initial opening remains a documented driver limit |
-| M5 | Codex clears custom recovery-location variables from its MCP child, so valid proxy handles cannot be found | Forward only `CAVEMAN_HOME` and `CAVEMAN_CCR_DB` through Codex's supported `env_vars` in wrap, native enable and MCP install | Native streamed Codex request stored a valid handle, then actual MCP returned `cave_unknown_handle`; three permanent cases failed before the fix. Native Codex 0.153.4 now retrieves exact content with default home, custom home and an explicit database path containing spaces; 48 focused regressions pass. Independent review pending |
+| M5 | Codex clears custom recovery-location variables from its MCP child, so valid proxy handles cannot be found | Forward only `ONMAN_HOME` and `ONMAN_CCR_DB` through Codex's supported `env_vars` in wrap, native enable and MCP install | Native streamed Codex request stored a valid handle, then actual MCP returned `cave_unknown_handle`; three permanent cases failed before the fix. Native Codex 0.153.4 now retrieves exact content with default home, custom home and an explicit database path containing spaces; 48 focused regressions pass. Independent review pending |
 | N1 | Unrelated Pixel transforms rounded large numeric tool arguments/schema constraints | Preserve JSON number lexemes across parse/clone/render paths; integer/decimal/exponent and live-tail regressions | Reviewed |
 | N2 | Top-level `Decoder.More` accepted valid JSON plus malformed suffixes and emitted repaired content | Require second decode to return EOF; compressor pass-through and retrieval record-boundary regressions | Reviewed |
 | N3 | Shrink's prose rules removed CJK intent and significant whitespace (#575) | Bypass prose transforms for Han, Hiragana, Katakana, Hangul and Bopomofo input; exact Chinese/Japanese/Korean/astral-Han fixtures | Reviewed; 20 shrink cases passed |
@@ -111,7 +111,7 @@ it does not replace the wider completion requirements above.
   isolated filesystem controls; no full native host run is inferred from those probes.
 - [Hermes immutable build guard](https://github.com/NousResearch/hermes-agent/blob/1f8acb340f9c72aec1426248cca54139816a77f5/setup.py)
   explains both failures in [conformance run
-  34083480150](https://github.com/JuliusBrussee/caveman/actions/runs/34083480150).
+  34083480150](https://github.com/Aravindh-dev12/onman/actions/runs/34083480150).
 - Authentication/signing contracts and sources: [Provider authentication](provider-authentication.md).
   Stream and count-route references: [Proxy and providers](proxy-and-providers.md).
 - OpenClaw routing was checked against [provider configuration
@@ -164,9 +164,9 @@ The opt-in [native Codex recovery probe](../../scripts/probe-native-codex-recove
 requires built CLI output and explicit native Codex, proxy and MCP binaries:
 
 ```sh
-CAVEMAN_NATIVE_CODEX_BIN=/absolute/path/to/codex \
-CAVEMAN_PROXY_BIN=/absolute/path/to/caveman-proxy \
-CAVEMAN_MCP_BIN=/absolute/path/to/caveman-mcp \
+ONMAN_NATIVE_CODEX_BIN=/absolute/path/to/codex \
+ONMAN_PROXY_BIN=/absolute/path/to/onman-proxy \
+ONMAN_MCP_BIN=/absolute/path/to/onman-mcp \
 node scripts/probe-native-codex-recovery.mjs --custom-home --explicit-db
 ```
 

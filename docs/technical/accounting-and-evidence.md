@@ -1,6 +1,6 @@
 # Accounting and evidence
 
-Caveman labels numbers by how they were produced. Token estimate and provider
+Onman labels numbers by how they were produced. Token estimate and provider
 usage record answer different questions from benchmark comparison or verified
 savings record; they must not share one label.
 

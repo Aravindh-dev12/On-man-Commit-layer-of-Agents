@@ -1,24 +1,24 @@
 # Local stats and savings accounting
 
-`caveman stats` reports the requests routed through this machine's Caveman
+`onman stats` reports the requests routed through this machine's Onman
 proxy. It prints a terminal summary and writes an offline dashboard. In an
 interactive terminal the dashboard opens automatically; `--plain` keeps the
 command in the terminal. `--json` produces the complete report without opening
 a browser or writing HTML.
 
 ```sh
-caveman stats
-caveman stats --days 7
-caveman stats --all-time --provider anthropic
-caveman stats --model gpt-5.6 --auth subscription
-caveman stats --json
-caveman stats --out ./savings.html --open
+onman stats
+onman stats --days 7
+onman stats --all-time --provider anthropic
+onman stats --model gpt-5.6 --auth subscription
+onman stats --json
+onman stats --out ./savings.html --open
 ```
 
 The default window is 30 UTC calendar days. Provider, model, agent and auth
 filters use the exact values captured on each request. A current model
 selection never changes the price or identity of older requests. The report
-does not scan prompts from other agents or assume their traffic used Caveman.
+does not scan prompts from other agents or assume their traffic used Onman.
 
 ## What a token delta means
 
@@ -74,7 +74,7 @@ local evidence to `verified` savings or projects a window into a monthly claim.
 uses a durable event ledger and groups savings by time, model and client.
 [Its metrics documentation](https://headroomlabs-ai.github.io/headroom/metrics/)
 also describes historical series and usage visibility. Those are useful
-product patterns. Caveman keeps unpriced usage explicit rather than assigning
+product patterns. Onman keeps unpriced usage explicit rather than assigning
 a blended rate to an unknown model.
 
 Provider billing categories come from the published
@@ -83,4 +83,4 @@ Provider billing categories come from the published
 and [Gemini caching documentation](https://ai.google.dev/gemini-api/docs/caching).
 The dated repository catalog remains the source of the actual captured rates.
 The dashboard follows the typography, white page, subdued borders, and muted
-green accents of `caveman learn`.
+green accents of `onman learn`.

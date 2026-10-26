@@ -1,8 +1,8 @@
 ---
-name: caveman-manage
+name: onman-manage
 description: >
-  Inspect Caveman Cloud's experiment lifecycle and block unsafe execution. Use
-  when asked to start, approve, cancel, promote or roll back a Caveman
+  Inspect Onman Cloud's experiment lifecycle and block unsafe execution. Use
+  when asked to start, approve, cancel, promote or roll back a Onman
   experiment.
 ---
 
@@ -21,7 +21,7 @@ complete lifecycle transition table and evidence gate atomically.
 3. Never convert experiment lift into `verified_savings`. Only active real
    traffic plus provider-causal, provider-complete ledger evidence can do that.
 4. Never supply an organization id. Project and tenant scope come from the
-   logged-in Caveman identity and server RBAC.
+   logged-in Onman identity and server RBAC.
 5. Never execute a lifecycle mutation, even after user approval. Exact
    `<action>:<experiment_id>` strings are agent-generatable and are not proof of
    human intent.
@@ -33,9 +33,9 @@ complete lifecycle transition table and evidence gate atomically.
 Prefer MCP:
 
 ```text
-caveman_context {}
-caveman_experiment_get {"action":"get","experiment_id":"<id>"}
-caveman_experiment_get {"action":"results","experiment_id":"<id>"}
+onman_context {}
+onman_experiment_get {"action":"get","experiment_id":"<id>"}
+onman_experiment_get {"action":"results","experiment_id":"<id>"}
 ```
 
 Use `{"action":"list"}` when the user has not named an id.
@@ -43,9 +43,9 @@ Use `{"action":"list"}` when the user has not named an id.
 CLI fallback:
 
 ```bash
-caveman cloud experiments list
-caveman cloud experiments show <id>
-caveman cloud experiments results <id>
+onman cloud experiments list
+onman cloud experiments show <id>
+onman cloud experiments results <id>
 ```
 
 Stop if login, project, experiment, or results are unavailable.

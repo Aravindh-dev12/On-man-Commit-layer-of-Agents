@@ -1,8 +1,8 @@
 # packages/sdk/parity — the cross-language SDK conformance contract
 
 One language-neutral fixture file, run by **both** SDKs. The load-bearing honesty property
-of the SDKs: the wire contract is one thing, expressed twice (`@caveman-ai/sdk` TS +
-`caveman_cloud` Python). A field present in one SDK and absent in the other makes one side's
+of the SDKs: the wire contract is one thing, expressed twice (`@onman-ai/sdk` TS +
+`onman_cloud` Python). A field present in one SDK and absent in the other makes one side's
 assertion fail — so this folder is a release gate, not documentation.
 
 ## Layout

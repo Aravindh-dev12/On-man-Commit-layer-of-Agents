@@ -3,14 +3,14 @@
 Local proxy presents provider-compatible HTTP routes on loopback, applies
 configured local transforms, forwards requests to provider endpoints, and
 records local usage. By default it is a single-operator developer tool with no
-inbound authentication. Setting `CAVEMAN_AUTH_TOKEN` turns it into a shared,
+inbound authentication. Setting `ONMAN_AUTH_TOKEN` turns it into a shared,
 token-gated service that may bind beyond loopback — see
 [Deploy the proxy for a team](deploy.md).
 
 Start it with:
 
 ```bash
-caveman start
+onman start
 ```
 
 Default address is `127.0.0.1:8787`.
@@ -147,7 +147,7 @@ provider extension.
 One mount is built in. The proxy registers `/compat/opencode-go/` with the
 upstream `https://opencode.ai/zen/go` and the credential variable
 `OPENCODE_API_KEY`. A `compat` entry with the name `opencode-go` in
-`caveman.yaml` replaces the built-in mount and can set another endpoint.
+`onman.yaml` replaces the built-in mount and can set another endpoint.
 
 Pi and local OpenClaw wrappers compare the full request URL their host SDK
 would send with the URL the running proxy would forward. Scheme, host, port,
@@ -164,7 +164,7 @@ or identity proof leave these host configurations direct. Existing OpenClaw
 provider identities, model catalogs, fallback settings, and auth profiles remain
 owned by OpenClaw. Existing managed OpenClaw configurations stay direct until
 the gateway can establish the same endpoint proof; fresh managed setup still
-uses its configured Caveman gateway.
+uses its configured Onman gateway.
 
 Endpoint equality is necessary but does not cover host-derived payload policy.
 Pi preserves supported public compatibility defaults; native OpenAI Chat cache
@@ -232,7 +232,7 @@ metadata, not raw secrets.
 
 ## Endpoint security
 
-Proxy rejects a non-loopback listen address unless `CAVEMAN_AUTH_TOKEN` is set.
+Proxy rejects a non-loopback listen address unless `ONMAN_AUTH_TOKEN` is set.
 With that token every request must present it in `x-cave-api-key` or
 `Authorization: Bearer`; the proxy consumes the header before resolving a
 provider credential, so it never reaches a provider. Health and metrics

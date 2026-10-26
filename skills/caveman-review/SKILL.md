@@ -1,8 +1,8 @@
 ---
-name: caveman-review
+name: onman-review
 description: >
   Compressed code review - one line per finding with location, problem and fix.
-  Use for /caveman-review, "review this PR", or "review the diff".
+  Use for /onman-review, "review this PR", or "review the diff".
 ---
 
 Write code review comments terse and actionable. One line per finding. Location, problem, fix. No throat-clearing.
@@ -50,4 +50,4 @@ Drop terse mode for: security findings (CVE-class bugs need full explanation + r
 
 ## Boundaries
 
-Reviews only — does not write the code fix, does not approve/request-changes, does not run linters. Output the comment(s) ready to paste into the PR. "stop caveman-review" or "normal mode": revert to verbose review style.
+Reviews only — does not write the code fix, does not approve/request-changes, does not run linters. Output the comment(s) ready to paste into the PR. "stop onman-review" or "normal mode": revert to verbose review style.

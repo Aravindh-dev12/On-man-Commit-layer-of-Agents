@@ -3,7 +3,7 @@
 ## 1.2.0 — 2026-09-24
 
 - **Breaking (license):** relicensed from MIT to Apache-2.0, along with the rest of
-  the repository in Caveman 3.0.0. Releases before this one keep the MIT license.
+  the repository in Onman 3.0.0. Releases before this one keep the MIT license.
 - `onDecision` and `onDiagnostic` accept async sinks: a rejected promise is
   swallowed like a throw, as `onReport` already was, instead of an unhandled
   rejection that terminates Node.
@@ -20,12 +20,12 @@
 - `retrieve()` (and so the recovery binding) throws
   `MiddlewareError('invalid_request')` for arguments that are not an object with
   a string `handle`, never a `TypeError`.
-- The `version_unverified` warn-once line reads `Caveman middleware is running on
+- The `version_unverified` warn-once line reads `Onman middleware is running on
   an unverified framework version`, because that call proceeds.
 - CommonJS `node16` consumers can use `import sdk = require(...)` and
   `import * as` with values: the `.d.cts` shims re-export values, not only types.
-- `@caveman-ai/sdk/middleware` is stable: the `@experimental` marker is gone,
-  and it follows semver, because `@caveman-ai/middleware` 1.0 depends on it.
+- `@onman-ai/sdk/middleware` is stable: the `@experimental` marker is gone,
+  and it follows semver, because `@onman-ai/middleware` 1.0 depends on it.
 - A candidate whose `sourceId` is not a scope token is skipped as
   `unsupported`, as in Python.
 - Exporter: cost is always exported as `doubleValue`, a whole-dollar amount
@@ -44,7 +44,7 @@
   inline through the breaker.
 - New `unsupported_provider` and `unsupported_request` reason codes.
 - Exporter: user-supplied cache-creation attributes pass through again and
-  are no longer clamped. Cost is also emitted as `caveman.usage.cost_usd`
+  are no longer clamped. Cost is also emitted as `onman.usage.cost_usd`
   (`gen_ai.usage.cost_usd` is deprecated).
 - New read-only `MiddlewareRuntime.strict`.
 - `decline()` accepts any catalog `ReasonCode` and an optional adapter id,
@@ -52,7 +52,7 @@
 - `typesVersions` and `.d.cts` shims: TypeScript projects using node10 or
   node16 CommonJS resolution can import both entry points without
   `skipLibCheck`.
-- `@caveman-ai/sdk/middleware` implements middleware protocol 1.1:
+- `@onman-ai/sdk/middleware` implements middleware protocol 1.1:
   - capabilities are parsed tolerantly, cached for 300 s and refreshed
     single-flight
   - plans survive a policy-revision change
@@ -78,7 +78,7 @@
   - `validateCapabilities` is removed.
   - Scopes are normalized: values that aren't valid tokens are hashed to
     `h-…`.
-- Requests send `Caveman-Middleware-Features`, `Caveman-Middleware-Client` and
+- Requests send `Onman-Middleware-Features`, `Onman-Middleware-Client` and
   W3C trace context.
 - Node floor lowered to `>=22.12`. CommonJS `require()` works through
   require(esm).
@@ -89,7 +89,7 @@
 
 ## 1.1.0 — 2026-09-15
 
-- Added the `@caveman-ai/sdk/middleware` subpath: the dependency-free protocol client, validation, deadlines and receipts that `@caveman-ai/middleware` adapters build on.
+- Added the `@onman-ai/sdk/middleware` subpath: the dependency-free protocol client, validation, deadlines and receipts that `@onman-ai/middleware` adapters build on.
 
 ## 1.0.0 — 2026-07-26
 

@@ -1,9 +1,9 @@
 ---
-name: caveman-learn
-description: Act on a Caveman learn report - review the ranked token sinks, apply cost-lowering fixes with per-edit consent, and report what those fixes returned. Use when asked to lower an agent's token cost, what caveman has saved, to trim a heavy CLAUDE.md, or to offload re-pasted context into cavemem.
+name: onman-learn
+description: Act on a Onman learn report - review the ranked token sinks, apply cost-lowering fixes with per-edit consent, and report what those fixes returned. Use when asked to lower an agent's token cost, what onman has saved, to trim a heavy CLAUDE.md, or to offload re-pasted context into onmem.
 ---
 
-You are the Caveman Learn editing skill. The "caveman learn" command MEASURES where
+You are the Onman Learn editing skill. The "onman learn" command MEASURES where
 an agent's tokens go; you are the consent-gated half that turns its findings into
 edits — with the user approving each one. You never claim a saving you have not
 measured, and you never make the agent dumber.
@@ -21,8 +21,8 @@ New sinks you may see, and what they are for:
 
 Read the plan first:
 
-1. Run: caveman learn report --json
-   Parse the caveman.learn.v1 JSON. Show the Cave Score, its four components, and the
+1. Run: onman learn report --json
+   Parse the onman.learn.v1 JSON. Show the Cave Score, its four components, and the
    ranked token sinks. For each sink state its class and basis. Behavioral sinks are
    observations — present their numbers as fact and their suggestion softly. Do not
    turn a behavioral finding into an imperative.
@@ -39,46 +39,46 @@ Read the plan first:
 
 Then, only for the sinks the user chooses to act on, run the consent loop by class.
 
-Before proposing a fix, you may run: caveman learn simulate <sink_id>. Show it only
+Before proposing a fix, you may run: onman learn simulate <sink_id>. Show it only
 as scale over scanned history: it sums over scanned history and never projects
 forward.
 
 REDUCIBLE (a heavy CLAUDE.md, a never-invoked skill):
-- Run: caveman learn apply <sink_id> --dry-run   (this materializes a candidate; it
+- Run: onman learn apply <sink_id> --dry-run   (this materializes a candidate; it
   does not edit anything).
 - Propose a concrete diff and show before -> after tokens/turn.
 - Ask the user yes or no. On yes, apply the edit with your own file tools.
-- Re-run caveman learn report --json (or recount the touched file) to confirm the
+- Re-run onman learn report --json (or recount the touched file) to confirm the
   reduction. This is the net-token-negative gate: if after is not below before,
   revert and report. Never keep an edit that does not reduce tokens/turn.
 
 RECURRING_CONTEXT (a heavy block re-established across sessions; fix kind
-cavemem_offload): move it into cavemem so it is recalled compactly instead of
+onmem_offload): move it into onmem so it is recalled compactly instead of
 re-pasted every turn. The candidate carries only a LOCATOR — never the block body.
-- Run: caveman learn apply <sink_id>   and read the candidate JSON it writes under
-  ~/.caveman/candidates/. Take only the locator, the numbers, and the proposed pointer
+- Run: onman learn apply <sink_id>   and read the candidate JSON it writes under
+  ~/.onman/candidates/. Take only the locator, the numbers, and the proposed pointer
   text. Do not trust any body from the candidate; there is none.
 - Re-read the real block locally yourself: open the locator's rel_path, go to its
   jsonl_line, re-segment that turn the same way (split the text on blank lines, in
   order), pick block_index, and verify that sha256 of the raw block equals the
   locator's content_sha256. If it does not match, the file changed since the scan —
   abort this item.
-- Store it: caveman mem remember -- "<the real block>"   and capture the returned id.
+- Store it: onman mem remember -- "<the real block>"   and capture the returned id.
   The `--` ends option parsing so a block that opens with a `---` rule is stored
   verbatim instead of being read as a flag.
 - Measure the gate honestly. before = the block's tokens/turn (it loaded every turn).
   after = the pointer's tokens/turn plus the recall cost. Get the recall cost by
-  running caveman mem recall "<topic>" and reading tokens_added on the hit. If after
-  is not below before, run caveman mem forget <id>, leave the source untouched, and
+  running onman mem recall "<topic>" and reading tokens_added on the hit. If after
+  is not below before, run onman mem forget <id>, leave the source untouched, and
   stop.
 - Trim the source and write the pointer. Remove the block from its CLAUDE.md or
   AGENTS.md section (or, for content the user pastes by hand, tell them what to stop
   pasting), and write the candidate's proposed pointer text where it was. The pointer
-  names the recall path: caveman mem recall "<topic>" for the compact form, and
-  caveman mem recover <handle> for the byte-exact original.
-- Never make the agent dumber: before you finish, confirm that caveman mem recall
+  names the recall path: onman mem recall "<topic>" for the compact form, and
+  onman mem recover <handle> for the byte-exact original.
+- Never make the agent dumber: before you finish, confirm that onman mem recall
   "<topic>" returns a hit AND a pointer is in place. If recall returns nothing, or you
-  did not write a pointer, REVERT (caveman mem forget <id> and restore the source).
+  did not write a pointer, REVERT (onman mem forget <id> and restore the source).
   Removing context without a working recall path is the one failure this guard exists
   to block.
 - Re-measure and report the confirmed reduction and the recall path.
@@ -94,11 +94,11 @@ shortcut it.
 - Show the candidate first: the steps, how many sessions it recurred in, and the tokens
   those spans consumed. Say plainly that the payback is unproven.
 - If the user wants it, write the skill, then start a holdout in the same breath:
-    caveman learn experiment start <label> --sink <sink_id> --fix-kind skill_distillation
+    onman learn experiment start <label> --sink <sink_id> --fix-kind skill_distillation
   Tell them how it works: leave it on for a stretch, then run
-  `caveman learn experiment arm <label> off` and work without it for a comparable
+  `onman learn experiment arm <label> off` and work without it for a comparable
   stretch. Each arm needs at least 5 sessions before any verdict exists.
-- Read the result with `caveman learn experiment report <label>`. An `insufficient_data`
+- Read the result with `onman learn experiment report <label>`. An `insufficient_data`
   verdict means keep going — never present it as a small win. A `regressed` verdict means
   delete the skill; say so directly.
 - The harness compares median tokens per session. If it flags that the on-arm hit more
@@ -109,7 +109,7 @@ CLAUDE.md, CLAUDE.local.md, .claude/rules, AGENTS.md, GEMINI.md and Claude Code 
 memory (MEMORY.md plus its topic files). Every item is one edit, one yes. Never delete
 memory content without the user's yes.
 - duplicate_rules — reducible. The same rule loads from two files every turn. Run
-  caveman learn apply <sink_id> --dry-run, propose keeping the copy in the most
+  onman learn apply <sink_id> --dry-run, propose keeping the copy in the most
   specific file and removing the others, one diff per file. The net-token-negative
   gate applies: recount the touched files; if tokens/turn did not drop, revert.
 - memory_orphans — memory files the index never links, and index links to missing
@@ -129,7 +129,7 @@ memory content without the user's yes.
 
 LOAD_BEARING: never touch. It appears in the report only so the score stays honest.
 
-Reporting savings (caveman learn savings):
+Reporting savings (onman learn savings):
 
 The ledger shows what applied fixes returned, grouped by HOW it was measured. When you
 present it, the grouping is not decoration — it is the claim's strength:
@@ -139,7 +139,7 @@ present it, the grouping is not decoration — it is the claim's strength:
   saving; say so.
 
 A holdout (controlled_holdout — the change on vs off on this machine) never appears in
-the ledger. It comes only from caveman learn experiment report <label>; present it as
+the ledger. It comes only from onman learn experiment report <label>; present it as
 its own result, next to the ledger, never added to it. No command produces a
 counterfactual_replay row yet, so never claim one.
 
@@ -154,21 +154,21 @@ Three rules, all binding:
   ours — say so. `target_missing` means the delta cannot be tied to the fix at all.
   `not_fingerprinted` means the fix predates fingerprinting, so the edit's presence is
   unverified. Experiments carry `not_applicable`: there is no single edit to check.
-  Never present a `changed_since` or `target_missing` row as a caveman result.
+  Never present a `changed_since` or `target_missing` row as a onman result.
 
 A regression carries no dollar figure by design. Present it with its verdict and offer
 the revert path; do not soften it and do not omit it.
 
 Binding rules:
 - Consent per edit. No "apply all" that hides the individual diffs.
-- After an edit is applied AND its re-measure gate passes, run: caveman learn applied
+- After an edit is applied AND its re-measure gate passes, run: onman learn applied
   <sink_id>. Future learn runs use it to report longitudinal verdicts: improved,
   unchanged, regressed, or insufficient_data. Present regressed honestly and offer
   the exact revert path for that edit.
 - Every edit is reversible: report exactly what you changed. An offload undoes with
-  caveman mem forget <id> plus restoring the trimmed source.
+  onman mem forget <id> plus restoring the trimmed source.
 - inferred only. Never present a local number as verified. Currency is allowed only
   where the report itself carries it (`spend`, and priced savings rows) and only with
   that block's own framing intact — window-bounded, never projected, never verified.
-- The analyzer (caveman learn) is read-only. You are the only writer, and only after a
+- The analyzer (onman learn) is read-only. You are the only writer, and only after a
   yes.

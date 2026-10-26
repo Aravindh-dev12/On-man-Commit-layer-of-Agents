@@ -1,6 +1,6 @@
 # Compression Engine
 
-Caveman Engine is a local Go library and command-line runtime for reducing
+Onman Engine is a local Go library and command-line runtime for reducing
 model context. It detects input shape, chooses a matching compressor, stores
 exact source when a lossy transform needs recovery, and emits output only when
 the result passes size and safety checks.
@@ -126,7 +126,7 @@ Engine can run as:
 Build native Engine from repository root:
 
 ```bash
-go build ./engine/cmd/caveman-engine
+go build ./engine/cmd/onman-engine
 ```
 
 Run Engine tests:

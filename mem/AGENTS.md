@@ -1,4 +1,4 @@
-# mem — cavemem, durable agent memory (Go core + clients, Apache-2.0)
+# mem — onmem, durable agent memory (Go core + clients, Apache-2.0)
 
 Durable, cross-session memory: `remember` / `recall` / `supersede` / `history` / `forget`. A local SQLite store holds the
 **raw** memories (the source of truth); recall ranks them with deterministic **BM25** behind a
@@ -9,13 +9,13 @@ inferred token cost is honest and the dropped detail stays recoverable via CCR. 
 ## Layout
 - `store.go` — `Remember`/`Recall`/`Supersede`/`History`/`Forget`/`Recover` over SQLite + engine; legacy schemas migrate in place.
 - `bm25.go` — deterministic tokenizer + BM25 scorer (non-negative scores, so the threshold is meaningful).
-- `cmd/cavemem/` — MCP server + `remember`/`recall`/`supersede`/`history`/`forget` CLI subcommands (JSON).
+- `cmd/onmem/` — MCP server + `remember`/`recall`/`supersede`/`history`/`forget` CLI subcommands (JSON).
 - `js/` + `py/` — thin TS and Python clients that shell out to the binary (mirrored libraries; they reimplement nothing).
 
-## The cavemem_* MCP tools
-`cavemem_remember(text)` · `cavemem_recall(query, limit?, token_budget?)` ·
-`cavemem_supersede(id, text)` · `cavemem_history(id)` · `cavemem_forget(id)`,
-served through `mcp.NewServer` so the framing matches caveman-mcp exactly.
+## The onmem_* MCP tools
+`onmem_remember(text)` · `onmem_recall(query, limit?, token_budget?)` ·
+`onmem_supersede(id, text)` · `onmem_history(id)` · `onmem_forget(id)`,
+served through `mcp.NewServer` so the framing matches onman-mcp exactly.
 
 ## Conventions
 - Build/test: `make product-build PRODUCT=mem` / `make product-test PRODUCT=mem`

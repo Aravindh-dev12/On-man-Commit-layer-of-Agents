@@ -11,9 +11,9 @@ Source-of-truth schemas for cross-service/SDK wire shapes:
 - `schemas/adapter-conformance.schema.json` — static Pi/Claude/Vercel AI SDK/Eve/
   Mastra contract-record shape; `evidence: static_contract_only` explicitly
   denies executable proof
-- `schemas/canonical-span.schema.json` — `caveman.span.v1`, the normalized
+- `schemas/canonical-span.schema.json` — `onman.span.v1`, the normalized
   evidence-plane span shared by trace intelligence and replay
-- `schemas/agent-run-receipt.schema.json` — `caveman.agent.run-receipt.v1`,
+- `schemas/agent-run-receipt.schema.json` — `onman.agent.run-receipt.v1`,
   content-blind per-run SDK economic receipt. It is a shared wire shape, not an
   anonymous CLI event and not a signed verified-savings receipt. Retry events
   carry reserved spend, measured spend, and measurement basis
@@ -31,7 +31,7 @@ Source-of-truth schemas for cross-service/SDK wire shapes:
   adapter fixtures, middleware fixture examples, `$id` = raw GitHub URL of the
   file at tag `contracts-v<package.json version>` (bump both together),
   relative cross-schema `$ref`s only, and every OpenAPI `$ref`
-- `package.json` — `@caveman-ai/contracts`; build/lint/test run both validators (no compiled output)
+- `package.json` — `@onman-ai/contracts`; build/lint/test run both validators (no compiled output)
 
 ## Key schema fields
 

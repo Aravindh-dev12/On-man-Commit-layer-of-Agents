@@ -7,14 +7,14 @@ source; verify the tag you install when policy depends on an exact version.
 
 | Component | Supported line | Security fixes |
 |---|---|---|
-| Caveman skill, installer, CLI (`@caveman-ai/cli`), runtime binaries (`bin-v*`, container image) | Latest stable release | Yes |
-| SDKs: `@caveman-ai/sdk`, `caveman-sdk` | 1.2.x (latest 1.x minor) | Yes |
-| Middleware: `@caveman-ai/middleware`, `caveman-middleware` | 1.x, latest minor | Yes |
+| Onman skill, installer, CLI (`@onman-ai/cli`), runtime binaries (`bin-v*`, container image) | Latest stable release | Yes |
+| SDKs: `@onman-ai/sdk`, `onman-sdk` | 1.2.x (latest 1.x minor) | Yes |
+| Middleware: `@onman-ai/middleware`, `onman-middleware` | 1.x, latest minor | Yes |
 | Middleware 0.x alphas (`0.1.0-alpha.*`, `0.1.0a1`) | — | No. Upgrade to 1.x. |
 | Anything older than the lines above | — | No |
 
-The `middleware` modules inside the SDKs (`@caveman-ai/sdk/middleware`,
-`caveman_cloud.middleware`) get security fixes on the SDK 1.x line. From SDK
+The `middleware` modules inside the SDKs (`@onman-ai/sdk/middleware`,
+`onman_cloud.middleware`) get security fixes on the SDK 1.x line. From SDK
 1.2.0 their API is stable and follows semver with the rest of the SDK, because
 the 1.x middleware packages depend on it.
 
@@ -31,55 +31,55 @@ These are policy targets for a small maintainer team, not a contractual SLA.
 Do not open a public issue for suspected arbitrary code execution, path escape,
 credential exposure, proxy isolation failure, recovery-data exposure, or similar
 security bugs. Use [GitHub private vulnerability
-reporting](https://github.com/JuliusBrussee/caveman/security/advisories/new).
+reporting](https://github.com/Aravindh-dev12/onman/security/advisories/new).
 
 ## Data-flow summary
 
-| Surface | Caveman account required? | Where content goes |
+| Surface | Onman account required? | Where content goes |
 |---|---:|---|
-| Caveman skill and classic output hooks | No | Local agent context and local files. These components do not directly call a Caveman service. |
+| Onman skill and classic output hooks | No | Local agent context and local files. These components do not directly call a Onman service. |
 | Local Proxy + Engine | No | Request content, possibly transformed, and provider credentials go to the provider selected by the agent. Recovery originals stay in local CCR storage unless the agent retrieves and sends them later. |
-| Agent SDK `observe-only` | No | Directly to the configured provider. No Caveman gateway telemetry. |
-| Managed Caveman gateway | Yes | Requests and responses transit Caveman Cloud and the selected provider. Do not treat managed mode as local-only. A managed Claude Code wrap also sends the launch repository (github.com `owner/name` only) and the current branch name on every request as `x-cave-tags`. Branch names can contain people's or customers' names: `CAVEMAN_WORK_TAGS=0` sends no tags, and your own `x-cave-tags` in `ANTHROPIC_CUSTOM_HEADERS` is sent exactly as set instead. |
-| Framework middleware (client, adapters, and the runtime you host) | No | Your app keeps calling its provider directly. The adapters send eligible tool-result text to the runtime you point them at, and the runtime stores the originals so the model can fetch them back. Nothing goes to Caveman servers. See [Framework middleware data](#framework-middleware-data). |
-| CLI usage telemetry | No | Content-free usage events, including token counts processed and saved, go to Caveman by default (opt-out) and are stored with the sender's IP address (IPs cleared after 90 days, events deleted after 13 months). First interactive run prints the disclosure; `caveman telemetry off` or `DO_NOT_TRACK=1` turns it off for good. |
-| Authenticated dashboard sync | Yes | Local span metadata and aggregate findings go to Caveman Cloud when credentials are present. Raw prompt and response bodies are excluded. |
+| Agent SDK `observe-only` | No | Directly to the configured provider. No Onman gateway telemetry. |
+| Managed Onman gateway | Yes | Requests and responses transit Onman Cloud and the selected provider. Do not treat managed mode as local-only. A managed Claude Code wrap also sends the launch repository (github.com `owner/name` only) and the current branch name on every request as `x-cave-tags`. Branch names can contain people's or customers' names: `ONMAN_WORK_TAGS=0` sends no tags, and your own `x-cave-tags` in `ANTHROPIC_CUSTOM_HEADERS` is sent exactly as set instead. |
+| Framework middleware (client, adapters, and the runtime you host) | No | Your app keeps calling its provider directly. The adapters send eligible tool-result text to the runtime you point them at, and the runtime stores the originals so the model can fetch them back. Nothing goes to Onman servers. See [Framework middleware data](#framework-middleware-data). |
+| CLI usage telemetry | No | Content-free usage events, including token counts processed and saved, go to Onman by default (opt-out) and are stored with the sender's IP address (IPs cleared after 90 days, events deleted after 13 months). First interactive run prints the disclosure; `onman telemetry off` or `DO_NOT_TRACK=1` turns it off for good. |
+| Authenticated dashboard sync | Yes | Local span metadata and aggregate findings go to Onman Cloud when credentials are present. Raw prompt and response bodies are excluded. |
 
 Your model provider, MCP servers, browser targets, agent plugins, and any command
-the agent runs remain separate data processors. Caveman cannot make those tools
+the agent runs remain separate data processors. Onman cannot make those tools
 offline or private.
 
 ## Framework middleware data
 
-The middleware client (`@caveman-ai/sdk/middleware`, `caveman_cloud.middleware`),
-the adapters (`@caveman-ai/middleware`, `caveman-middleware`), and the
-`caveman-proxy` runtime make **no network calls to Caveman servers**. They send
+The middleware client (`@onman-ai/sdk/middleware`, `onman_cloud.middleware`),
+the adapters (`@onman-ai/middleware`, `onman-middleware`), and the
+`onman-proxy` runtime make **no network calls to Onman servers**. They send
 no telemetry. The client talks only to the runtime endpoint you configure; the
-runtime answers the `/caveman/v1/middleware/*` routes and does not call a model
-provider on this path. The Python import name `caveman_cloud` is historical: it
+runtime answers the `/onman/v1/middleware/*` routes and does not call a model
+provider on this path. The Python import name `onman_cloud` is historical: it
 does not mean a cloud service is involved.
 
-The CLI you may use to install and start the runtime (`caveman setup`,
-`caveman start`) is a separate program with its own opt-out
+The CLI you may use to install and start the runtime (`onman setup`,
+`onman start`) is a separate program with its own opt-out
 [usage telemetry](#cli-usage-telemetry): content-free usage events,
-never prompts or tool results. Turn it off with `caveman telemetry off` or
+never prompts or tool results. Turn it off with `onman telemetry off` or
 `DO_NOT_TRACK=1`. Running the binary or container image directly
-(`caveman-proxy serve`) involves no CLI and no telemetry.
+(`onman-proxy serve`) involves no CLI and no telemetry.
 
 What the runtime stores, on its own disk, or in the Postgres database you point
-it at with `CAVEMAN_MIDDLEWARE_DATABASE_URL` when several replicas share one
+it at with `ONMAN_MIDDLEWARE_DATABASE_URL` when several replicas share one
 store:
 
 - **Tool-result originals** (exact text), so the model can recover them. Treat
   them as sensitive as the tool output itself.
-- **Scope state** in the runtime database (`~/.caveman/caveman.db`, or under
-  `CAVEMAN_HOME` in the container): scope identifiers (namespace, session,
+- **Scope state** in the runtime database (`~/.onman/onman.db`, or under
+  `ONMAN_HOME` in the container): scope identifiers (namespace, session,
   branch, cache epoch), the compressed replacement text the runtime chose,
   recovery grants, and receipts. The replacement text is derived from tool
   output, so it is sensitive too. No provider credentials, no model responses.
 
 Lifecycle **before runtime `bin-v2.0.0`**: originals go into the
-shared recovery store (`~/.caveman/ccr.db`) in plaintext and are not deleted
+shared recovery store (`~/.onman/ccr.db`) in plaintext and are not deleted
 when a session is deleted or expires; retention (`retention_seconds`, default
 24 hours) covers scope metadata only. Delete the recovery store yourself when
 you need the originals gone.
@@ -107,26 +107,26 @@ The default is never silent: the first interactive command persists the decision
 (with a stable random install ID) and prints a one-line disclosure naming the
 scope and the off switch. Nothing sends before that disclosure run, and CI /
 non-interactive runs never persist the default. Once a yes is persisted, agent
-sessions started through caveman's native hooks (which have no terminal) also
+sessions started through onman's native hooks (which have no terminal) also
 send a `session_start` event from a background process. Login is not
 required; events go to `https://xvfgtprkhzlvegvmeefq.supabase.co/functions/v1/cli-telemetry`,
-a Supabase Edge Function that validates each event and stores it in Caveman's
+a Supabase Edge Function that validates each event and stores it in Onman's
 Supabase database. Its source and table schema live in [`supabase/`](./supabase/).
 
 ```bash
-caveman telemetry status
-caveman telemetry on
-caveman telemetry off
+onman telemetry status
+onman telemetry on
+onman telemetry off
 ```
 
 Controls, in precedence order:
 
 - non-empty, non-zero `DO_NOT_TRACK` forces telemetry off;
-- `CAVEMAN_TELEMETRY=1|true|on` enables it and other non-empty values disable it;
+- `ONMAN_TELEMETRY=1|true|on` enables it and other non-empty values disable it;
 - CI is always off; a non-interactive run (such as a native agent hook) sends
   only under a yes already persisted by an interactive run, and never persists
   one itself;
-- otherwise the persisted choice in `~/.caveman-cloud/config.json` applies —
+- otherwise the persisted choice in `~/.onman-cloud/config.json` applies —
   a persisted opt-out (from any version, including the old opt-in prompt's "no")
   is honored forever;
 - no persisted choice means on, persisted with a printed disclosure on the
@@ -134,11 +134,11 @@ Controls, in precedence order:
 
 Agent hooks started by desktop apps or background services may never read your
 shell profile, so an environment variable alone can miss them. When an
-interactive command sees `DO_NOT_TRACK` or `CAVEMAN_TELEMETRY=0` while the saved
-choice is on, it saves a lasting opt-out. `caveman telemetry off` does the same
+interactive command sees `DO_NOT_TRACK` or `ONMAN_TELEMETRY=0` while the saved
+choice is on, it saves a lasting opt-out. `onman telemetry off` does the same
 immediately.
 
-`CAVEMAN_TELEMETRY_URL` overrides the destination, mainly for testing. Events are
+`ONMAN_TELEMETRY_URL` overrides the destination, mainly for testing. Events are
 sent by a detached background process that gives up after 10 seconds, so no
 command waits on the network; if that process cannot start, the CLI sends
 in-process with a 1.5-second limit. Failures never fail the CLI command. The
@@ -192,7 +192,7 @@ Events can contain:
   including sessions, tokens, estimated cuts, scan timing, whether the scan
   succeeded, hit its time limit, or used the local Engine, and whether an
   account was already connected;
-- Caveman MCP tool name, duration, and outcome.
+- Onman MCP tool name, duration, and outcome.
 
 Telemetry does **not** include prompt or completion bodies, raw argv,
 file paths, tool arguments or results, provider credentials, or local database
@@ -205,79 +205,79 @@ stores only the fields listed above and drops malformed events.
 
 ### Delete sent telemetry
 
-`caveman telemetry status` shows your install ID while telemetry is on.
-`caveman telemetry off` removes the ID from your machine and prints it once as
+`onman telemetry status` shows your install ID while telemetry is on.
+`onman telemetry off` removes the ID from your machine and prints it once as
 `discarded_anonymous_id`; an interactive command that turns telemetry off
-because of `DO_NOT_TRACK` or `CAVEMAN_TELEMETRY=0` prints it too. Keep it: it is
-the only way to find your events, because Caveman does not know which install
+because of `DO_NOT_TRACK` or `ONMAN_TELEMETRY=0` prints it too. Keep it: it is
+the only way to find your events, because Onman does not know which install
 is yours.
 
 To have every stored event for an install ID deleted, send the ID through
 [GitHub private vulnerability
-reporting](https://github.com/JuliusBrussee/caveman/security/advisories/new)
+reporting](https://github.com/Aravindh-dev12/onman/security/advisories/new)
 with "telemetry deletion" in the title. Deletion covers the events table;
 Supabase's platform request logs expire on their own schedule and cannot be
 deleted per install.
 
-## Authenticated Caveman Cloud traffic
+## Authenticated Onman Cloud traffic
 
 Connected commands require stored credentials or `CAVE_TOKEN`; new logins are
 blocked during beta. Sync sends usage metadata and aggregate findings, never
 prompts, responses, credentials, tool evidence, or source paths. Subscription
 traffic omits dollar figures, and synced local data remains `inferred`. Managed
-gateway mode carries request and response content through Caveman Cloud; local
-mode sends it only to your provider. `CAVEMAN_OFFLINE=1` disables entitlement
-refresh and sync, but opted-in telemetry needs `CAVEMAN_TELEMETRY=0` or
+gateway mode carries request and response content through Onman Cloud; local
+mode sends it only to your provider. `ONMAN_OFFLINE=1` disables entitlement
+refresh and sync, but opted-in telemetry needs `ONMAN_TELEMETRY=0` or
 `DO_NOT_TRACK=1` too.
 
 ## Local storage
 
-Caveman stores runtime data under `~/.caveman/` and account/config state under
-`~/.caveman-cloud/` unless a documented environment override changes a path.
+Onman stores runtime data under `~/.onman/` and account/config state under
+`~/.onman-cloud/` unless a documented environment override changes a path.
 Important files include:
 
-- `~/.caveman/caveman.db`: per-request metadata, usage, local savings estimates,
+- `~/.onman/onman.db`: per-request metadata, usage, local savings estimates,
   transformed prefix replacements, and related local evidence. Normal request
   rows do not store raw request or response bodies, but transformed content can
   remain in this database. Treat it as sensitive.
-- `~/.caveman/ccr.db`: exact originals for recoverable transforms. This file can
+- `~/.onman/ccr.db`: exact originals for recoverable transforms. This file can
   contain prompts, credentials embedded in content, and tool results. Treat it
   as sensitive.
-- explicit `caveman trial` runs store raw request payloads in the local
+- explicit `onman trial` runs store raw request payloads in the local
   `trial_payloads` table for replay. Reports exclude those payloads.
 - local learn/first-run scans read supported Claude Code and Codex history files
   and write aggregate reports/state locally. Raw session content is not included
   in CLI telemetry or authenticated scan sync.
-- `~/.caveman-cloud/config.json`: endpoints, project/account pointers, telemetry
+- `~/.onman-cloud/config.json`: endpoints, project/account pointers, telemetry
   decision, and other CLI state.
 - account credentials: macOS Keychain when available, otherwise
-  `~/.caveman/credentials` with file mode `0600`. `CAVE_TOKEN` remains owned by
+  `~/.onman/credentials` with file mode `0600`. `CAVE_TOKEN` remains owned by
   the parent environment.
 
 CCR SQLite files and sidecars are created or tightened to mode `0600` and refuse
 unsafe symlink/non-regular-file paths. This is filesystem access control, not
 database encryption. Default retained CCR payload budget is 512 MiB;
-`CAVEMAN_CCR_MAX_BYTES` can change it. Existing recovery handles are never
+`ONMAN_CCR_MAX_BYTES` can change it. Existing recovery handles are never
 evicted. When the budget is exhausted, new recovery writes fail and lossy
 transforms must fall back to pass-through.
 
 Uninstall removes installed integrations and hooks. Do not assume it erases
-runtime databases, reports, backups, or credentials; inspect `~/.caveman/` and
-`~/.caveman-cloud/` separately if data deletion is required.
+runtime databases, reports, backups, or credentials; inspect `~/.onman/` and
+`~/.onman-cloud/` separately if data deletion is required.
 
 ## Local Proxy security
 
-`caveman start` defaults to `127.0.0.1:8787`. Without `CAVEMAN_AUTH_TOKEN`,
+`onman start` defaults to `127.0.0.1:8787`. Without `ONMAN_AUTH_TOKEN`,
 the proxy accepts every inbound request, because loopback single-operator
 isolation is the security boundary, and startup rejects a non-loopback `--host`
-or `CAVEMAN_LISTEN` value.
+or `ONMAN_LISTEN` value.
 
-A non-loopback listener needs an inbound credential: `CAVEMAN_AUTH_TOKEN` (at
+A non-loopback listener needs an inbound credential: `ONMAN_AUTH_TOKEN` (at
 least 16 bytes, no spaces or control characters), or one of the middleware
 identity sources below. The container image listens on `0.0.0.0:8787`, so it
 refuses to start without one.
 
-- **Provider routes** (inference) accept only `CAVEMAN_AUTH_TOKEN`, in
+- **Provider routes** (inference) accept only `ONMAN_AUTH_TOKEN`, in
   `x-cave-api-key` or `Authorization: Bearer`: one shared secret, the operator's
   authority over the server's provider keys. Without it on a non-loopback
   listener they refuse every request.
@@ -289,7 +289,7 @@ refuses to start without one.
   (RS256/ES256 only, fetched over https only, redirects included), or a TLS
   client certificate. Principal names carry their source and are compared byte
   for byte: `oidc:<issuer>#<claim>`, `mtls:uri:<SAN>`, `mtls:dns:<SAN>`, and
-  `mtls:cn:<CN>` only when `CAVEMAN_TLS_CLIENT_CN_FALLBACK` is set. So no JWT or
+  `mtls:cn:<CN>` only when `ONMAN_TLS_CLIENT_CN_FALLBACK` is set. So no JWT or
   certificate can take over a token principal's sessions by spelling its name,
   and no token map entry for such a principal may carry a token. Each principal
   reaches only its own sessions, and its allowed namespaces are enforced
@@ -297,14 +297,14 @@ refuses to start without one.
   request writes one audit line with the principal and how it authenticated,
   never content. A token map that fails to reload keeps the previous one,
   revoked tokens included, and is counted in
-  `caveman_identity_reload_failures_total`: alert on it.
-- **TLS:** `CAVEMAN_TLS_CERT_FILE` / `CAVEMAN_TLS_KEY_FILE` serve TLS 1.2+
-  directly, reloaded on change; `CAVEMAN_TLS_CLIENT_CA_FILE` adds mTLS, and a
+  `onman_identity_reload_failures_total`: alert on it.
+- **TLS:** `ONMAN_TLS_CERT_FILE` / `ONMAN_TLS_KEY_FILE` serve TLS 1.2+
+  directly, reloaded on change; `ONMAN_TLS_CLIENT_CA_FILE` adds mTLS, and a
   client certificate is re-checked against the current CA on every request, so
   replacing the CA also cuts live keep-alive connections. Without them the
   proxy speaks plain HTTP: terminate TLS in front of it.
 - `/health/*` stay unauthenticated for load balancers; `/metrics` does too
-  unless `CAVEMAN_METRICS_TOKEN` is set.
+  unless `ONMAN_METRICS_TOKEN` is set.
 
 Still not provided: per-user identity or roles on the provider routes, and an
 audit log for them beyond the counted and logged rejections. Keep any shared
@@ -337,8 +337,8 @@ manifest before installation. A valid manifest needs the signing key, which is
 stored only as a secret of the release workflow's environment, so editing a tag
 or release page cannot forge one. From runtime `bin-v2.0.0` the signed manifest
 also names its release (a `RELEASE` entry: the SHA-256 of the attached
-`RELEASE` file, which holds the tag), and `caveman setup --install` and
-`caveman update` refuse a manifest that does not name the exact release the CLI
+`RELEASE` file, which holds the tag), and `onman setup --install` and
+`onman update` refuse a manifest that does not name the exact release the CLI
 pins, so an older signed manifest and its binaries cannot be served in its
 place. A CLI pinned to an earlier runtime accepts a manifest without the entry.
 The standalone binary installers in the browse, MCP, and shrink npm packages
@@ -355,6 +355,6 @@ available locally.
 - Windows Defender or SmartScreen can flag `install.ps1` because it pipes a
   downloaded script into PowerShell and writes agent configuration. Clone and
   inspect the pinned source first if policy forbids pipe-to-shell installation.
-- Generic scanners can flag `caveman-compress` because it rewrites the file the
+- Generic scanners can flag `onman-compress` because it rewrites the file the
   user names and creates a backup. That file mutation is intentional. Review
-  [`skills/caveman-compress/`](./skills/caveman-compress/) before enabling it.
+  [`skills/onman-compress/`](./skills/onman-compress/) before enabling it.

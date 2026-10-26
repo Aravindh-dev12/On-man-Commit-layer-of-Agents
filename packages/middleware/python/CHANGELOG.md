@@ -1,22 +1,22 @@
 # Changelog
 
-`caveman-middleware` follows semver from 1.0.0: breaking changes wait for a new
+`onman-middleware` follows semver from 1.0.0: breaking changes wait for a new
 major. Read this file before upgrading. pip skips prereleases unless you pin one
 or pass `--pre`. Support policy: [SECURITY.md](../../../SECURITY.md#supported-versions).
 
 ## 1.0.0 — 2026-09-24
 
-- First stable release. Requires `caveman-sdk` 1.2.0 or later
-  (`caveman-sdk>=1.2,<2`): 1.1.0 lacks APIs the adapters import.
-- `caveman_middleware.__version__` is read from the installed distribution.
-- A refused `caveman_retrieve` (an unknown or expired handle, or a
+- First stable release. Requires `onman-sdk` 1.2.0 or later
+  (`onman-sdk>=1.2,<2`): 1.1.0 lacks APIs the adapters import.
+- `onman_middleware.__version__` is read from the installed distribution.
+- A refused `onman_retrieve` (an unknown or expired handle, or a
   404/410/503) returns `{"error": code}` through each framework's tool-error
   result and warns once. The run carries on, and cancellation still
   propagates.
 - Recovery arguments that are not an object with a string `handle` (`None`,
   a list) return `{"error": "invalid_request"}` in the OpenAI, Anthropic and
   MCP adapters.
-- Wrapping a client, agent or model twice runs one Caveman layer instead of
+- Wrapping a client, agent or model twice runs one Onman layer instead of
   stacking middleware and turning compression off.
 - A wrapped `AnthropicBedrock` client keeps `aws_profile`, so calls are signed
   with the caller's AWS identity.
@@ -37,7 +37,7 @@ or pass `--pre`. Support policy: [SECURITY.md](../../../SECURITY.md#supported-ve
 - Every adapter fails open: outside strict mode, an adapter or runtime error
   sends the original request and records a reason code (`adapter_error` for
   adapter bugs). Strict mode raises `MiddlewareError`. Every pass-through
-  reason is logged once on `caveman.middleware`.
+  reason is logged once on `onman.middleware`.
 - Version gate: a framework outside its tested range is skipped with
   `unsupported_version` and one warning. `accept_framework_version=True`
   overrides it, and an unreadable version runs with `version_unverified`. New
@@ -50,7 +50,7 @@ or pass `--pre`. Support policy: [SECURITY.md](../../../SECURITY.md#supported-ve
   calls pass through with `provider_state_retained` unless `store=False` or
   `allow_stored_responses=True`.
 - Anthropic Bedrock and Vertex clients are supported.
-- An existing `caveman_retrieve` tool no longer raises: recovery is disabled
+- An existing `onman_retrieve` tool no longer raises: recovery is disabled
   for that registration and `recovery_name_conflict` is logged once.
 - Free-form thread and session ids are hashed into valid scopes. A missing
   scope passes through instead of failing the agent call.
@@ -69,7 +69,7 @@ or pass `--pre`. Support policy: [SECURITY.md](../../../SECURITY.md#supported-ve
 - CI: floor and latest lanes with constraints files, and a nightly canary that
   opens an issue on failure.
 - **Breaking (license):** relicensed from MIT to Apache-2.0, along with the rest of
-  the repository in Caveman 3.0.0. Releases before this one keep the MIT license.
+  the repository in Onman 3.0.0. Releases before this one keep the MIT license.
 - Release process: each release gets a GitHub Release with these notes and a
   CycloneDX SBOM of its dependency graph.
 

@@ -1,4 +1,4 @@
-# caveman-shrink
+# onman-shrink
 
 Compress MCP/OpenAI **tool catalogs** so a large tool list costs fewer tokens.
 It drops annotation bloat (examples, titles, comments, schema markers), reduces
@@ -12,21 +12,21 @@ will pick the same tool. All numbers are `inferred`.
 
 ```bash
 # Compress a catalog (stdin → stdout); the inferred ratio report goes to stderr.
-cat tools.json | caveman-shrink > tools.min.json
+cat tools.json | onman-shrink > tools.min.json
 
 # Recover exact original bytes from a handle printed in shrink's stderr report.
-caveman-shrink recover ccr_... > tools.original.json
+onman-shrink recover ccr_... > tools.original.json
 
 # Inspect the per-tool reduction without committing to it.
-caveman-shrink lint tools.json
+onman-shrink lint tools.json
 ```
 
 Launcher downloads matching binary on first run, verifies
 key-signed checksum manifest plus artifact SHA-256, and caches it under
-`~/.caveman/bin`. No Go toolchain or global Caveman install is required:
+`~/.onman/bin`. No Go toolchain or global Onman install is required:
 
 ```bash
-npx -y caveman-shrink lint tools.json
+npx -y onman-shrink lint tools.json
 ```
 
 npm launcher and downloaded binary are both Apache-2.0; see `BINARY_LICENSE.md`.
@@ -44,5 +44,5 @@ npm launcher and downloaded binary are both Apache-2.0; see `BINARY_LICENSE.md`.
 - **Bounded input** — stdin is capped at 32 MiB. Larger catalogs fail with
   `cave_input_too_large`; they are not buffered without limit.
 - **Reversible** — a compressing shrink commits exact original bytes to
-  `CAVEMAN_CCR_DB` (or `~/.caveman/ccr.db`) before returning its handle; a later
-  process resolves it with `caveman-shrink recover`.
+  `ONMAN_CCR_DB` (or `~/.onman/ccr.db`) before returning its handle; a later
+  process resolves it with `onman-shrink recover`.

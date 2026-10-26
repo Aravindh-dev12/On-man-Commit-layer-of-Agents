@@ -1,4 +1,4 @@
-# packages/sdk/python — Python SDK for the Caveman Cloud gateway
+# packages/sdk/python — Python SDK for the Onman Cloud gateway
 
 Stdlib-only (`urllib.request`, no third-party deps) Python package. Provides `Cave` (config +
 entrypoint), `CaveTool` (tool descriptor), and `ToolSearchResult`. All HTTP calls POST to the
@@ -6,13 +6,13 @@ gateway with `x-cave-agent` / `x-cave-workflow` / `x-cave-retention` headers set
 
 ## Layout
 
-- `caveman_cloud/__init__.py` — re-exports `Cave`, `CaveTool`, `CompressResult`, `ContextPackItem`, `ContextPackOptions`, `ContextPackResult`, `ToolSearchResult`, …
-- `caveman_cloud/core.py` — all implementation: `Cave`, `Trace`, `Provider`, `_Create`, `ToolSearchResult`, `CompressResult`, `ContextPack*`, `CaveTool`, `headers()`
+- `onman_cloud/__init__.py` — re-exports `Cave`, `CaveTool`, `CompressResult`, `ContextPackItem`, `ContextPackOptions`, `ContextPackResult`, `ToolSearchResult`, …
+- `onman_cloud/core.py` — all implementation: `Cave`, `Trace`, `Provider`, `_Create`, `ToolSearchResult`, `CompressResult`, `ContextPack*`, `CaveTool`, `headers()`
 - `tests/test_sdk.py` — pytest tests; mock `urllib.request.urlopen` with `patch()`
 - `tests/test_parity.py` — cross-language conformance suite; drives `../../parity/fixtures.json` (shared with sdk-ts). Same fixtures, two languages → a field in one SDK and not the other fails CI.
 - `tests/test_trace_continuity.py` — trace/span id minting + which requests carry `x-cave-trace-id` / `x-cave-parent-span-id`; mirrors the TS `tests/trace-continuity.runtime.mjs`
-- `caveman_cloud/middleware/` — stable framework-middleware client for protocol 1.1 (`docs/technical/middleware-protocol.md`): `protocol.py` pure rules (scope normalization, tolerant capabilities, failure classification, breaker, budgets, endpoint/proxy resolution, `warn_once`), `transport.py` default keep-alive stdlib transport, `runtime.py` / `async_runtime.py` clients, `validate.py` plan/page checks. `tests/test_middleware_v1_1.py` drives `../../parity/middleware-v1_1.fixtures.json`; `tests/test_middleware_transport.py` uses real local sockets
-- `pyproject.toml` — distribution name `caveman-sdk` (import package stays `caveman_cloud`), `requires-python = ">=3.11"`, no runtime dependencies
+- `onman_cloud/middleware/` — stable framework-middleware client for protocol 1.1 (`docs/technical/middleware-protocol.md`): `protocol.py` pure rules (scope normalization, tolerant capabilities, failure classification, breaker, budgets, endpoint/proxy resolution, `warn_once`), `transport.py` default keep-alive stdlib transport, `runtime.py` / `async_runtime.py` clients, `validate.py` plan/page checks. `tests/test_middleware_v1_1.py` drives `../../parity/middleware-v1_1.fixtures.json`; `tests/test_middleware_transport.py` uses real local sockets
+- `pyproject.toml` — distribution name `onman-sdk` (import package stays `onman_cloud`), `requires-python = ">=3.11"`, no runtime dependencies
 
 ## Key API surface (`core.py`)
 

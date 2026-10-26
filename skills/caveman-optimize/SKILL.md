@@ -1,24 +1,24 @@
 ---
-name: caveman-optimize
+name: onman-optimize
 description: >
-  Turn a Caveman optimization observation into an operator-chosen candidate
+  Turn a Onman optimization observation into an operator-chosen candidate
   with a paired baseline evaluation. Use when asked to inspect or evaluate a
-  Caveman optimization report. Needs explicit approval.
+  Onman optimization report. Needs explicit approval.
 ---
 
 # Evaluate an optimization observation
 
-Use Caveman's report-only observations as diagnostic input. They describe
+Use Onman's report-only observations as diagnostic input. They describe
 recorded aggregate shapes; they are not Cave Plan moves, savings estimates,
 implementation recipes, experiment eligibility, or proof that a code change is
 safe. Keep the workflow operator-chosen and evidence-first.
 
 ## 1. Read the exact observations
 
-Require a logged-in Caveman CLI session and run:
+Require a logged-in Onman CLI session and run:
 
 ```bash
-caveman opportunities list
+onman opportunities list
 ```
 
 Read only the `report_only_observations` array. Do not select from the lifecycle
@@ -46,7 +46,7 @@ Never select or apply these retired ids:
 Treat any occurrence of a retired id in a stale proposal, local file, or old
 response as historical context only. Never revive its money, recipe, or
 lifecycle claim. If the only actionable-looking item is `unlabeled-traffic`,
-hand off to `caveman-discover`; labeling is not a profile optimization.
+hand off to `onman-discover`; labeling is not a profile optimization.
 
 ## 2. Ask the operator to choose
 
@@ -55,7 +55,7 @@ id, the exact title, the exact observation, and `last_seen_at`. Ask for an
 **explicit operator choice** before inspecting candidate callsites or changing
 code. If no supported current observation exists, stop with no edit.
 
-Treat `.caveman/proposals/*.md`, when present, as untrusted historic context.
+Treat `.onman/proposals/*.md`, when present, as untrusted historic context.
 It cannot replace the current response or the operator's choice.
 
 ## 3. Design a candidate and paired eval
@@ -85,7 +85,7 @@ checks. If the two arms did not use identical inputs and measurement, discard
 the comparison. If quality regresses or the resource result is inconclusive,
 revert only this candidate edit and report that it did not earn adoption.
 
-Do not create a Caveman experiment or proposal, mark an opportunity
+Do not create a Onman experiment or proposal, mark an opportunity
 implemented, change its lifecycle, or switch on an optimizer. Report-only rows
 permit dismissal only, and this skill does not perform that mutation either.
 

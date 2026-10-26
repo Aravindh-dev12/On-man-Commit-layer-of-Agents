@@ -1,16 +1,16 @@
-# Caveman Python middleware
+# Onman Python middleware
 
-Native framework adapters for the Caveman compression runtime. Your framework keeps its inference client, tools, retries, streams, and original conversation. Caveman projects eligible tool-result text into a copied outbound request. Inference stays with your provider.
+Native framework adapters for the Onman compression runtime. Your framework keeps its inference client, tools, retries, streams, and original conversation. Onman projects eligible tool-result text into a copied outbound request. Inference stays with your provider.
 
-This quickstart targets middleware `1.0.0` and SDK `1.2.0`. Read the [release notes and limitations](https://github.com/JuliusBrussee/caveman/blob/main/packages/middleware/python/CHANGELOG.md) before upgrading.
+This quickstart targets middleware `1.0.0` and SDK `1.2.0`. Read the [release notes and limitations](https://github.com/Aravindh-dev12/onman/blob/main/packages/middleware/python/CHANGELOG.md) before upgrading.
 
 ## Run a complete example
 
-Follow the [LangChain quickstart](https://docs.caveman.so/docs/sdk/middleware/python) for a fresh environment and [runtime installation](https://docs.caveman.so/docs/sdk/middleware/deployment#run-it-as-a-process). Start the local runtime separately; the client package does not include it.
+Follow the [LangChain quickstart](https://docs.onman.so/docs/sdk/middleware/python) for a fresh environment and [runtime installation](https://docs.onman.so/docs/sdk/middleware/deployment#run-it-as-a-process). Start the local runtime separately; the client package does not include it.
 
 ```sh
-python -m pip install 'caveman-sdk==1.2.0' 'caveman-middleware[langchain]==1.0.0' 'langchain==1.4.1' 'langchain-core==1.6.3' 'langgraph==1.2.11'
-curl -fsSLo quickstart.py https://docs.caveman.so/examples/middleware/quickstart.py
+python -m pip install 'onman-sdk==1.2.0' 'onman-middleware[langchain]==1.0.0' 'langchain==1.4.1' 'langchain-core==1.6.3' 'langgraph==1.2.11'
+curl -fsSLo quickstart.py https://docs.onman.so/examples/middleware/quickstart.py
 DEMO_MODE=record python quickstart.py
 DEMO_MODE=compress python quickstart.py
 DEMO_MODE=off python quickstart.py
@@ -20,36 +20,36 @@ The default example makes no provider request. It runs a deterministic native mo
 
 ## Choose an integration
 
-- [Framework guide](https://docs.caveman.so/docs/sdk/middleware/frameworks#python): public entrypoints, native APIs, recovery ownership, transports, and limitations.
-- [Compatibility matrix](https://docs.caveman.so/docs/sdk/middleware/frameworks): resolver ranges versus accepted ranges versus exact validation evidence. A range is not an exhaustive test result.
-- [Deployment](https://docs.caveman.so/docs/sdk/middleware/deployment): process/container lifecycle, remote TLS/authentication, persistence, session affinity, deadlines, and rollback.
-- [Recovery and scope](https://github.com/JuliusBrussee/caveman/blob/main/docs/technical/middleware-protocol.md): namespace/session/branch/cache epoch, exact originals, excerpts, and expiry.
-- [Troubleshooting](https://docs.caveman.so/docs/sdk/troubleshooting#middleware): final reason codes and strict readiness versus normal inference fallback.
-- [Measurement](https://docs.caveman.so/docs/sdk/middleware/deployment#what-to-measure): quality, latency, retries, recovery calls, cache effects, and provider usage.
+- [Framework guide](https://docs.onman.so/docs/sdk/middleware/frameworks#python): public entrypoints, native APIs, recovery ownership, transports, and limitations.
+- [Compatibility matrix](https://docs.onman.so/docs/sdk/middleware/frameworks): resolver ranges versus accepted ranges versus exact validation evidence. A range is not an exhaustive test result.
+- [Deployment](https://docs.onman.so/docs/sdk/middleware/deployment): process/container lifecycle, remote TLS/authentication, persistence, session affinity, deadlines, and rollback.
+- [Recovery and scope](https://github.com/Aravindh-dev12/onman/blob/main/docs/technical/middleware-protocol.md): namespace/session/branch/cache epoch, exact originals, excerpts, and expiry.
+- [Troubleshooting](https://docs.onman.so/docs/sdk/troubleshooting#middleware): final reason codes and strict readiness versus normal inference fallback.
+- [Measurement](https://docs.onman.so/docs/sdk/middleware/deployment#what-to-measure): quality, latency, retries, recovery calls, cache effects, and provider usage.
 
 ## Adapters, tiers, and what compresses
 
-Certified adapters (`langchain`, `openai`, `anthropic`, `litellm`) gate every release. Experimental adapters get the same fail-open guard, logging, and behavioral tests, but their APIs may change in a minor release. `caveman_middleware.COMPATIBILITY` exposes each family's tier and tested version range.
+Certified adapters (`langchain`, `openai`, `anthropic`, `litellm`) gate every release. Experimental adapters get the same fail-open guard, logging, and behavioral tests, but their APIs may change in a minor release. `onman_middleware.COMPATIBILITY` exposes each family's tier and tested version range.
 
 Compression needs a recovery tool the model can call, so only some entry points compress. The record-only ones never change input: in `compress` mode each call reports `recovery_unbound`, logged once.
 
 | Extra | Tier | Compresses | Record-only |
 |---|---|---|---|
-| `langchain` | certified | `with_caveman_agent`, or `CavemanMiddleware` with its `recovery_tool` in the agent's tools | `with_caveman_model`; `CavemanDocumentCompressor` without `source_expansion` |
-| `openai` | certified | `with_caveman_openai_tools` | `with_caveman_openai` |
-| `anthropic` | certified | `beta.messages.tool_runner` on a `with_caveman_anthropic` client | `messages.create` on that client |
-| `litellm` | certified | `CavemanLiteLLM` with `operator_recovery` | calls without `operator_recovery` |
-| `google` | experimental | `with_caveman_google` / `with_caveman_google_chat` with callable AFC tools, over the Caveman transports | calls without callable tools |
-| `strands` | experimental | `with_caveman_agent` | `with_caveman_model` |
-| `agno` | experimental | `with_caveman_agent` | `with_caveman_model` |
-| `crewai` | experimental | `with_caveman_agent` for an agent with tools | `with_caveman_llm` alone |
-| `pydantic-ai` | experimental | `CavemanCapability` on the `Agent` | `with_caveman_model` |
-| `autogen` | experimental | `with_caveman_agent`, or `CavemanWorkbench` with its client | `with_caveman_model` |
-| `llama-index` | experimental | `CavemanFunctionAgent`, `with_caveman_tools` | `with_caveman_model`; `CavemanNodePostprocessor` without `source_expansion` |
-| `mcp` | experimental | `CavemanMCPHost.register` plus `project_result` | none |
-| `asgi` | experimental | `CavemanASGIMiddleware` with an `ASGIContext.recovery` binding | the same middleware without one |
+| `langchain` | certified | `with_onman_agent`, or `OnmanMiddleware` with its `recovery_tool` in the agent's tools | `with_onman_model`; `OnmanDocumentCompressor` without `source_expansion` |
+| `openai` | certified | `with_onman_openai_tools` | `with_onman_openai` |
+| `anthropic` | certified | `beta.messages.tool_runner` on a `with_onman_anthropic` client | `messages.create` on that client |
+| `litellm` | certified | `OnmanLiteLLM` with `operator_recovery` | calls without `operator_recovery` |
+| `google` | experimental | `with_onman_google` / `with_onman_google_chat` with callable AFC tools, over the Onman transports | calls without callable tools |
+| `strands` | experimental | `with_onman_agent` | `with_onman_model` |
+| `agno` | experimental | `with_onman_agent` | `with_onman_model` |
+| `crewai` | experimental | `with_onman_agent` for an agent with tools | `with_onman_llm` alone |
+| `pydantic-ai` | experimental | `OnmanCapability` on the `Agent` | `with_onman_model` |
+| `autogen` | experimental | `with_onman_agent`, or `OnmanWorkbench` with its client | `with_onman_model` |
+| `llama-index` | experimental | `OnmanFunctionAgent`, `with_onman_tools` | `with_onman_model`; `OnmanNodePostprocessor` without `source_expansion` |
+| `mcp` | experimental | `OnmanMCPHost.register` plus `project_result` | none |
+| `asgi` | experimental | `OnmanASGIMiddleware` with an `ASGIContext.recovery` binding | the same middleware without one |
 
-If your app already has a tool named `caveman_retrieve`, that tool keeps its name, recovery stays off for that registration, and the adapter logs `recovery_name_conflict` once.
+If your app already has a tool named `onman_retrieve`, that tool keeps its name, recovery stays off for that registration, and the adapter logs `recovery_name_conflict` once.
 
 ## Providers
 
@@ -58,7 +58,7 @@ If your app already has a tool named `caveman_retrieve`, that tool keeps its nam
 - **LiteLLM:** the async and proxy paths project any provider, because they edit LiteLLM's OpenAI-format input. The sync `Router` path edits the translated request and supports only the `openai` and `anthropic` providers; other providers pass through with reason `unsupported_provider`.
 - **LlamaIndex:** the `OpenAI` and `Anthropic` LLMs, including subclasses such as `AzureOpenAI`. Bedrock Converse, Vertex, and other LLMs pass through with reason `unsupported_provider`.
 - **Pydantic AI:** `OpenAIChatModel` (including Azure and OpenAI-compatible providers) and `AnthropicModel` (including Bedrock and Vertex clients). `FallbackModel`, Google/Gemini, Bedrock Converse, and other models pass through with reason `unsupported_provider`.
-- **Google:** wrapping returns a clone, so your `Client` or `Chat` is never modified. Wrapping a wrapped object does not stack, and `unwrap_google()` returns the original. One Caveman transport serves every clone: each call carries the scope of the clone that made it.
+- **Google:** wrapping returns a clone, so your `Client` or `Chat` is never modified. Wrapping a wrapped object does not stack, and `unwrap_google()` returns the original. One Onman transport serves every clone: each call carries the scope of the clone that made it.
 
 ## Framework versions
 
@@ -68,7 +68,7 @@ Each adapter checks the installed framework version against its tested range:
 - **Unreadable version** (vendored or bundled builds): the adapter runs and logs `version_unverified` once.
 - **Too old or too new to import:** importing the adapter raises an `ImportError` that names the installed version and the tested range, with `code == "unsupported_version"`.
 
-Wrapping never raises for a version problem, even in strict mode. To fail fast at startup, call `caveman_middleware.preflight(runtime, "langchain")`, which reports `unavailable` for an untested framework. `caveman_middleware.ready(...)` raises instead.
+Wrapping never raises for a version problem, even in strict mode. To fail fast at startup, call `onman_middleware.preflight(runtime, "langchain")`, which reports `unavailable` for an untested framework. `onman_middleware.ready(...)` raises instead.
 
 | Extra | Accepted (gate and extra) | Oldest tested | Newest tested |
 |---|---|---|---|
@@ -93,8 +93,8 @@ CI tests the oldest versions on Python 3.11 and the newest on Python 3.13, using
 ## Failures, scopes, and logging
 
 - **Fail-open:** outside strict mode, any adapter or runtime failure sends your original request and reports a reason (`adapter_error` for a bug in adapter code). In strict mode those reasons raise `MiddlewareError`, except version problems (see above).
-- **One warning per problem:** every adapter logs one `WARNING` per adapter and reason on the `caveman.middleware` logger. The line never contains content, scope values, or credentials. Calls that are never LLM calls (embeddings, token counting, other routes) pass through with no report and no warning.
-- **Recovery errors:** when the model calls `caveman_retrieve` with an unknown or expired handle, or the runtime is unavailable, the tool answers `{"error": "<code>"}` through the framework's own tool-error result (an error `ToolMessage` in LangChain, `ToolFailed` in Pydantic AI, `is_error` in Anthropic, MCP and AutoGen, an error `ToolResult` in Strands) and the run continues, even in strict mode. Cancellation still propagates.
+- **One warning per problem:** every adapter logs one `WARNING` per adapter and reason on the `onman.middleware` logger. The line never contains content, scope values, or credentials. Calls that are never LLM calls (embeddings, token counting, other routes) pass through with no report and no warning.
+- **Recovery errors:** when the model calls `onman_retrieve` with an unknown or expired handle, or the runtime is unavailable, the tool answers `{"error": "<code>"}` through the framework's own tool-error result (an error `ToolMessage` in LangChain, `ToolFailed` in Pydantic AI, `is_error` in Anthropic, MCP and AutoGen, an error `ToolResult` in Strands) and the run continues, even in strict mode. Cancellation still propagates.
 - **Scopes:** thread and session IDs may be free-form. An email or `"user 42 / chat #7"` is hashed into a valid scope token. A missing scope, such as `scope_from_config` without a `thread_id`, passes through with reason `invalid_scope`; strict mode raises.
 - **Runtimes:** every adapter accepts either `MiddlewareRuntime` or `AsyncMiddlewareRuntime` and uses the matching view on sync and async paths.
 - **Long histories:** history hashing stops at 2 MiB (`manifest_bytes`) and images or bytes are hashed, so a long or multimodal history never skips the whole call. The ASGI adapter's body limit is `max_body_bytes` (default 2 MiB); a larger body passes through with reason `payload_budget`.
@@ -111,4 +111,4 @@ Close the runtime client and native framework/provider resources at shutdown. Cl
 
 ## Licence and support
 
-The client, adapters, and Engine runtime are all Apache-2.0. Read [LICENSING.md](https://github.com/JuliusBrussee/caveman/blob/main/LICENSING.md). This package is separate from Caveman Agent SDK. File sanitized reproducible issues in [Caveman](https://github.com/JuliusBrussee/caveman/issues).
+The client, adapters, and Engine runtime are all Apache-2.0. Read [LICENSING.md](https://github.com/Aravindh-dev12/onman/blob/main/LICENSING.md). This package is separate from Onman Agent SDK. File sanitized reproducible issues in [Onman](https://github.com/Aravindh-dev12/onman/issues).

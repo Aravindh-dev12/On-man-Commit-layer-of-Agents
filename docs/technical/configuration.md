@@ -1,9 +1,9 @@
 # Configuration
 
-Caveman has two configuration layers:
+Onman has two configuration layers:
 
-1. feature configuration used by `caveman wrap` and agent shortcuts;
-2. proxy configuration used by `caveman start`.
+1. feature configuration used by `onman wrap` and agent shortcuts;
+2. proxy configuration used by `onman start`.
 
 Credentials belong in environment variables or provider-native credential
 stores. Do not put API keys in either configuration file.
@@ -13,20 +13,20 @@ stores. Do not put API keys in either configuration file.
 Global feature configuration lives at:
 
 ```text
-~/.caveman-cloud/config.json
+~/.onman-cloud/config.json
 ```
 
 A project can add a restricted overlay at:
 
 ```text
-./.caveman/config.json
+./.onman/config.json
 ```
 
 Inspect the resolved path and values with:
 
 ```bash
-caveman tools config path
-caveman tools config get think.mode
+onman tools config path
+onman tools config get think.mode
 ```
 
 ### Keys and defaults
@@ -59,15 +59,15 @@ Environment variables take precedence over stored feature configuration.
 
 | Variable | Corresponding setting |
 |---|---|
-| `CAVEMAN_WRAP_MODE` | `think.mode` |
-| `CAVEMAN_CORE` | `think.core` |
-| `CAVEMAN_TOON` | `think.toon` |
-| `CAVEMAN_SHRINK` | `think.shrink` |
-| `CAVEMAN_MCP` | `execute.mcp` |
+| `ONMAN_WRAP_MODE` | `think.mode` |
+| `ONMAN_CORE` | `think.core` |
+| `ONMAN_TOON` | `think.toon` |
+| `ONMAN_SHRINK` | `think.shrink` |
+| `ONMAN_MCP` | `execute.mcp` |
 | `CAVE_PIXEL_MODELS` | `think.pixel.models` |
 | `CAVE_PIXEL_DENSITY` | `think.pixel.density` |
 
-Use environment overrides for temporary sessions. Use `caveman tools config
+Use environment overrides for temporary sessions. Use `onman tools config
 set` for durable operator choices.
 
 ## Proxy configuration
@@ -75,10 +75,10 @@ set` for durable operator choices.
 Default proxy configuration path:
 
 ```text
-~/.caveman/caveman.yaml
+~/.onman/onman.yaml
 ```
 
-Set `CAVEMAN_CONFIG` to load another file.
+Set `ONMAN_CONFIG` to load another file.
 
 ```yaml
 label: local
@@ -100,7 +100,7 @@ ca_bundle: ""
 |---|---|
 | `label` | Human-readable installation label |
 | `mode` | Proxy operating mode |
-| `listen` | Listen address. Loopback by default; a non-loopback address requires `CAVEMAN_AUTH_TOKEN` |
+| `listen` | Listen address. Loopback by default; a non-loopback address requires `ONMAN_AUTH_TOKEN` |
 | `optimizers` | Optimizer overrides; provider-cache optimizers default on in optimization modes and accept explicit `false` |
 | `subscription_compress` | Allow eligible subscription traffic compression |
 | `toolschema_strip` | Allow configured tool-schema annotation stripping |
@@ -114,7 +114,7 @@ Accepted internal proxy modes are `record`, `recommend`, `shadow`, `canary`,
 `active`, `compress`, and `pixel`. Unknown values resolve to `record`.
 Operator-facing local workflows normally use `record`, `compress`, or `pixel`.
 
-`CAVEMAN_MODE` can override proxy YAML mode for `caveman start`.
+`ONMAN_MODE` can override proxy YAML mode for `onman start`.
 
 ### Proxy environment
 
@@ -122,16 +122,16 @@ These are read by the proxy process itself, not by feature configuration.
 
 | Variable | Meaning |
 |---|---|
-| `CAVEMAN_CONFIG` | Path to `caveman.yaml` |
-| `CAVEMAN_HOME` | State directory; default `~/.caveman` |
-| `CAVEMAN_LISTEN` | Listen address; overrides `listen` |
-| `CAVEMAN_AUTH_TOKEN` | Inbound shared token; generate with `openssl rand -hex 32`. Required for any non-loopback listen address. Minimum 16 characters, no whitespace or control characters. Environment only — an `auth_token:` key in `caveman.yaml` is a startup error, not a token |
-| `CAVEMAN_MODE` | Proxy mode; overrides `mode` |
+| `ONMAN_CONFIG` | Path to `onman.yaml` |
+| `ONMAN_HOME` | State directory; default `~/.onman` |
+| `ONMAN_LISTEN` | Listen address; overrides `listen` |
+| `ONMAN_AUTH_TOKEN` | Inbound shared token; generate with `openssl rand -hex 32`. Required for any non-loopback listen address. Minimum 16 characters, no whitespace or control characters. Environment only — an `auth_token:` key in `onman.yaml` is a startup error, not a token |
+| `ONMAN_MODE` | Proxy mode; overrides `mode` |
 | `CAVE_UPSTREAM_PROXY` | Outbound proxy; overrides `upstream_proxy` |
 | `CAVE_CA_BUNDLE` | Extra PEM roots; overrides `ca_bundle` |
 | `CAVE_SSRF_ALLOWLIST` | Exact private or loopback upstream hosts to permit |
 
-With `CAVEMAN_AUTH_TOKEN` set, every request must present the token in
+With `ONMAN_AUTH_TOKEN` set, every request must present the token in
 `x-cave-api-key` or `Authorization: Bearer`. The proxy consumes that header
 before resolving the provider credential, so the token is never forwarded
 upstream. `/health/live`, `/health/ready` and `/metrics` stay unauthenticated.
@@ -189,7 +189,7 @@ compat:
 ```
 
 Only that mount forwards the listed headers. Standard provider credentials,
-request framing, cookies, and Caveman control headers cannot be configured this
+request framing, cookies, and Onman control headers cannot be configured this
 way. Headers named by an inbound `Connection` field stay on that connection.
 The proxy publishes header names, never values, with its endpoint identity.
 OpenClaw and Pi keep a provider direct when required configured headers are
@@ -220,7 +220,7 @@ shell commands would inherit. In both modes `localhost`, loopback addresses, and
 `NO_PROXY` matches are dialed directly, so an allowlisted local model server
 keeps working next to a corporate proxy. `CAVE_UPSTREAM_PROXY` overrides the
 YAML value.
-When a proxy is selected for a destination, Caveman does not resolve that
+When a proxy is selected for a destination, Onman does not resolve that
 hostname itself — the proxy does, which is what makes this work on a network
 with no outbound DNS at all. HTTPS providers tunnel through the proxy with
 `CONNECT`, so a plain forward proxy never sees request bodies or credentials. A
@@ -258,10 +258,10 @@ warning instead.
 
 The wrapped agent talks to the local proxy on loopback. If the agent itself
 reads `HTTPS_PROXY` (Claude Code does), that hop would otherwise be handed to the
-corporate proxy and time out. `caveman run` and `caveman native enable` add the
+corporate proxy and time out. `onman run` and `onman native enable` add the
 gateway host to the agent's `NO_PROXY` automatically, appending to whatever you
 already set and keeping your spelling of the variable. Set it yourself only when
-you launch the agent without caveman.
+you launch the agent without onman.
 
 ## Provider credentials
 
@@ -293,8 +293,8 @@ instance role `bedrock:InvokeModel*` and set no AWS keys at all.
 
 Feature configuration resolves from defaults, global file, allowed project
 overlay, then environment override. Proxy mode resolves from default, YAML,
-then `CAVEMAN_MODE`. Command flags can select an explicit session mode such as
-`caveman wrap --off` or `--pixel`.
+then `ONMAN_MODE`. Command flags can select an explicit session mode such as
+`onman wrap --off` or `--pixel`.
 
 When resolution fails or a mode is unknown, request transformation fails safe:
 the runtime uses record or original-byte behavior instead of guessing.

@@ -8,7 +8,7 @@ SLA or a claim that every provider endpoint has been certified.
 
 | Failure mechanism | Changed behavior | Regression evidence |
 | --- | --- | --- |
-| A wrap-owned listener retired after 30 minutes of native inactivity. Missing hooks, an exited wrapper, or suspended heartbeats could leave a live agent pointing at a closed port. | The serve loop has no idle-exit path, including when an older installation exports `CAVEMAN_NATIVE_IDLE_TIMEOUT`. Only an explicit stop or process failure ends it. | `TestServeDoesNotExpire`: real subprocess, isolated databases, accelerated legacy timeout, no heartbeats. |
+| A wrap-owned listener retired after 30 minutes of native inactivity. Missing hooks, an exited wrapper, or suspended heartbeats could leave a live agent pointing at a closed port. | The serve loop has no idle-exit path, including when an older installation exports `ONMAN_NATIVE_IDLE_TIMEOUT`. Only an explicit stop or process failure ends it. | `TestServeDoesNotExpire`: real subprocess, isolated databases, accelerated legacy timeout, no heartbeats. |
 | A new wrapper could SIGTERM a shared proxy to change mode/recovery if it found no live wrapper marker. Native and resumed sessions do not necessarily own those markers. | Wrappers never restart a shared listener. Incompatible new runs launch directly with their own provider configuration. Failed local startup also launches directly rather than exporting a dead endpoint. | `wrap-restart.runtime.mjs`: real proxy PIDs/generations remain unchanged, no signal, direct fallback, failed-start route removal, foreign-listener protection. |
 | Go `http.Client.Timeout` defaulted to 900,000 ms and includes reading the response body. An active stream could therefore expire at 15 minutes. | Default is `0`: no total generation deadline. A positive `CAVE_GATEWAY_UPSTREAM_TIMEOUT_MS` remains an explicit operator cap. Caller cancellation still cancels upstream. An upstream that connects and then sends nothing is bounded instead by the transport's response-header deadline (`CAVE_GATEWAY_RESPONSE_HEADER_TIMEOUT_MS`, default 900,000 ms), which does not cover the body. | Default-client assertion; production SSRF transport with delayed SSE and explicit-cap control; cancellation tests; `TestDefaultUpstreamClientBoundsResponseHeaders` (silent upstream answers 502 instead of hanging). |
 | A response could stream even when the request did not expose a readable JSON `stream` flag. The proxy buffered such responses. | SSE, Bedrock event streams, and recognized JSON-line streams are detected from response `Content-Type`. Headers flush immediately; chunks and unknown events pass through unchanged. | `TestProviderStreamsFlushBeforeCompletion`: nine routes, gated headers/body/end, no JSON stream flag. |
@@ -55,7 +55,7 @@ buffered Anthropic calls hitting a total timeout, and
 [issue #2465](https://github.com/headroomlabs-ai/headroom/issues/2465) describes
 server-side recovery converting streaming calls into buffered requests with no
 keepalive. Both issues were closed when checked; they are historical failure
-evidence, not claims about current Headroom behavior. Caveman's streaming
+evidence, not claims about current Headroom behavior. Onman's streaming
 compression path uses agent-side MCP recovery and keeps the upstream stream.
 
 [Anthropic's streaming contract](https://platform.claude.com/docs/en/build-with-claude/streaming)
@@ -69,7 +69,7 @@ client timeout remains active while reading the response body.
 - `go test -json ./proxy/...`: 1,331 passing test cases/subtests, 22 passing
   packages; one existing optional local-fixture diagnostic skipped, two packages
   have no tests.
-- `go test -race ./proxy/internal/gateway ./proxy/internal/standalone ./proxy/internal/nativeruntime ./proxy/cmd/caveman-proxy`:
+- `go test -race ./proxy/internal/gateway ./proxy/internal/standalone ./proxy/internal/nativeruntime ./proxy/cmd/onman-proxy`:
   404 passing cases/subtests; one existing optional diagnostic skipped.
 - `pnpm --dir packages/cli exec tsc`: passed.
 - Wrapper restart/gate/subscription recovery runtime suites: 50 tests passed.

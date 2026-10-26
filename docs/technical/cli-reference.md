@@ -1,10 +1,10 @@
 # CLI reference
 
-`caveman` and `cave` invoke the same command-line program. The short alias is
-useful in terminals; scripts should prefer `caveman` because its meaning is
+`onman` and `cave` invoke the same command-line program. The short alias is
+useful in terminals; scripts should prefer `onman` because its meaning is
 clearer to readers. The npm CLI requires Node.js 22.13 or newer.
 
-Run `caveman help <command>` for installed-version help. This page explains the
+Run `onman help <command>` for installed-version help. This page explains the
 command groups and important behavior; command help remains the exact source
 for accepted flags.
 
@@ -12,32 +12,32 @@ for accepted flags.
 
 | Command | Purpose | Account needed |
 |---|---|---:|
-| `caveman <agent>` | Persistently enable native integration, then run supported agent | No |
-| `caveman wrap <agent>` | Run one ephemeral wrapped session without persistent host config | No |
-| `caveman run -- <command>` | Run an arbitrary command through the local layer | No |
-| `caveman learn` | Rank locally observed improvements | No |
-| `caveman status` | Show local runtime, mode, and connection state | No |
-| `caveman login` | Connect the installation to Caveman Cloud | Yes |
-| `caveman tools` | Open the local tool namespace | No |
-| `caveman cloud` | Open the connected-service namespace | Yes |
+| `onman <agent>` | Persistently enable native integration, then run supported agent | No |
+| `onman wrap <agent>` | Run one ephemeral wrapped session without persistent host config | No |
+| `onman run -- <command>` | Run an arbitrary command through the local layer | No |
+| `onman learn` | Rank locally observed improvements | No |
+| `onman status` | Show local runtime, mode, and connection state | No |
+| `onman login` | Connect the installation to Onman Cloud | Yes |
+| `onman tools` | Open the local tool namespace | No |
+| `onman cloud` | Open the connected-service namespace | Yes |
 
 Supported agent shortcuts are `aider`, `claude`, `codex`, `gemini`, `hermes`,
 `kilo` (`kilocode` alias), `openclaw`, `opencode`, `pi`, and `qwen`.
 
 ```bash
-caveman claude
-caveman kilo run "review this repository"
-caveman qwen -p "review this repository"
-caveman codex --full-auto
-caveman run -- my-agent --project .
+onman claude
+onman kilo run "review this repository"
+onman qwen -p "review this repository"
+onman codex --full-auto
+onman run -- my-agent --project .
 ```
 
 Arguments after an agent name are passed to that agent. Arguments after `--`
-in `caveman run` are passed to the selected command.
+in `onman run` are passed to the selected command.
 
 ## Local tool namespace
 
-`caveman tools` groups less frequent local commands by job.
+`onman tools` groups less frequent local commands by job.
 
 | Group | Commands |
 |---|---|
@@ -52,11 +52,11 @@ Compress text from standard input or a file. Compression is local. Lossy output
 contains a recovery handle when a recovery store is available.
 
 ```bash
-caveman tools compress < long-context.txt
-caveman tools retrieve ccr_0123456789abcdef0123456789abcdef
+onman tools compress < long-context.txt
+onman tools retrieve ccr_0123456789abcdef0123456789abcdef
 ```
 
-Use `caveman start` when an application needs an HTTP proxy instead of a
+Use `onman start` when an application needs an HTTP proxy instead of a
 one-shot command.
 
 ### `shrink`
@@ -90,17 +90,17 @@ agents. Server choices include recovery, browser, connected read-only evidence,
 and opt-in delegation tools.
 
 ```bash
-caveman tools mcp install claude --server caveman
-caveman tools mcp uninstall claude --server caveman
-caveman tools mcp install qwen --server caveman
-caveman tools mcp uninstall qwen --server caveman
+onman tools mcp install claude --server onman
+onman tools mcp uninstall claude --server onman
+onman tools mcp install qwen --server onman
+onman tools mcp uninstall qwen --server onman
 ```
 
-Qwen registration is written to `~/.qwen/settings.json`. Caveman preserves
+Qwen registration is written to `~/.qwen/settings.json`. Onman preserves
 sibling settings and refuses to replace or remove an entry that is not recorded
-as Caveman-owned.
+as Onman-owned.
 
-`caveman-mcp` binary itself serves compression, recovery, statistics, and TOON
+`onman-mcp` binary itself serves compression, recovery, statistics, and TOON
 tools over standard input and output.
 
 ### `hooks`
@@ -114,11 +114,11 @@ output behavior to agent-native event systems. See
 Control a Chrome session through the local browser bridge.
 
 ```bash
-caveman tools browse https://example.com "main article"
-caveman tools browse act '<element-reference>' click
-caveman tools browse eval 'document.title'
-caveman tools browse recover '<recovery-handle>'
-caveman tools browse close
+onman tools browse https://example.com "main article"
+onman tools browse act '<element-reference>' click
+onman tools browse eval 'document.title'
+onman tools browse recover '<recovery-handle>'
+onman tools browse close
 ```
 
 Browser evaluation executes JavaScript in the attached page. Treat expressions
@@ -130,9 +130,9 @@ List, preview, install, add, or import skills. Preview an external skill before
 installation.
 
 ```bash
-caveman tools skills list
-caveman tools skills preview owner/repository
-caveman tools skills install owner/repository
+onman tools skills list
+onman tools skills preview owner/repository
+onman tools skills install owner/repository
 ```
 
 ### `sdk`
@@ -155,9 +155,9 @@ Local observations are not verified savings. See
 Read or change local feature configuration.
 
 ```bash
-caveman tools config path
-caveman tools config get think.mode
-caveman tools config set think.mode compress
+onman tools config path
+onman tools config get think.mode
+onman tools config set think.mode compress
 ```
 
 See [Configuration](configuration.md) for keys, values and precedence.
@@ -169,22 +169,22 @@ See [Configuration](configuration.md) for keys, values and precedence.
 Start the loopback HTTP proxy. Default address is `127.0.0.1:8787`.
 
 ```bash
-caveman start
+onman start
 ```
 
-The proxy uses `~/.caveman/caveman.yaml` unless `CAVEMAN_CONFIG` names another
-file. It stores local operational data in `~/.caveman/caveman.db`.
+The proxy uses `~/.onman/onman.yaml` unless `ONMAN_CONFIG` names another
+file. It stores local operational data in `~/.onman/onman.db`.
 
 ### `setup`
 
 Inspect or install local runtime components.
 
 ```bash
-caveman setup
-caveman setup --install
-caveman setup --json
-caveman setup --agent-native claude
-caveman setup --agent-native codex
+onman setup
+onman setup --install
+onman setup --json
+onman setup --agent-native claude
+onman setup --agent-native codex
 ```
 
 Add `--remove` to an `--agent-native` command to remove that integration.
@@ -194,11 +194,11 @@ Add `--remove` to an `--agent-native` command to remove that integration.
 `wrap` is the explicit form used by agent shortcuts.
 
 ```bash
-caveman wrap claude
-caveman wrap --off codex
-caveman wrap --pixel gemini
-caveman wrap --workflow review opencode
-caveman wrap qwen
+onman wrap claude
+onman wrap --off codex
+onman wrap --pixel gemini
+onman wrap --workflow review opencode
+onman wrap qwen
 ```
 
 - Default mode enables supported local compression, structured-data encoding,
@@ -212,32 +212,32 @@ Record mode never changes model-visible request bytes.
 
 ## Learning commands
 
-`caveman learn` reads local observations and ranks possible improvements.
+`onman learn` reads local observations and ranks possible improvements.
 
 ```bash
-caveman learn
-caveman learn --since 7d --sources claude,codex,gemini,opencode,aider
-caveman learn --all
-caveman learn --repo my-project
-caveman learn --json
-caveman learn implement codex --prompt "focus on config fixes"
-caveman learn apply claude_md_weight:project --dry-run
-caveman learn simulate claude_md_weight:project recurring_context:repaste:<fingerprint>
-caveman learn applied claude_md_weight:project --fix-kind claude_md_weight --note "approved and re-measured"
+onman learn
+onman learn --since 7d --sources claude,codex,gemini,opencode,aider
+onman learn --all
+onman learn --repo my-project
+onman learn --json
+onman learn implement codex --prompt "focus on config fixes"
+onman learn apply claude_md_weight:project --dry-run
+onman learn simulate claude_md_weight:project recurring_context:repaste:<fingerprint>
+onman learn applied claude_md_weight:project --fix-kind claude_md_weight --note "approved and re-measured"
 ```
 
 Output formats include plain text, JSON, and Markdown. `--all` adds every sink,
 confirmed outcomes, per-repository observations, and advanced command hints.
 `--repo` filters sessions before analysis. `apply` prepares one candidate;
 `simulate` totals counterfactual scale over scanned history; `applied` records a
-completed, re-measured fix in Caveman's outcome store. A recommendation remains
+completed, re-measured fix in Onman's outcome store. A recommendation remains
 an inferred opportunity until stronger evidence exists. Aider scanning remains
-opt-in through `CAVEMAN_AIDER_ROOT` because its history is repository-local.
-Full reference: [caveman learn](./learn.md).
+opt-in through `ONMAN_AIDER_ROOT` because its history is repository-local.
+Full reference: [onman learn](./learn.md).
 
 ## Connected namespace
 
-`caveman cloud` is the account and network namespace. Its command groups cover:
+`onman cloud` is the account and network namespace. Its command groups cover:
 
 - account: `whoami`, `projects`, `keys`, `providers`, `billing`;
 - evidence: `score`, `costs`, `plan`, `traces`, `experiments`, `receipts`;

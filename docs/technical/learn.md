@@ -1,6 +1,6 @@
-# caveman learn
+# onman learn
 
-`caveman learn` shows where your coding agent's tokens go, and what to fix
+`onman learn` shows where your coding agent's tokens go, and what to fix
 first. It reads the setup files and session history already on your computer.
 Nothing is sent anywhere.
 
@@ -12,7 +12,7 @@ You get:
 - a local HTML report and a JSON file.
 
 It never edits your files. Fixes happen inside Claude Code or Codex, through
-the `caveman-learn` skill, one edit at a time, and only after you say yes.
+the `onman-learn` skill, one edit at a time, and only after you say yes.
 
 Every number is an estimate from your own history (`inferred` in JSON). No
 local number is promoted to `verified`; see
@@ -27,13 +27,13 @@ right-hand column; the tables further down use them too.
 |---|---|---|
 | message | One request your agent sends to the model: your prompt, or one tool step. The agent re-sends its instructions and the whole conversation with every one. | turn (`tokens_per_turn`, `turns`) |
 | finding | One place your tokens go, with the evidence and a suggested fix. | sink (`sinks[]`) |
-| id | A finding's name, for commands like `caveman learn apply <id>`. Shown by `--all`. | `sink_id` |
-| Setup Score | How lean your setup is, 0 to 100, from this computer only. Not money. Caveman Cloud's team score is a different number. | `cave_score` |
+| id | A finding's name, for commands like `onman learn apply <id>`. Shown by `--all`. | `sink_id` |
+| Setup Score | How lean your setup is, 0 to 100, from this computer only. Not money. Onman Cloud's team score is a different number. | `cave_score` |
 | tokens a day at your usual pace | Tokens per message times your average messages per day in the period scanned. A rate from now on, not tokens already spent. | `tokens_per_day_rate` |
 | tokens so far | What a habit already used in the period scanned. | `tokens_observed` |
 | estimate | Worked out from local files. Not verified, not a bill. | `basis: "inferred"` |
 | safe fix | A mechanical fix exists. It is applied only if it uses fewer tokens overall. | class `reducible` |
-| repeated text | The same text pasted again across sessions. Caveman memory can recall it instead. | class `recurring_context` |
+| repeated text | The same text pasted again across sessions. Onman memory can recall it instead. | class `recurring_context` |
 | habit | A measured pattern in how your sessions run. Changing it is up to you. | class `behavioral` |
 | needed | Setup you need. Shown so the picture is complete; never changed. | class `load_bearing` |
 | always-loaded setup, instructions | `CLAUDE.md`, `AGENTS.md`, skill descriptions, hooks: loaded into every message. | `config_tax` |
@@ -42,10 +42,10 @@ right-hand column; the tables further down use them too.
 | overloaded messages | Messages where the conversation filled more than half the context window. A common rule of thumb: answers tend to get worse past that point. | `dumbzone`, `context_dumbzone` |
 | how full sessions get | Each session's peak share of the context window. | `context_depth`, `peak_context_pct` |
 | first-message size | What a session sends with its first message: your setup plus your first prompt. | `first_turn_tokens`, `measured_prefix_tokens` |
-| Caveman memory (cavemem) | Caveman's local memory store. The agent recalls a short version of the text when it needs it, instead of pasting it again. | `cavemem_offload` |
+| Onman memory (onmem) | Onman's local memory store. The agent recalls a short version of the text when it needs it, instead of pasting it again. | `onmem_offload` |
 | read from cache | Share of input the provider served from its prompt cache, which costs less than list price. How much less varies by model: usually a tenth of list price or less. | `cache_read_pct` |
 | input really costs | Your input price per million tokens after caching, and its share of list price. | `effective_input_usd_per_mtok`, `effective_input_multiplier` |
-| no price | A model missing from Caveman's price list. Its tokens are left out, so the real total is higher. | `unpriced` |
+| no price | A model missing from Onman's price list. Its tokens are left out, so the real total is higher. | `unpriced` |
 | points | The change in a percentage: 15% to 13% is −2 points. | percentage points |
 | week of Sep 21 | A Monday-to-Sunday week, in UTC. | ISO week (`2026-W39`) |
 | middle session | The median: half the sessions are above it, half below. | median |
@@ -59,11 +59,11 @@ nothing.
 
 | Agent | Session transcripts | Config and memory files | Root override |
 |---|---|---|---|
-| Claude Code | `~/.claude/projects/**/*.jsonl` | `~/.claude/CLAUDE.md`, `~/.claude/skills/*`, hook count from `~/.claude/settings.json`, plugin count from `~/.claude/plugins/installed_plugins.json`, MCP servers from `~/.claude.json` and `.mcp.json`, every `CLAUDE.md` from the current directory up to `/` | `CAVEMAN_CLAUDE_ROOT`, then `CLAUDE_CONFIG_DIR` (global config then at `$CLAUDE_CONFIG_DIR/.claude.json`) |
-| Codex | `~/.codex/sessions/**/rollout-*.jsonl`, `~/.codex/archived_sessions/` | `~/.codex/AGENTS.md`, `./AGENTS.md` | `CAVEMAN_CODEX_ROOT`, then `CODEX_HOME` |
-| Gemini CLI | `~/.gemini/tmp/*/chats/session-*.json` | `~/.gemini/GEMINI.md`, `GEMINI.md` from repo root to cwd | `CAVEMAN_GEMINI_ROOT` |
-| opencode | `~/.local/share/opencode/storage/{session,message,part}` | none | `CAVEMAN_OPENCODE_ROOT` |
-| aider | `.aider.chat.history.md` files under the root | none | `CAVEMAN_AIDER_ROOT` (required; off without it) |
+| Claude Code | `~/.claude/projects/**/*.jsonl` | `~/.claude/CLAUDE.md`, `~/.claude/skills/*`, hook count from `~/.claude/settings.json`, plugin count from `~/.claude/plugins/installed_plugins.json`, MCP servers from `~/.claude.json` and `.mcp.json`, every `CLAUDE.md` from the current directory up to `/` | `ONMAN_CLAUDE_ROOT`, then `CLAUDE_CONFIG_DIR` (global config then at `$CLAUDE_CONFIG_DIR/.claude.json`) |
+| Codex | `~/.codex/sessions/**/rollout-*.jsonl`, `~/.codex/archived_sessions/` | `~/.codex/AGENTS.md`, `./AGENTS.md` | `ONMAN_CODEX_ROOT`, then `CODEX_HOME` |
+| Gemini CLI | `~/.gemini/tmp/*/chats/session-*.json` | `~/.gemini/GEMINI.md`, `GEMINI.md` from repo root to cwd | `ONMAN_GEMINI_ROOT` |
+| opencode | `~/.local/share/opencode/storage/{session,message,part}` | none | `ONMAN_OPENCODE_ROOT` |
+| aider | `.aider.chat.history.md` files under the root | none | `ONMAN_AIDER_ROOT` (required; off without it) |
 
 The memory and rules doctor also reads `.claude/CLAUDE.md`, `CLAUDE.local.md`,
 `.claude/rules/*.md` and `~/.claude/rules/*.md` (path-scoped rules with a
@@ -73,35 +73,35 @@ topic files, honoring `CLAUDE_CODE_PROJECT_DIR_NAME`.
 
 Two other inputs: the `session_outcomes` finding reads commit timestamps with
 `git` in up to 12 repositories (3 s per call, budgeted overall), and the
-`wrap_measured` block reads rows the Caveman proxy already recorded in
-`caveman.db`.
+`wrap_measured` block reads rows the Onman proxy already recorded in
+`onman.db`.
 
 ### Writes
 
-All paths are under `$CAVEMAN_HOME` (default `~/.caveman`) unless noted.
-`CAVEMAN_DB` overrides the database path.
+All paths are under `$ONMAN_HOME` (default `~/.onman`) unless noted.
+`ONMAN_DB` overrides the database path.
 
 | When | What is written |
 |---|---|
-| Any command that builds a plan (default run, `scan`, `report`, `apply`, `applied`, `simulate`, `savings`, `export`, `experiment report`) | `caveman.db` tables `config_snapshots`, `config_snapshot_history`, `learn_sinks` |
-| `caveman learn` and `learn scan` (not with `--no-remember`, which autopilot always passes) | Also: one cavemem memory per `reducible` sink (title plus suggestion) in `mem/mem.db`, and a matching row in the `learnings` table |
-| `caveman learn`, `learn scan --write-report`, `learn report` | `reports/caveman-learn.html`, `reports/caveman-learn.json`, `reports/caveman-learn.YYYY-MM-DD.json` (last 8 dated snapshots kept) |
+| Any command that builds a plan (default run, `scan`, `report`, `apply`, `applied`, `simulate`, `savings`, `export`, `experiment report`) | `onman.db` tables `config_snapshots`, `config_snapshot_history`, `learn_sinks` |
+| `onman learn` and `learn scan` (not with `--no-remember`, which autopilot always passes) | Also: one onmem memory per `reducible` sink (title plus suggestion) in `mem/mem.db`, and a matching row in the `learnings` table |
+| `onman learn`, `learn scan --write-report`, `learn report` | `reports/onman-learn.html`, `reports/onman-learn.json`, `reports/onman-learn.YYYY-MM-DD.json` (last 8 dated snapshots kept) |
 | `learn apply <sink>` without `--dry-run` | `candidates/learn-<sink>.json` |
 | `learn applied` | row in `applied_fixes` |
 | `learn experiment start/arm/stop` | rows in `experiments`, `experiment_arms` |
-| `learn export` | `reports/caveman-learn-digest.json` (or `--out <path>`) |
+| `learn export` | `reports/onman-learn-digest.json` (or `--out <path>`) |
 | Autopilot | `runtime/learn-autopilot.json`, `.lock`, `-nudge.json`, `-nudge.inflight.json`, `-announced.json`, and its own report, snapshots and trend history under `runtime/learn-autopilot/reports/` |
-| `learn autopilot on/off` | key `learnAutopilot` in `~/.caveman-cloud/config.json` |
-| `learn implement` | the skill file, only if missing: `./.claude/skills/caveman-learn/SKILL.md` (Claude Code) or `$CODEX_HOME/skills/caveman-learn/SKILL.md` (Codex) |
+| `learn autopilot on/off` | key `learnAutopilot` in `~/.onman-cloud/config.json` |
+| `learn implement` | the skill file, only if missing: `./.claude/skills/onman-learn/SKILL.md` (Claude Code) or `$CODEX_HOME/skills/onman-learn/SKILL.md` (Codex) |
 
 Report files are created with mode `0600`.
 
 ## Quick start
 
 ```bash
-caveman learn             # read your sessions, score them, show the top findings
-caveman learn implement   # open Claude Code or Codex to review and fix, with consent
-caveman learn savings     # later: what the applied fixes returned
+onman learn             # read your sessions, score them, show the top findings
+onman learn implement   # open Claude Code or Codex to review and fix, with consent
+onman learn savings     # later: what the applied fixes returned
 ```
 
 ## Commands and flags
@@ -111,16 +111,16 @@ The default window is `--since 30d`. The scan times out after 120 s
 
 | Command | What it does |
 |---|---|
-| `caveman learn` | In an interactive terminal: progress, Setup Score, top findings, then a menu (implement, show all findings, open report, done). Otherwise compact text. |
-| `--plain` | Compact text; no animation or menu. `CAVEMAN_PLAIN=1` or `TERM=dumb` has the same effect. |
+| `onman learn` | In an interactive terminal: progress, Setup Score, top findings, then a menu (implement, show all findings, open report, done). Otherwise compact text. |
+| `--plain` | Compact text; no animation or menu. `ONMAN_PLAIN=1` or `TERM=dumb` has the same effect. |
 | `--all` | Every finding with internal id, basis, evidence and suggestion; confirmed outcomes; per-repository rows. |
-| `--json` | The `caveman.learn.v1` plan on stdout. |
+| `--json` | The `onman.learn.v1` plan on stdout. |
 | `--md` | Detailed Markdown. |
 | `--since <Nd>` | Window, e.g. `7d`. |
 | `--sources <list>` | Any of `claude,codex,gemini,opencode,aider`. Default: all. |
 | `--repo <substring>` | Keep only sessions whose repository matches, before any detector runs. Config is still read from the current directory. |
 | `--retro` | Adds the "would have saved" replay block (`retro`). Budgets: `--behavior-budget-ms`, `--retro-budget-ms`. Omitted when `--repo` is set. |
-| `implement [claude\|codex] [--prompt "<focus>"]` | Opens the agent with the `caveman-learn` skill and the current report. |
+| `implement [claude\|codex] [--prompt "<focus>"]` | Opens the agent with the `onman-learn` skill and the current report. |
 | `apply <sink_id> [--dry-run]` | Materializes a candidate for a `reducible` or `recurring_context` sink. Edits nothing. |
 | `applied <sink_id> [--fix-kind <k>] [--note <t>]` | Records an approved, re-measured fix in the outcome ledger. |
 | `simulate <sink_id...>` | Token counterfactual over scanned history only. |
@@ -134,22 +134,22 @@ The default window is `--since 30d`. The scan times out after 120 s
 Examples:
 
 ```bash
-caveman learn --plain --since 7d --sources claude,codex
-caveman learn --repo my-service --all
-caveman learn --json > plan.json
-caveman learn implement codex --prompt "only config trims"
-caveman learn apply claude_md_weight:project --dry-run
-caveman learn applied claude_md_weight:project --note "trimmed setup section"
-caveman learn simulate claude_md_weight:project recurring_context:repaste:<fingerprint>
-caveman learn savings --json
-caveman learn experiment start deploy-skill --sink procedure_repeat:<key> --fix-kind skill_distillation
-caveman learn experiment arm deploy-skill off
-caveman learn experiment report deploy-skill
-caveman learn experiment list
-caveman learn experiment stop deploy-skill
-caveman learn export --out ./learn-digest.json
-caveman learn reconcile --usage-export ~/Downloads/usage.csv
-caveman learn autopilot off
+onman learn --plain --since 7d --sources claude,codex
+onman learn --repo my-service --all
+onman learn --json > plan.json
+onman learn implement codex --prompt "only config trims"
+onman learn apply claude_md_weight:project --dry-run
+onman learn applied claude_md_weight:project --note "trimmed setup section"
+onman learn simulate claude_md_weight:project recurring_context:repaste:<fingerprint>
+onman learn savings --json
+onman learn experiment start deploy-skill --sink procedure_repeat:<key> --fix-kind skill_distillation
+onman learn experiment arm deploy-skill off
+onman learn experiment report deploy-skill
+onman learn experiment list
+onman learn experiment stop deploy-skill
+onman learn export --out ./learn-digest.json
+onman learn reconcile --usage-export ~/Downloads/usage.csv
+onman learn autopilot off
 ```
 
 Notes per command:
@@ -179,19 +179,19 @@ Notes per command:
 
 ## Autopilot
 
-Autopilot rescans in the background and tells you about new findings without you running learn. It keeps its own report under `runtime/learn-autopilot/reports/`: its scans run with whatever working directory and environment the last session-end hook had, so they never overwrite the canonical report, dated snapshots or trend history your own `caveman learn` writes.
+Autopilot rescans in the background and tells you about new findings without you running learn. It keeps its own report under `runtime/learn-autopilot/reports/`: its scans run with whatever working directory and environment the last session-end hook had, so they never overwrite the canonical report, dated snapshots or trend history your own `onman learn` writes.
 
 | Aspect | Behavior |
 |---|---|
-| Trigger | The Caveman native hook's `SessionEnd` event (Claude Code, Codex, Gemini CLI; opencode and Hermes bridges forward it). The hook spawns a detached, idle-priority `caveman learn autopilot run` and returns immediately. |
-| Throttle | At most one scan per 6 hours. `CAVEMAN_LEARN_AUTOPILOT_HOURS` changes it. One scan at a time (lock file; stale after timeout + 60 s). |
-| Scan | `learn scan --write-report --no-remember --reports-home $CAVEMAN_HOME/runtime/learn-autopilot` with the default window and sources, killed at `CAVE_LEARN_TIMEOUT`. |
-| Proxy check | Before scanning, the detached child runs `caveman-proxy learn capabilities` and needs `no_remember`, `reports_home` and `memory_health`. An older proxy would ignore those flags and write cavemem and the canonical report, so it never scans: `last_error` becomes "proxy too old for autopilot (needs learn capabilities)" and `learn autopilot status` shows it. The result is cached per proxy path, mtime and size, so an upgrade re-probes. The `SessionEnd` hook itself never probes. |
-| Writes | Its own report files, the `caveman.db` plan tables every scan updates, and its own `runtime/learn-autopilot*` state. Never cavemem memories or `learnings` rows: `--no-remember` skips them, because sink titles carry changing counts and each unattended run would add a near-duplicate. |
-| Enable precedence | `CAVEMAN_LEARN_AUTOPILOT` env (`0`, `false`, `off`, `no` disable; anything else enables) → `learnAutopilot` in `~/.caveman-cloud/config.json` → off when `CI` is set (not `0`/`false`) or under `NODE_TEST_CONTEXT` → on. |
-| Opt out | `caveman learn autopilot off`, or `CAVEMAN_LEARN_AUTOPILOT=0`. |
-| State | `$CAVEMAN_HOME/runtime/learn-autopilot*.json`. Writes are temp-file + rename and refuse symlinked parents. |
-| Status | `caveman learn autopilot status`: on/off and why, last scan, next scan, last error, last line shown, and a line waiting to show. |
+| Trigger | The Onman native hook's `SessionEnd` event (Claude Code, Codex, Gemini CLI; opencode and Hermes bridges forward it). The hook spawns a detached, idle-priority `onman learn autopilot run` and returns immediately. |
+| Throttle | At most one scan per 6 hours. `ONMAN_LEARN_AUTOPILOT_HOURS` changes it. One scan at a time (lock file; stale after timeout + 60 s). |
+| Scan | `learn scan --write-report --no-remember --reports-home $ONMAN_HOME/runtime/learn-autopilot` with the default window and sources, killed at `CAVE_LEARN_TIMEOUT`. |
+| Proxy check | Before scanning, the detached child runs `onman-proxy learn capabilities` and needs `no_remember`, `reports_home` and `memory_health`. An older proxy would ignore those flags and write onmem and the canonical report, so it never scans: `last_error` becomes "proxy too old for autopilot (needs learn capabilities)" and `learn autopilot status` shows it. The result is cached per proxy path, mtime and size, so an upgrade re-probes. The `SessionEnd` hook itself never probes. |
+| Writes | Its own report files, the `onman.db` plan tables every scan updates, and its own `runtime/learn-autopilot*` state. Never onmem memories or `learnings` rows: `--no-remember` skips them, because sink titles carry changing counts and each unattended run would add a near-duplicate. |
+| Enable precedence | `ONMAN_LEARN_AUTOPILOT` env (`0`, `false`, `off`, `no` disable; anything else enables) → `learnAutopilot` in `~/.onman-cloud/config.json` → off when `CI` is set (not `0`/`false`) or under `NODE_TEST_CONTEXT` → on. |
+| Opt out | `onman learn autopilot off`, or `ONMAN_LEARN_AUTOPILOT=0`. |
+| State | `$ONMAN_HOME/runtime/learn-autopilot*.json`. Writes are temp-file + rename and refuse symlinked parents. |
+| Status | `onman learn autopilot status`: on/off and why, last scan, next scan, last error, last line shown, and a line waiting to show. |
 
 ### Session-start nudge
 
@@ -199,7 +199,7 @@ After a background scan, autopilot may show one line at the next session
 start, for example:
 
 ```
-caveman learn: new finding — <title> (~2.4k tokens in every message, estimate). Run `caveman learn` to review.
+onman learn: new finding — <title> (~2.4k tokens in every message, estimate). Run `onman learn` to review.
 ```
 
 Rules:
@@ -210,8 +210,8 @@ Rules:
   threshold.
 - `memory_health:broken_imports` and `memory_health:memory_truncation` qualify
   with no token threshold: they break what the agent loads. When they are all
-  that is new they lead the line (`caveman learn: memory files (<repo>) — <title>.
-  Run \`caveman learn --all\` to review.`); otherwise they are appended as
+  that is new they lead the line (`onman learn: memory files (<repo>) — <title>.
+  Run \`onman learn --all\` to review.`); otherwise they are appended as
   ", plus N memory-file findings".
 - Only sinks not seen by an earlier autopilot scan. The first scan records a
   baseline and announces nothing.
@@ -251,7 +251,7 @@ What it is not:
 
 - Not money. It carries no currency and is not derived from spend.
 - Not billed usage. It is transcript and file arithmetic.
-- Not the Caveman Cloud Cave Score, which scores organization traffic on a
+- Not the Onman Cloud Cave Score, which scores organization traffic on a
   different scale. The two will not match.
 
 The terminal and TUI show the score only once at least one block has
@@ -269,7 +269,7 @@ Classes (the report's label in brackets):
 - `reducible` ("safe fix"): a mechanical fix exists and must pass the
   net-token-negative gate.
 - `recurring_context` ("repeated text"): content re-established across
-  sessions; fix is a cavemem offload.
+  sessions; fix is a onmem offload.
 - `behavioral` ("habit"): a measured habit. Numbers are stated; suggestions
   are soft.
 - `load_bearing` ("needed"): measured config you need. Listed so the score
@@ -281,7 +281,7 @@ Classes (the report's label in brackets):
 | `claude_md_weight:{user,project,codex}` | reducible | A `CLAUDE.md` (or `~/.codex/AGENTS.md` for `codex`) over 150 lines or 2000 tokens | `claude_md_weight` | Yes, via skill |
 | `claude_md_sections:{user,project}` | reducible | `CLAUDE.md` sections with no distinctive-line echo in ≥5 sessions. Emitted only if at least one other section did echo. | `claude_md_sections` | Yes, via skill |
 | `dead_load:skills` | reducible | Skills whose descriptions load every turn with no use detected in the window | `dead_load` | Yes, via skill |
-| `recurring_context:repaste:<fingerprint>` | recurring_context | A block of ≥180 tokens re-established in ≥3 sessions. Top 24 listed; the rest still count in the score. | `cavemem_offload` | Yes, via skill |
+| `recurring_context:repaste:<fingerprint>` | recurring_context | A block of ≥180 tokens re-established in ≥3 sessions. Top 24 listed; the rest still count in the score. | `onmem_offload` | Yes, via skill |
 | `context_dumbzone` | behavioral | Turns over 50% of the model window, if ≥10% of turns | `dumbzone_advice` | No |
 | `subagent_overuse` | behavioral | Subagent spawn counts | none | No |
 | `subagent_spend` | behavioral | Share of provider-counted context in subagent sidechains (≥100k tokens, ≥3 sessions). Visibility only. | none | No |
@@ -355,27 +355,27 @@ A trend is not a saving and does not show what caused the change.
 
 ### The consent loop
 
-`caveman learn implement` (or the TUI's "Implement with agent") opens Claude
-Code or Codex with the `caveman-learn` skill, installing it if missing. The
+`onman learn implement` (or the TUI's "Implement with agent") opens Claude
+Code or Codex with the `onman-learn` skill, installing it if missing. The
 skill:
 
-1. Reads `caveman learn report --json` and shows the score, components and
+1. Reads `onman learn report --json` and shows the score, components and
    ranked sinks.
 2. For each sink you choose, proposes one concrete diff with before and after
    tokens per turn, and asks yes or no.
 3. Applies only approved edits, with the agent's own file tools.
 4. Re-measures. **Net-token-negative gate:** if tokens per turn did not drop,
    the edit is reverted.
-5. For a cavemem offload, also checks that `caveman mem recall` returns the
-   content and a pointer is in place; otherwise it reverts (`caveman mem
+5. For a onmem offload, also checks that `onman mem recall` returns the
+   content and a pointer is in place; otherwise it reverts (`onman mem
    forget <id>` and restores the source).
-6. After an edit passes its gate, runs `caveman learn applied <sink_id>`.
+6. After an edit passes its gate, runs `onman learn applied <sink_id>`.
 
 `load_bearing` sinks are never edited. `procedure_repeat` candidates skip the
 gate and go to an experiment instead, because a skill adds prefix tokens every
 session and pays back only on some.
 
-You can install the skill directly: `caveman tools skills install caveman-learn`
+You can install the skill directly: `onman tools skills install onman-learn`
 (add `--user` for all repos, `--agent codex` for Codex).
 
 ### Applied ledger and verdicts
@@ -386,7 +386,7 @@ before-value and reports a row in `confirmed`:
 | Fix | After-value | Verdict rule (needs ≥3 sessions after) | Method |
 |---|---|---|---|
 | `claude_md_weight`, `claude_md_sections`, `dead_load`, `config_tax` | Current token count of the same file, sections or skills | lower = `improved`, higher = `regressed`, equal = `unchanged` | `deterministic_remeasure` |
-| `cavemem_offload` | Whether the block's fingerprint recurs after the fix | absent = `improved`, present = `unchanged` | `interrupted_time_series` |
+| `onmem_offload` | Whether the block's fingerprint recurs after the fix | absent = `improved`, present = `unchanged` | `interrupted_time_series` |
 | `dumbzone_advice` | Share of turns over 50% of the window | ≥5 points lower = `improved`, ≥5 higher = `regressed` | `interrupted_time_series` |
 | Anything else | none | always `insufficient_data` | `unattributed` |
 
@@ -397,7 +397,7 @@ force confidence to `low`.
 
 ### Savings
 
-`caveman learn savings` lists every recorded fix, including regressions,
+`onman learn savings` lists every recorded fix, including regressions,
 grouped by measurement method (rung), strongest first:
 
 | Rung | Method | Confidence |
@@ -440,15 +440,15 @@ is still `inferred`.
 
 Every edit is made by the skill and reported exactly, so it can be undone with
 your own tools or version control. An offload reverts with
-`caveman mem forget <id>` plus restoring the trimmed text. A `regressed`
+`onman mem forget <id>` plus restoring the trimmed text. A `regressed`
 verdict is shown with no dollar figure; the skill offers the revert path.
 
 ## Output files and JSON
 
-`caveman learn --json` and `caveman learn report --json` print one document
-with `schema: "caveman.learn.v1"` and `basis: "inferred"`. The same plan, plus
+`onman learn --json` and `onman learn report --json` print one document
+with `schema: "onman.learn.v1"` and `basis: "inferred"`. The same plan, plus
 `moves`, `generated_at` and `generation`, is saved as
-`reports/caveman-learn.json`. The Go types are in
+`reports/onman-learn.json`. The Go types are in
 [`proxy/internal/store/learn_types.go`](../../proxy/internal/store/learn_types.go).
 
 | Block | Present | Content |
@@ -467,9 +467,9 @@ with `schema: "caveman.learn.v1"` and `basis: "inferred"`. The same plan, plus
 | `portfolio` | sinks share a fix family | grouping of existing sinks, no new estimate |
 | `repos` | ≥2 repositories with ≥2 sessions each | per-repository summary |
 
-Other subcommands print their own schemas: `caveman.learn.savings.v1`,
-`caveman.learn.simulate.v1`, `caveman.learn.experiment.v1`,
-`caveman.learn.digest.v1`, `caveman.learn.reconcile.v1`.
+Other subcommands print their own schemas: `onman.learn.savings.v1`,
+`onman.learn.simulate.v1`, `onman.learn.experiment.v1`,
+`onman.learn.digest.v1`, `onman.learn.reconcile.v1`.
 
 `spend` is what the scanned window cost at published rates. It is a floor
 when `unpriced` is non-empty, it is not an invoice, and on a subscription plan
@@ -483,7 +483,7 @@ into one line; `--all`, `--md`, JSON and the HTML report list each model.
   confirm the nudge where no one sees it.
 - **Unsupported agents.** Only the five sources above are scanned. Cursor,
   Windsurf, Hermes, Pi and other agents are not read.
-- **aider** is off unless `CAVEMAN_AIDER_ROOT` points at a directory to walk.
+- **aider** is off unless `ONMAN_AIDER_ROOT` points at a directory to walk.
   aider history has no provider usage, so it adds nothing to depth, dumbzone,
   spend or trends.
 - **Context windows.** A window comes from the shared model catalog. For

@@ -1,15 +1,15 @@
 Read `CLAUDE.md` before repository work. Binding routing: this repo owns
 skills, Engine, and MV3 extension; Agent SDK work belongs in
-`/Users/julb/Desktop/GitHub/caveman-agent-sdk`; Browse driver/MCP/benchmark/plugin
-work belongs in `/Users/julb/Desktop/GitHub/caveman-browse`; proprietary Pebble
-product work belongs in `/Users/julb/Desktop/GitHub/caveman-coding-agent`.
+`https://github.com/Aravindh-dev12/onman-agent-sdk`; Browse driver/MCP/benchmark/plugin
+work belongs in `https://github.com/Aravindh-dev12/onman-browse`; proprietary Pebble
+product work belongs in `https://github.com/Aravindh-dev12/onman-coding-agent`.
 
-Visibility: this repo and `caveman-browse` are public now;
-`caveman-agent-sdk` is private during development with planned public release
-after its gates; `caveman-coding-agent` and Caveman-Cloud remain private
+Visibility: this repo and `onman-browse` are public now;
+`onman-agent-sdk` is private during development with planned public release
+after its gates; `onman-coding-agent` and Onman-Cloud remain private
 commercial source.
 
-@./skills/caveman/SKILL.md
-@./skills/caveman-commit/SKILL.md
-@./skills/caveman-review/SKILL.md
-@./skills/caveman-compress/SKILL.md
+@./skills/onman/SKILL.md
+@./skills/onman-commit/SKILL.md
+@./skills/onman-review/SKILL.md
+@./skills/onman-compress/SKILL.md

@@ -1,6 +1,6 @@
 # Context recovery
 
-Caveman Context Recovery, abbreviated CCR, stores exact original bytes behind a
+Onman Context Recovery, abbreviated CCR, stores exact original bytes behind a
 short reference. Compression can then remove low-value context without making
 source unavailable to a user or agent.
 
@@ -19,7 +19,7 @@ encryption mechanism and not an authorization token.
 Retrieve source with:
 
 ```bash
-caveman tools retrieve ccr_0123456789abcdef0123456789abcdef
+onman tools retrieve ccr_0123456789abcdef0123456789abcdef
 ```
 
 MCP clients can call the recovery tool instead.
@@ -53,8 +53,8 @@ instead of returning a guessed object.
 | WebAssembly | In-memory store |
 | Tests and embedded callers | Caller-selected store |
 
-Native recovery data normally lives in `~/.caveman/ccr.db`. Proxy measurements
-use separate `~/.caveman/caveman.db`. A WebAssembly handle disappears when its
+Native recovery data normally lives in `~/.onman/ccr.db`. Proxy measurements
+use separate `~/.onman/onman.db`. A WebAssembly handle disappears when its
 in-memory runtime is discarded unless its host persists record separately.
 
 ## Capacity behavior
@@ -125,7 +125,7 @@ process before retrying. The store does not stop or restart a shared proxy
 automatically.
 
 This behavior addresses the orphaned-descriptor failure reported in
-[issue #1008](https://github.com/JuliusBrussee/caveman/issues/1008): an existing
+[issue #1008](https://github.com/Aravindh-dev12/onman/issues/1008): an existing
 process must report a storage failure instead of acknowledging writes through
 retired files. Recovery is explicit process restart, not transparent replacement
 adoption. Tests use separate real writer/reader processes, verify that rejected

@@ -1,12 +1,12 @@
-# Caveman technical documentation
+# Onman technical documentation
 
-This manual explains the public Caveman repository from installation through
+This manual explains the public Onman repository from installation through
 runtime behavior. It covers the files and interfaces that users can inspect in
 this repository. Hosted-service implementation details are outside its scope.
 
 ## Start here
 
-- [Product model](./technical/product-model.md): what each Caveman layer does
+- [Product model](./technical/product-model.md): what each Onman layer does
 - [Architecture](./technical/architecture.md): request path, local processes,
   storage, and failure behavior
 - [Install and update](./technical/install-and-update.md): skill-only and local
@@ -33,7 +33,7 @@ this repository. Hosted-service implementation details are outside its scope.
 - [Cache planner](./technical/cache-planner.md): provider prompt caching
 - Framework middleware: [TypeScript](../packages/middleware/typescript/README.md)
   and [Python](../packages/middleware/python/README.md) adapters that wrap one call
-  in your own app; hosted guide at https://docs.caveman.so/docs/sdk/middleware
+  in your own app; hosted guide at https://docs.onman.so/docs/sdk/middleware
 
 ## Agent-facing tools
 
@@ -46,11 +46,11 @@ this repository. Hosted-service implementation details are outside its scope.
 - [Exploration and delegation](./technical/exploration-and-delegation.md):
   read-only repository search, compact return contracts, and delegation limits
 
-## Building on Caveman
+## Building on Onman
 
 - [SDKs and packages](./technical/sdks-and-packages.md): TypeScript and Python
   SDKs, shared contracts and schemas, provider catalog, and benchmark tooling
-- [caveman learn](./technical/learn.md): local setup profiler, Setup Score,
+- [onman learn](./technical/learn.md): local setup profiler, Setup Score,
   sinks, autopilot, and consent-gated fixes
 - [Accounting and evidence](./technical/accounting-and-evidence.md): `inferred`,
   provider-reported, benchmark, and `verified` labels
@@ -58,9 +58,9 @@ this repository. Hosted-service implementation details are outside its scope.
   secrets; local files; SSRF controls; binary verification
 - [Testing and benchmarks](./technical/testing-and-benchmarks.md): local gates,
   benchmark boundaries, and reproducibility
-- [Extending Caveman](./technical/extending.md): agent profiles, compressors,
+- [Extending Onman](./technical/extending.md): agent profiles, compressors,
   providers, schemas, and prices
-- [Glossary](./technical/glossary.md): every Caveman-specific term used by this
+- [Glossary](./technical/glossary.md): every Onman-specific term used by this
   manual
 
 Package READMEs remain the narrow API references. This manual supplies the

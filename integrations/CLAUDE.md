@@ -1,4 +1,4 @@
-# integrations — the framework-recipe registry (`caveman sdk` data)
+# integrations — the framework-recipe registry (`onman sdk` data)
 
 Declarative routing recipes for AI SDKs/frameworks: each recipe is the one-line
 base-URL shape that points a framework at the byte-safe gateway, with `{{baseURL}}`

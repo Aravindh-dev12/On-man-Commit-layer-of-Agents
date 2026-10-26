@@ -3,14 +3,14 @@
 ## 2.0.0 — 2026-09-24
 
 - **Breaking (license):** relicensed from MIT to Apache-2.0, along with the rest of
-  the repository in Caveman 3.0.0. Releases before this one keep the MIT license.
-- **Breaking (package):** renamed `@caveman/contracts` → `@caveman-ai/contracts`.
+  the repository in Onman 3.0.0. Releases before this one keep the MIT license.
+- **Breaking (package):** renamed `@onman/contracts` → `@onman-ai/contracts`.
   `package.json` had stayed at 1.0.0 after the 1.1.0 entry below; this release
   realigns them.
 - **Breaking (schema IDs):** every `$id` is now
-  `https://raw.githubusercontent.com/JuliusBrussee/caveman/contracts-v2.0.0/packages/shared/contracts/schemas/<file>`,
-  pinned to this release's immutable tag (previously `https://caveman.so/schemas/…`
-  and `https://caveman.cloud/schemas/…`, which did not resolve). Every
+  `https://raw.githubusercontent.com/Aravindh-dev12/onman/contracts-v2.0.0/packages/shared/contracts/schemas/<file>`,
+  pinned to this release's immutable tag (previously `https://onman.so/schemas/…`
+  and `https://onman.cloud/schemas/…`, which did not resolve). Every
   cross-schema `$ref` is relative (`middleware-common.schema.json#/$defs/token`),
   so tools that load the schemas or the OpenAPI document from the package
   directory resolve them locally, with no network access. Each release moves

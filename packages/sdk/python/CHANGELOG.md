@@ -3,7 +3,7 @@
 ## 1.2.0 — 2026-09-24
 
 - **Breaking (license):** relicensed from MIT to Apache-2.0, along with the rest of
-  the repository in Caveman 3.0.0. Releases before this one keep the MIT license.
+  the repository in Onman 3.0.0. Releases before this one keep the MIT license.
 - Callers that only waited on another call's shared capabilities fetch no longer
   record its failure in the breaker: one refused connect at cold start is one
   failure, not one per waiter. An interrupted half-open probe records nothing
@@ -29,7 +29,7 @@
 - Coroutine sinks (`on_report`, `on_decision`, `on_diagnostic`) run on the
   caller's event loop instead of leaking a "never awaited" warning; their
   failures never reach the call.
-- The `version_unverified` warn-once line reads `Caveman middleware is running on
+- The `version_unverified` warn-once line reads `Onman middleware is running on
   an unverified framework version`, because that call proceeds.
 - The transport bounds the whole exchange (connect, proxy tunnel, TLS, headers
   and body) by the deadline, and never reuses connections the server closed
@@ -42,17 +42,17 @@
 - Warn-once rules, the decision event's `runtime_build`, and `adapter_error`
   for an unserializable manifest now match TypeScript.
 - New `unsupported_provider` and `unsupported_request` reason codes.
-- Exporter: cost is also emitted as `caveman.usage.cost_usd`.
-- The warn-once line now reads `Caveman middleware passed content through
+- Exporter: cost is also emitted as `onman.usage.cost_usd`.
+- The warn-once line now reads `Onman middleware passed content through
   unchanged: adapter=… reason=…`, the same as TypeScript. Log filters that
-  match the old `Caveman middleware decision:` prefix need updating.
+  match the old `Onman middleware decision:` prefix need updating.
 - Strict `ready()`/`preflight()` now report the first `decline()`.
 - `decline()` accepts any catalog reason and an optional adapter id, which the
   warn-once line names. It never raises in strict mode.
 - Python floor lowered from 3.13 to 3.11.
-- `caveman_cloud.middleware` implements middleware protocol 1.1 and is stable:
-  it follows semver, because `caveman-middleware` 1.0 depends on it. Requests carry `Caveman-Middleware-Features`,
-  `Caveman-Middleware-Client`, and, when a `tracer` is configured, `traceparent`/`tracestate` for the SDK's own span
+- `onman_cloud.middleware` implements middleware protocol 1.1 and is stable:
+  it follows semver, because `onman-middleware` 1.0 depends on it. Requests carry `Onman-Middleware-Features`,
+  `Onman-Middleware-Client`, and, when a `tracer` is configured, `traceparent`/`tracestate` for the SDK's own span
   (never the application's ambient context, as in TypeScript).
 - Capabilities are parsed tolerantly and cached for 300 s with single-flight
   refresh. A new policy revision or transform version no longer rejects a plan.
@@ -75,7 +75,7 @@
 - Endpoint problems no longer raise at construction. `recovery()` returns `None`
   for an invalid scope. Scopes are normalized, so emails and spaces are hashed.
   `delete_session()` returns the result.
-- New: warn-once logging on `caveman.middleware`, `on_decision` events
+- New: warn-once logging on `onman.middleware`, `on_decision` events
   (including `no_candidate`), opt-in OTel `tracer`/`meter`, and `as_sync()`,
   `ensure_sync()`, `ensure_async()`.
 - The credential is kept out of `vars()`, `repr()` and pickling.
@@ -87,7 +87,7 @@
 
 ## 1.1.0 — 2026-09-15
 
-- Added `caveman_cloud.middleware`: the dependency-free protocol client, validation, deadlines and receipts that `caveman-middleware` adapters build on.
+- Added `onman_cloud.middleware`: the dependency-free protocol client, validation, deadlines and receipts that `onman-middleware` adapters build on.
 
 ## 1.0.0 — 2026-07-26
 

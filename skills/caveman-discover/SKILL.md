@@ -1,12 +1,12 @@
 ---
-name: caveman-discover
+name: onman-discover
 description: >
-  Find and label every LLM workflow in the repository so Caveman Cloud groups
+  Find and label every LLM workflow in the repository so Onman Cloud groups
   spend by workflow instead of one bucket. Use for "discover workflows" or
   breaking LLM spend down by workflow.
 ---
 
-You are labeling this repository's LLM workflows for Caveman Cloud. A
+You are labeling this repository's LLM workflows for Onman Cloud. A
 *workflow* is a job the code performs — "answer a support ticket", "build the
 nightly digest", "run the eval suite" — not a technology. Every gateway
 request can carry a workflow label; unlabeled traffic all lands in one
@@ -67,7 +67,7 @@ Present this table and ask to proceed:
 
 Then wire each label with the lightest mechanism available at that callsite:
 
-- **@caveman-ai/sdk / caveman_cloud SDK**: per-trace `workflow` option, or
+- **@onman-ai/sdk / onman_cloud SDK**: per-trace `workflow` option, or
   `defaultWorkflow` on the client a single-job service constructs.
 - **Raw provider SDKs** (OpenAI/Anthropic/LangChain/LiteLLM/Vercel): add
   `"x-cave-workflow": "<slug>"` to the same `defaultHeaders` /
@@ -75,14 +75,14 @@ Then wire each label with the lightest mechanism available at that callsite:
   `x-cave-api-key`. Shared client used by several jobs → pass the header per
   call (every SDK above accepts per-request header overrides), or give each
   job its own thin client.
-- **Wrapped coding agents** (`caveman wrap`): `--workflow <slug>` flag or
+- **Wrapped coding agents** (`onman wrap`): `--workflow <slug>` flag or
   `CAVE_WORKFLOW=<slug>` env at the invocation site (cron line, CI step).
 - **Raw HTTP**: add the `x-cave-workflow` header to the request.
 
 Label the callers, keep the diff minimal, match the repo's style. If a
-callsite is not routed through the Caveman gateway at all, don't label it —
+callsite is not routed through the Onman gateway at all, don't label it —
 list it under "not wired" in the report (labels only travel on gateway
-traffic; wiring is the caveman-setup skill's job).
+traffic; wiring is the onman-setup skill's job).
 
 ## Step 4 — Verify
 

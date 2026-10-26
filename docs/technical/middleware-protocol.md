@@ -1,12 +1,12 @@
-# Caveman middleware protocol 1.1
+# Onman middleware protocol 1.1
 
 Status: normative. The key words MUST, MUST NOT, SHOULD, SHOULD NOT and MAY are
 used as described in RFC 2119 and RFC 8174.
 
-This document specifies the HTTP protocol between Caveman framework middleware
-clients (the `@caveman-ai/sdk/middleware` and `caveman_cloud.middleware` SDKs
-and the adapters built on them) and a Caveman middleware runtime
-(`caveman-proxy`). Machine-readable artifacts:
+This document specifies the HTTP protocol between Onman framework middleware
+clients (the `@onman-ai/sdk/middleware` and `onman_cloud.middleware` SDKs
+and the adapters built on them) and a Onman middleware runtime
+(`onman-proxy`). Machine-readable artifacts:
 
 | Artifact | Path |
 |---|---|
@@ -27,7 +27,7 @@ request (§3).
 ## 1. Routes and transport basics
 
 A client is configured with a base URL `B`: `scheme://host[:port][/prefix]`.
-Every route URL is `B` + `/caveman/v1/middleware/` + route. A prefix is
+Every route URL is `B` + `/onman/v1/middleware/` + route. A prefix is
 preserved (§15).
 
 | Route | Method | Request schema | 200 body schema |
@@ -49,8 +49,8 @@ The receipt route is `receipts` (plural) on the wire.
   Routing comes first after authentication: an unknown route or method is 404
   before the server takes a quota count or a queue slot, or reads or checks the
   body (a `text/plain` POST to an unknown route is 404, not 400).
-  Exception: a caveman-proxy with no middleware store, or whose middleware
-  failed to start, answers every path under `/caveman/v1/middleware/`, unknown
+  Exception: a onman-proxy with no middleware store, or whose middleware
+  failed to start, answers every path under `/onman/v1/middleware/`, unknown
   routes included, with 503 `runtime_unavailable` and `Retry-After: 1` before
   browser refusal and authentication run.
 - Every POST body carries `schema_version`. A value outside `protocol` is 400
@@ -79,7 +79,7 @@ OIDC JWT) or a TLS client certificate. It is a runtime credential. Clients MUST
 NOT send a model provider API key. A missing or unknown credential gets 401
 `unauthorized`, and servers SHOULD add `WWW-Authenticate: Bearer`. The server
 resolves a **principal** from the credential only, never from request JSON. The
-legacy single `CAVEMAN_AUTH_TOKEN` maps to one principal, `single_operator`,
+legacy single `ONMAN_AUTH_TOKEN` maps to one principal, `single_operator`,
 which may use every namespace.
 
 **Namespace authorization.** If the principal has an allowed-namespace list and
@@ -116,7 +116,7 @@ and `features: [feature]`. A document with no `features` array is a
 **protocol 1.0 runtime**. Against such a runtime a client MUST send exact 1.0
 shapes only.
 
-**Client → server.** Clients MUST send `Caveman-Middleware-Features` on every
+**Client → server.** Clients MUST send `Onman-Middleware-Features` on every
 request, `capabilities` included. The value is a comma-separated list of
 feature tokens. The 1.1 SDKs send exactly `http_status_v2, revision_tolerant`.
 Servers split on `,`, trim optional whitespace, and ignore empty, malformed
@@ -214,7 +214,7 @@ capabilities view.
   view. `policy.revision` is ignored.
 - **Acceptance otherwise (1.0 rule):** accept iff `policy.revision` equals the
   current revision of the request's own view and every transform is advertised
-  to that view. For a request without `Caveman-Middleware-Features` that is the
+  to that view. For a request without `Onman-Middleware-Features` that is the
   legacy view; for a 1.1 client that did not send `revision_tolerant` it is the
   full view.
 - A rejection is 400 `unknown_capability`.
@@ -364,7 +364,7 @@ for each replacement:
    snapshot used to build the request its `recovery` is in the client allowlist
    (1.1: `exact_ccr` only). Transforms with `recovery: "none"` are never applied.
 2. `recovery_handle` matches `^cmw_[a-f0-9]{48}$`, and `text` starts with
-   `[caveman: shortened; exact original via caveman_retrieve handle=<recovery_handle>]\n`.
+   `[onman: shortened; exact original via onman_retrieve handle=<recovery_handle>]\n`.
 3. The UTF-8 byte length of `text` is strictly less than the UTF-8 byte length
    of the original segment content. UTF-16 or code-point length does not count.
 4. `sha256 == SHA-256(UTF-8(text))`, and `original_sha256` equals the sent
@@ -396,7 +396,7 @@ Nothing raises at wrap time, and configuration errors never raise at constructio
 | `payload_budget` | Candidate over budget (per candidate), or no candidate fits (whole call) | no | yes | none |
 | `opaque_part` | Image/bytes part: never sent, hashed into manifest; never a whole-call reason | no | no | none |
 | `recovery_unbound` | Compress mode but no owned recovery binding; local bypass, no I/O | no | yes | none |
-| `recovery_name_conflict` | Host already has a foreign `caveman_retrieve` tool | no | yes | raise |
+| `recovery_name_conflict` | Host already has a foreign `onman_retrieve` tool | no | yes | raise |
 | `adapter_error` | Exception caught by the fail-open guard, including a manifest or model identity that is not serializable as well-formed UTF-8 JSON | no | yes | raise |
 | `provider_state_retained` | Provider would persist the compressed turn (e.g. Responses `store`) | no | yes | none |
 | `capacity` | Local concurrency full, or server 429/legacy 503 `capacity` | no | yes | raise |
@@ -437,7 +437,7 @@ Warn-once:
     that still sends;
   - `report()`, only when its status is `skipped`.
 - TS logs with `console.warn`; Python logs `WARNING` on
-  `logging.getLogger("caveman.middleware")`.
+  `logging.getLogger("onman.middleware")`.
 - The line MUST contain `adapter=<id or ->` and `reason=<code>`. It MUST NOT
   contain content, scope values, handles or credentials.
 - Deduplication is per process, bounded at 1024 (adapter, reason) pairs.
@@ -598,7 +598,7 @@ No whole-call bypass happens while at least one candidate fits.
    oversize manifest MUST NOT bypass the call. `sequence` defaults to the
    untruncated history length. Vectors: `manifest_windows`.
 7. **Opaque parts** (images, bytes) are serialized in the manifest as
-   `{"caveman_opaque": h}`:
+   `{"onman_opaque": h}`:
    - bytes: `h` is the SHA-256 hex of the bytes;
    - strings (data URLs, base64): `h` is the SHA-256 hex of the UTF-8 string;
    - anything else, or an ill-formed string: `h` is `"unhashable"`.
@@ -622,13 +622,13 @@ client.
 - **Epochs.** An optimize whose `context_manifest` does not extend the scope's
   stored manifest, or whose `sequence` is below the stored one (a trimmed or
   summarized history, a nested agent sharing the scope), starts a new epoch
-  when the request carries `Caveman-Middleware-Features`: the scope takes the
+  when the request carries `Onman-Middleware-Features`: the scope takes the
   new manifest and sequence, keeps its choices and grants, and the optimize
   proceeds as usual. Earlier recovery handles keep working and a repeated
   segment keeps its replacement bytes. A protocol 1.0 client gets 409
   `epoch_changed` instead, as in 1.0. The plan body is unchanged (its schema is
   closed); the reference runtime counts new epochs in
-  `caveman_middleware_epoch_rebaselines_total`.
+  `onman_middleware_epoch_rebaselines_total`.
 - **Expiry.** An expired scope answers 410 `expired`. Its originals, choices,
   grants and plans become unreadable at once and MUST be physically deleted by
   the next sweeps. Sweeps MUST make progress across all expired scopes, not
@@ -737,17 +737,17 @@ exception MUST NOT affect the call. `no_candidate` emits an event too.
 `CallReport` / `onReport` and `onDiagnostic` keep working unchanged.
 
 **Warn-once line** (§8). Both SDKs MUST log exactly
-`Caveman middleware passed content through unchanged: adapter=<id or -> reason=<code>`;
+`Onman middleware passed content through unchanged: adapter=<id or -> reason=<code>`;
 any extra field follows as ` key=value`. The one exception is
 `version_unverified`, whose call proceeds: its line is
-`Caveman middleware is running on an unverified framework version: adapter=<id or -> reason=version_unverified`.
+`Onman middleware is running on an unverified framework version: adapter=<id or -> reason=version_unverified`.
 
 **OpenTelemetry** is opt-in. The SDK never imports OTel unless the caller
 supplies a tracer and/or meter.
 
-- Spans (kind CLIENT): `caveman.middleware.optimize`,
-  `caveman.middleware.retrieve`, `caveman.middleware.receipt`.
-- Attributes: `caveman.middleware.{adapter,status,reason,runtime_build,policy_revision,candidates,sent,replaced,reused,skipped,budget_skipped}`,
+- Spans (kind CLIENT): `onman.middleware.optimize`,
+  `onman.middleware.retrieve`, `onman.middleware.receipt`.
+- Attributes: `onman.middleware.{adapter,status,reason,runtime_build,policy_revision,candidates,sent,replaced,reused,skipped,budget_skipped}`,
   plus `server.address`, `server.port`, `http.response.status_code`, and
   `error.type` (= reason) on failures.
 - Span status is ERROR only for breaker-counted reasons.
@@ -757,18 +757,18 @@ supplies a tracer and/or meter.
   `output_tokens`, `cache_read_tokens` and `cache_write_tokens`.
   `reasoning_tokens` is not exported.
 - Metrics:
-  - counter `caveman.middleware.decisions` (unit `{decision}`; attributes
-    `caveman.middleware.adapter`, `.status`, `.reason`);
-  - histogram `caveman.middleware.duration` (unit `s`; attributes
-    `caveman.middleware.operation` = `optimize|retrieve|receipt`, plus
+  - counter `onman.middleware.decisions` (unit `{decision}`; attributes
+    `onman.middleware.adapter`, `.status`, `.reason`);
+  - histogram `onman.middleware.duration` (unit `s`; attributes
+    `onman.middleware.operation` = `optimize|retrieve|receipt`, plus
     `error.type` on failure).
 
 **Headers (client → server):**
 
-- `Caveman-Middleware-Features` (§3).
-- `Caveman-Middleware-Client`: space-separated `product/version` tokens, at
-  most 256 chars, e.g. `caveman-sdk-typescript/1.2.0` or
-  `caveman-sdk-python/1.2.0`; adapters MAY append their own. Servers log it and
+- `Onman-Middleware-Features` (§3).
+- `Onman-Middleware-Client`: space-separated `product/version` tokens, at
+  most 256 chars, e.g. `onman-sdk-typescript/1.2.0` or
+  `onman-sdk-python/1.2.0`; adapters MAY append their own. Servers log it and
   MUST NOT branch on it.
 - `traceparent` and `tracestate` (W3C): sent only when the caller supplied a
   tracer. They carry the SDK's own CLIENT span for the request (a child of the
@@ -777,10 +777,10 @@ supplies a tracer and/or meter.
 
 **Server metrics** (SHOULD, Prometheus text format with HELP/TYPE):
 
-- `caveman_middleware_requests_total{route,status,code}`
-- `caveman_middleware_request_duration_seconds{route}`
-- `caveman_middleware_queue_depth{queue}`
-- `caveman_middleware_unauthorized_total`
+- `onman_middleware_requests_total{route,status,code}`
+- `onman_middleware_request_duration_seconds{route}`
+- `onman_middleware_queue_depth{queue}`
+- `onman_middleware_unauthorized_total`
 
 ## 15. Transport (K14)
 

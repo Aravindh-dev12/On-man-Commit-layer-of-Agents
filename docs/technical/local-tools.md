@@ -1,18 +1,18 @@
 # Local tools
 
-Caveman ships local tools for recovery, memory, browser context, and large
-command output. They work without a Caveman account.
+Onman ships local tools for recovery, memory, browser context, and large
+command output. They work without a Onman account.
 
 ## MCP server
 
 Register recovery server with detected agents:
 
 ```bash
-caveman tools mcp install
+onman tools mcp install
 ```
 
-Run `caveman tools mcp uninstall` to remove registration. Direct server binary,
-`caveman-mcp`, communicates over standard input and output.
+Run `onman tools mcp uninstall` to remove registration. Direct server binary,
+`onman-mcp`, communicates over standard input and output.
 
 It exposes five tool classes:
 
@@ -35,11 +35,11 @@ BM25 text ranking.
 Main operations:
 
 ```bash
-caveman tools mem remember "fact"
-caveman tools mem recall "query"
-caveman tools mem supersede <id> "replacement"
-caveman tools mem history <id>
-caveman tools mem forget <id>
+onman tools mem remember "fact"
+onman tools mem recall "query"
+onman tools mem supersede <id> "replacement"
+onman tools mem history <id>
+onman tools mem forget <id>
 ```
 
 Recall returns current facts by default and has a default inferred-token budget
@@ -52,7 +52,7 @@ wrong or stale; source and supersession metadata help callers judge it.
 Build standalone binary:
 
 ```bash
-go build -o cavemem ./mem/cmd/cavemem
+go build -o onmem ./mem/cmd/onmem
 ```
 
 ## Browser bridge
@@ -62,11 +62,11 @@ an accessibility-tree representation, filters it by query, compresses it, and
 returns actionable element references.
 
 ```bash
-caveman tools browse https://example.com "pricing"
-caveman tools browse act '<reference>' click
-caveman tools browse eval 'document.title'
-caveman tools browse recover '<handle>'
-caveman tools browse close
+onman tools browse https://example.com "pricing"
+onman tools browse act '<reference>' click
+onman tools browse eval 'document.title'
+onman tools browse recover '<handle>'
+onman tools browse close
 ```
 
 Snapshots avoid screenshots when semantic structure is enough. Recovery keeps
@@ -77,7 +77,7 @@ and write operations.
 Build bridge:
 
 ```bash
-go build ./browse/cmd/caveman-browse
+go build ./browse/cmd/onman-browse
 ```
 
 ## Output shrinker
@@ -87,8 +87,8 @@ structure, and stores full source in CCR. It is useful for compiler logs, test
 output, diffs, search results, and terminal transcripts.
 
 ```bash
-some-command | caveman tools shrink
-caveman tools shrink -- go test ./...
+some-command | onman tools shrink
+onman tools shrink -- go test ./...
 ```
 
 Structural shrink input is capped at 32 MiB. CLI command capture uses a separate
@@ -101,15 +101,15 @@ debugging output.
 
 ## Tool-catalog shrinker
 
-`caveman-shrink` specializes in MCP and OpenAI-style tool catalogs. It keeps
+`onman-shrink` specializes in MCP and OpenAI-style tool catalogs. It keeps
 tool names, parameters, enums, required fields, defaults, constants, and `$ref`
 targets while removing annotations and shortening long descriptions. Description
 reduction remains lossy and can change tool selection.
 
 ```bash
-cat tools.json | caveman-shrink > tools.min.json
-caveman-shrink lint tools.json
-caveman-shrink recover <handle> > tools.original.json
+cat tools.json | onman-shrink > tools.min.json
+onman-shrink lint tools.json
+onman-shrink recover <handle> > tools.original.json
 ```
 
 Input cap is 32 MiB. Malformed or non-winning input passes through. Exact source
@@ -120,14 +120,14 @@ must be committed to CCR before compact catalog and handle are emitted.
 Local proxy and tools commonly use:
 
 ```text
-~/.caveman/caveman.db
-~/.caveman/ccr.db
-~/.caveman/mem/mem.db
-~/.caveman/mem/ccr.db
-~/.caveman/caveman.yaml
-~/.caveman-cloud/config.json
+~/.onman/onman.db
+~/.onman/ccr.db
+~/.onman/mem/mem.db
+~/.onman/mem/ccr.db
+~/.onman/onman.yaml
+~/.onman-cloud/config.json
 ```
 
-Project overlays use `./.caveman/config.json`. Back up or delete these files only
+Project overlays use `./.onman/config.json`. Back up or delete these files only
 with awareness that recovery handles and learned observations may stop resolving,
 along with local memory.

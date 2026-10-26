@@ -1,19 +1,19 @@
 ---
-name: caveman-compress
+name: onman-compress
 description: >
-  Compress a memory file such as CLAUDE.md or a todo list into caveman format
-  to save input tokens, keeping a readable backup. Trigger: /caveman-compress.
+  Compress a memory file such as CLAUDE.md or a todo list into onman format
+  to save input tokens, keeping a readable backup. Trigger: /onman-compress.
 ---
 
-# Caveman Compress
+# Onman Compress
 
 ## Purpose
 
-Compress natural language files (CLAUDE.md, todos, preferences) into caveman-speak to reduce input tokens. Compressed version overwrites original. Human-readable backup saved as `<filename>.original.md`, but NOT beside the source file — it lives in an out-of-tree data dir (`$XDG_DATA_HOME/caveman-compress/backups/<parent-dir-name>/`, or `%LOCALAPPDATA%\caveman-compress\backups\<parent-dir-name>\` on Windows) so skill auto-loaders don't re-ingest it as a live file.
+Compress natural language files (CLAUDE.md, todos, preferences) into onman-speak to reduce input tokens. Compressed version overwrites original. Human-readable backup saved as `<filename>.original.md`, but NOT beside the source file — it lives in an out-of-tree data dir (`$XDG_DATA_HOME/onman-compress/backups/<parent-dir-name>/`, or `%LOCALAPPDATA%\onman-compress\backups\<parent-dir-name>\` on Windows) so skill auto-loaders don't re-ingest it as a live file.
 
 ## Trigger
 
-`/caveman-compress <filepath>` or when user asks to compress a memory file.
+`/onman-compress <filepath>` or when user asks to compress a memory file.
 
 ## Process
 

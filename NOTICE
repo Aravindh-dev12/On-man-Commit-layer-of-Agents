@@ -1,7 +1,7 @@
-Caveman
-Copyright 2026 Julius Brussee
+Onman
+Copyright 2026 Aravindh-dev12
 
-Before Caveman 3.0.0, the parts of this repository outside the Engine-linked
+Before Onman 3.0.0, the parts of this repository outside the Engine-linked
 runtime were licensed under the MIT License (see LICENSING.md). Contributions
 made to those parts before 3.0.0 were received under the MIT License and remain
 available under it. Its copyright and permission notice is retained in
@@ -36,7 +36,7 @@ This product includes third-party software:
   Copyright 2025 Google LLC
   Copyright 2025 Qwen
 
-- The @caveman-ai/cli package bundles MIT-licensed npm packages
+- The @onman-ai/cli package bundles MIT-licensed npm packages
   (@clack/prompts, @clack/core, sisteransi, fast-string-width,
   fast-string-truncated-width, fast-wrap-ansi); see packages/cli/NOTICE.
 

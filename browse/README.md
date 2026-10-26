@@ -1,8 +1,8 @@
-# caveman-browse
+# onman-browse
 
-`caveman-browse` is a local browser-interaction MCP server. It attaches to
+`onman-browse` is a local browser-interaction MCP server. It attaches to
 Chrome, reads `Accessibility.getFullAXTree`, compresses the AX payload through
-the Caveman engine's forced-only `a11y` compressor, and exposes four tools:
+the Onman engine's forced-only `a11y` compressor, and exposes four tools:
 
 - `browser_snapshot`
 - `browser_act`
@@ -23,23 +23,23 @@ JSON result, and `view_tokens` isolates compact tree cost.
 Build:
 
 ```bash
-go build ./browse/cmd/caveman-browse
+go build ./browse/cmd/onman-browse
 ```
 
 Run as MCP server:
 
 ```bash
-caveman-browse
+onman-browse
 ```
 
 Direct CLI helper:
 
 ```bash
-caveman-browse snapshot http://127.0.0.1:3000
-caveman-browse snapshot http://127.0.0.1:3000 "save settings"
-caveman-browse act <uid> click
-caveman-browse recover <handle>
-caveman-browse close
+onman-browse snapshot http://127.0.0.1:3000
+onman-browse snapshot http://127.0.0.1:3000 "save settings"
+onman-browse act <uid> click
+onman-browse recover <handle>
+onman-browse close
 ```
 
 Direct commands share one detached, isolated Chrome until `close`; first use
@@ -48,5 +48,5 @@ focused snapshot proves state, while navigation permits `http(s)`, `about:blank`
 and bounded `data:text/html` but rejects local files and privileged schemes.
 
 Proof and comparison: [BENCHMARK.md](BENCHMARK.md). Large-page query focus wins
-sharply; tiny-page results can exceed bare Playwright ARIA text because Caveman
+sharply; tiny-page results can exceed bare Playwright ARIA text because Onman
 also returns UIDs, recovery, and exact accounting.

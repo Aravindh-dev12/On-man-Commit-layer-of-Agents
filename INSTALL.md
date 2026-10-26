@@ -18,13 +18,13 @@ curl -fsSL https://raw.githubusercontent.com/Aravindh-dev12/On-man-Commit-layer-
 irm https://raw.githubusercontent.com/Aravindh-dev12/On-man-Commit-layer-of-Agents/v3.0.0/install.ps1 | iex
 ```
 
-> Piping a script straight into a shell runs it sight-unseen. If you'd rather read it first, download then run: `curl -fsSL https://raw.githubusercontent.com/Aravindh-dev12/On-man-Commit-layer-of-Agents/v3.0.0/install.sh -o install.sh` (review it) `&& bash install.sh`. Bootstrap, package, and hook downloads stay pinned to that release tag, never the moving `main` branch. Hook files are checked against a SHA-256 list from the same tag: that catches a broken or partial download, not a tag that was moved. If that list can't be fetched or any file fails it, no hook is installed and your settings stay as they were. Runtime binaries are checked against a checksum list signed with a key built into the CLI. Set `CAVEMAN_REF` only when intentionally testing another ref.
+> Piping a script straight into a shell runs it sight-unseen. If you'd rather read it first, download then run: `curl -fsSL https://raw.githubusercontent.com/Aravindh-dev12/On-man-Commit-layer-of-Agents/v3.0.0/install.sh -o install.sh` (review it) `&& bash install.sh`. Bootstrap, package, and hook downloads stay pinned to that release tag, never the moving `main` branch. Hook files are checked against a SHA-256 list from the same tag: that catches a broken or partial download, not a tag that was moved. If that list can't be fetched or any file fails it, no hook is installed and your settings stay as they were. Runtime binaries are checked against a checksum list signed with a key built into the CLI. Set `ONMAN_REF` only when intentionally testing another ref.
 
 What it does:
 
 - Auto-detects every supported agent installed on your machine (Claude Code, Cursor, Codex, etc.).
 - For each one, runs that agent's native install path (plugin / extension / rule file / `npx skills add`).
-- Installs Cavecrew investigator, builder, and reviewer presets where the host supports native subagents.
+- Installs Oncrew investigator, builder, and reviewer presets where the host supports native subagents.
 - Wires Claude Code hooks and statusline badge on top. (`onman-shrink` MCP middleware is opt-in via `--with-mcp-shrink` — see flag table below.)
 - Skips anything you don't have. Safe to re-run. ~30 seconds end-to-end.
 
@@ -104,8 +104,8 @@ Each row prints the agent id, profile slug (where applicable), and whether it wa
 ### Oh My Pi (OMP)
 
 With `omp` on your PATH, run `node bin/install.js --only omp` from this clone,
-then restart OMP. The native plugin adds seven skills, six commands, Cavecrew
-presets, a CAVEMAN badge, and Onman instructions on each agent turn. Commands
+then restart OMP. The native plugin adds seven skills, six commands, Oncrew
+presets, a ONMAN badge, and Onman instructions on each agent turn. Commands
 such as `/onman lite` and `stop onman` instruct the model; the badge indicates
 that the plugin is loaded. Host lifecycle and prompt delivery were checked with
 OMP 18.2.6. This integration does not read Claude Code session statistics.
@@ -221,7 +221,7 @@ ls "${CLAUDE_CONFIG_DIR:-$HOME/.claude}/.onman-sessions/"
 A window where you said "stop onman" stores `off` and stays off — including
 across the automatic context compaction that happens in long sessions.
 
-Statusline should show `[CAVEMAN]` (orange) at the bottom of Claude Code. `/onman-stats` reports recorded usage; savings remain unknown without a measured comparison.
+Statusline should show `[ONMAN]` (orange) at the bottom of Claude Code. `/onman-stats` reports recorded usage; savings remain unknown without a measured comparison.
 
 ## Update
 
@@ -256,7 +256,7 @@ npx -y github:Aravindh-dev12/On-man-Commit-layer-of-Agents
 npx -y github:Aravindh-dev12/On-man-Commit-layer-of-Agents -- --uninstall
 ```
 
-Run this **before** `npm uninstall -g @caveman-ai/cli`. It hands native agent
+Run this **before** `npm uninstall -g @onman-ai/cli`. It hands native agent
 integrations to `onman disable --all`, so it needs the `onman` CLI still on
 PATH. If the CLI is already gone, it says which agents are still routed and what
 to run; reinstall the CLI, run `onman disable --all`, then remove it again.
@@ -265,7 +265,7 @@ What it removes:
 
 - Native agent routing written by `onman setup --install` / `onman enable <agent>` — for Claude Code that is `ANTHROPIC_BASE_URL` and `_CLAUDE_CODE_ASSUME_FIRST_PARTY_BASE_URL` in `~/.claude/settings.json`, which is what makes [Claude Code Remote Control](docs/technical/agent-wrapping.md) unavailable while Onman is routing. Restored from each agent's integration journal, so your own prior value comes back.
 - Onman hook entries from `$CLAUDE_CONFIG_DIR/settings.json` (default `~/.claude/`; matched by the substring `onman`).
-- Hook files in `$CLAUDE_CONFIG_DIR/hooks/` (`onman-activate.js`, `onman-mode-tracker.js`, `onman-parse.js`, `onman-stats.js`, `onman-config.js`, `cavecrew-model-overrides.js`, `onman-statusline.{sh,ps1}`, plus the dir's `package.json` marker).
+- Hook files in `$CLAUDE_CONFIG_DIR/hooks/` (`onman-activate.js`, `onman-mode-tracker.js`, `onman-parse.js`, `onman-stats.js`, `onman-config.js`, `oncrew-model-overrides.js`, `onman-statusline.{sh,ps1}`, plus the dir's `package.json` marker).
 - The Claude Code plugin and the Gemini CLI extension (if installed).
 - The opencode native plugin (`~/.config/opencode/plugins/onman/`, the `plugin` and `mcp.onman-shrink` entries from `opencode.json`, our skill/agent/command files, the onman block from `AGENTS.md`, and the opencode flag file).
 - The Oh My Pi plugin (`omp plugin uninstall onman`) and Onman's managed OMP plugin package at `~/.omp/onman-plugin/`.
@@ -308,7 +308,7 @@ if you want to see the current state of each.
 Fixed. This used to happen when a long conversation hit automatic context
 compaction: the SessionStart hook re-ran and re-applied your configured default.
 Deactivation is now stored as a durable value that survives compaction and
-resume. If you still see it, check whether `CAVEMAN_DEFAULT_MODE` or a repo-local
+resume. If you still see it, check whether `ONMAN_DEFAULT_MODE` or a repo-local
 `.onman.json` is re-arming it on a genuinely new session, or whether you ran
 `/clear` — that is a deliberate reset, and intended.
 

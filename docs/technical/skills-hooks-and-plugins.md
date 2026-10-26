@@ -1,11 +1,11 @@
 # Skills, hooks, and plugins
 
-Caveman integrates through response skills, lifecycle hooks, and agent-specific
+Onman integrates through response skills, lifecycle hooks, and agent-specific
 plugins. Each has different permissions and failure behavior.
 
 ## Response skill
 
-`skills/caveman` asks an agent to communicate with less filler while preserving
+`skills/onman` asks an agent to communicate with less filler while preserving
 technical terms, code, error text, and necessary ordering. Available density
 profiles include lite, full, ultra, and Wenyan variants. Auto-clarity relaxes
 compression when terse phrasing could make security warnings or irreversible
@@ -14,7 +14,7 @@ steps hard to understand.
 Install through supported skill installer:
 
 ```bash
-npx skills add JuliusBrussee/caveman
+npx skills add Aravindh-dev12/onman
 ```
 
 Preview remote skill content before installation when source is unfamiliar.
@@ -27,24 +27,24 @@ prove a token-reduction percentage. See
 
 | Skill | Output contract | Side effects |
 |---|---|---|
-| `caveman-commit` | Terse Conventional Commit message | Does not stage, commit, or amend |
-| `caveman-review` | Line-scoped review findings | Does not approve, request changes, or run linters |
-| `caveman-help` | One-shot command card | Does not change active mode |
-| `caveman-stats` | Session usage plus labeled estimates | Reads local Claude Code session logs and writes status suffix |
-| `caveman-compress` | Shortened supported memory file plus backup | Reads, validates, and writes selected local file |
-| `caveman-learn` | Consent-gated review of local findings | Applies only operator-approved edits |
-| `caveman-explore` | Read-only `path:line` citations | Installs a restricted explorer agent |
+| `onman-commit` | Terse Conventional Commit message | Does not stage, commit, or amend |
+| `onman-review` | Line-scoped review findings | Does not approve, request changes, or run linters |
+| `onman-help` | One-shot command card | Does not change active mode |
+| `onman-stats` | Session usage plus labeled estimates | Reads local Claude Code session logs and writes status suffix |
+| `onman-compress` | Shortened supported memory file plus backup | Reads, validates, and writes selected local file |
+| `onman-learn` | Consent-gated review of local findings | Applies only operator-approved edits |
+| `onman-explore` | Read-only `path:line` citations | Installs a restricted explorer agent |
 
-`caveman-stats` mixes direct session counts with explicitly estimated baseline
+`onman-stats` mixes direct session counts with explicitly estimated baseline
 and rule-overhead fields. Estimated net can be negative. See evidence basis on
 each line instead of treating whole output as measured.
 
-`caveman-compress` preserves original in data-directory backup and validates
+`onman-compress` preserves original in data-directory backup and validates
 headings, code blocks, URLs, paths, and list structure. Those checks do not prove
 semantic equivalence. Review diff before replacing high-stakes instructions.
 
 See [Exploration and delegation](exploration-and-delegation.md) for explorer and
-Cavecrew boundaries.
+Oncrew boundaries.
 
 ## Hooks
 
@@ -78,9 +78,9 @@ permissions and version compatibility.
 
 ## Browser extension
 
-MV3 extension adds a visible Caveman Mode directive to outgoing messages on
+MV3 extension adds a visible Onman Mode directive to outgoing messages on
 supported ChatGPT, Claude, and Gemini web interfaces. It runs locally and does
-not send analytics or prompt content to Caveman services.
+not send analytics or prompt content to Onman services.
 
 Extension injection is visible before send. It does not silently rewrite an
 already-sent message. Browser site markup changes can break selectors, so
@@ -115,7 +115,7 @@ permissions. Treat them accordingly.
 Use agent-native setup removal where available:
 
 ```bash
-caveman setup --agent-native claude --remove
+onman setup --agent-native claude --remove
 ```
 
 Remove skill packages through installer or agent skill manager, and remove

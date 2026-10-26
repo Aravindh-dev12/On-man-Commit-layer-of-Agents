@@ -1,9 +1,9 @@
-<!-- Published as docs/CONTRIBUTING_PROFILES.md in JuliusBrussee/caveman. -->
+<!-- Published as docs/CONTRIBUTING_PROFILES.md in Aravindh-dev12/onman. -->
 
-# Contributing to Caveman
+# Contributing to Onman
 
-Caveman accepts community contributions. Fastest path is
-one agent profile: one JSON file that teaches `caveman run` how to launch another
+Onman accepts community contributions. Fastest path is
+one agent profile: one JSON file that teaches `onman run` how to launch another
 AI coding harness through an existing wire protocol and hook surface.
 
 ## License boundary
@@ -89,4 +89,4 @@ That adds `Signed-off-by: Your Name <your@email>`. Contribution license follows
 directory rules in [`CONTRIBUTING.md`](../CONTRIBUTING.md).
 
 Keep pull requests small and focused. Questions: open a discussion or email
-`hello@caveman.so`.
+`hello@onman.so`.

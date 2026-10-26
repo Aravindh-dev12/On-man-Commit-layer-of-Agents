@@ -1,12 +1,12 @@
-# Caveman Mode (browser extension)
+# Onman Mode (browser extension)
 
-Toggle **caveman mode** on ChatGPT, Claude, and Gemini. When it's on, the
-extension adds a short caveman instruction to each message you send, so the AI
+Toggle **onman mode** on ChatGPT, Claude, and Gemini. When it's on, the
+extension adds a short onman instruction to each message you send, so the AI
 aims to reply in a compact, high-density style while preserving technical substance.
 
 It only ever adds text to **your outgoing message**: the first message of a
-conversation gets the full primer (the caveman skill, compacted), and every
-message after gets a tiny "stay caveman" reminder. The injected directive is
+conversation gets the full primer (the onman skill, compacted), and every
+message after gets a tiny "stay onman" reminder. The injected directive is
 plainly visible in the chat. No network requests, no analytics — everything runs
 locally in your browser.
 
@@ -25,19 +25,19 @@ Works in any Chromium browser (Chrome, Edge, Brave, Arc). No build step.
 ## Use
 
 - Turn it on from the popup (and pick an intensity: **lite / full / ultra**).
-- Type and send as normal. The extension prepends the caveman directive and
+- Type and send as normal. The extension prepends the onman directive and
   submits — the AI's replies come back terse.
 - The on-page flame pill shows it's active; click it to turn off (or say
-  `stop caveman` in chat). The stop command sends unchanged and turns the extension
+  `stop onman` in chat). The stop command sends unchanged and turns the extension
   off across sites, like the popup switch.
 - If you edit the draft, change chats, or turn the extension off while a send is
   waiting, automatic submission stops. Review the draft and send it yourself.
 
 ## How it works
 
-- `src/directive.js` — the caveman skill, compacted into a `buildPrimer` /
+- `src/directive.js` — the onman skill, compacted into a `buildPrimer` /
   `buildReminder` text (pure, unit-tested; no chrome/DOM).
-- `src/caveman.js` — content script: intercepts the send gesture (Enter or the
+- `src/onman.js` — content script: intercepts the send gesture (Enter or the
   send button) in the capture phase, prepends the directive via the editor's own
   input path, then re-fires the send. Resilient per-site selectors with
   fallbacks; never touches network requests or model replies.

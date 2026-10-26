@@ -1,25 +1,25 @@
-# @caveman-ai/cli
+# @onman-ai/cli
 
-The `caveman` (alias `cave`) CLI. Wrap supported coding agents so their LLM
+The `onman` (alias `cave`) CLI. Wrap supported coding agents so their LLM
 traffic can use local metering and recoverable context compression:
 
 ```sh
-caveman claude        # shorthand for `caveman wrap claude`; bootstraps signed runtime on first TTY run
-caveman kilo          # Kilo Code CLI; `caveman kilocode` works too
-caveman qwen          # Qwen Code CLI through a temporary system-settings overlay
-caveman learn         # interactive local Setup Score + grouped top moves
-caveman setup         # show which companion binaries are installed
-caveman stats         # local dashboard: tokens, API estimates, subscription equivalents
+onman claude        # shorthand for `onman wrap claude`; bootstraps signed runtime on first TTY run
+onman kilo          # Kilo Code CLI; `onman kilocode` works too
+onman qwen          # Qwen Code CLI through a temporary system-settings overlay
+onman learn         # interactive local Setup Score + grouped top moves
+onman setup         # show which companion binaries are installed
+onman stats         # local dashboard: tokens, API estimates, subscription equivalents
 ```
 
-`caveman learn` shows animated progress, compact result cards, and a keyboard
+`onman learn` shows animated progress, compact result cards, and a keyboard
 menu for implementation, full detail, or the visual report. Use `--plain` for
 stable compact text, `--all` for every sink and detector id, `--json` for automation, or
-`caveman learn implement [claude|codex] --prompt "<focus>"` to open an agent
+`onman learn implement [claude|codex] --prompt "<focus>"` to open an agent
 that reviews fixes one by one. Agent path installs the existing learn guide when
 missing, never edits load-bearing findings, and asks before every edit.
 
-`caveman stats` opens a private, offline dashboard with token history, provider
+`onman stats` opens a private, offline dashboard with token history, provider
 and model breakdowns, cache usage, and expandable calculation receipts. Use
 `--days 7` or `--all-time`, filter with `--provider`, `--model`, `--agent` or
 `--auth`, and export with `--json`. `--plain` prints the summary without opening
@@ -31,15 +31,15 @@ See [the accounting method](../../docs/technical/stats-accounting.md).
 Claude Code configured for Bedrock has an explicit native Runtime lane:
 
 ```sh
-CAVEMAN_WRAP_PROVIDER=bedrock \
+ONMAN_WRAP_PROVIDER=bedrock \
 AWS_REGION=us-east-1 \
 AWS_BEARER_TOKEN_BEDROCK=… \
-caveman wrap claude
+onman wrap claude
 ```
 
 IAM credentials (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and optional
 `AWS_SESSION_TOKEN`) work too. Mantle remains opt-in with
-`CAVEMAN_BEDROCK_ENDPOINT=mantle`; it is a distinct Bedrock endpoint contract,
+`ONMAN_BEDROCK_ENDPOINT=mantle`; it is a distinct Bedrock endpoint contract,
 not an alias for normal Anthropic traffic. Runtime uses the attributed
 `/bedrock` base; Mantle uses `/bedrock/anthropic` because Claude Code appends
 `/v1/messages` to its Mantle override.
@@ -61,7 +61,7 @@ opt-in Mantle lane, whose gateway auth bypass is documented. Stale
 `x-cave-upstream-key` variants are removed so they cannot override stored
 credentials. Newlines and incomplete IAM pairs fail before launch.
 
-Local Bedrock wrap never adds Caveman gateway headers and keeps the inherited
+Local Bedrock wrap never adds Onman gateway headers and keeps the inherited
 AWS environment. This header-backed seam is repository-tested; a live Claude
 Code → AWS smoke remains a release gate. See the official [custom-header reference](https://code.claude.com/docs/en/env-vars)
 and [Bedrock gateway setup](https://code.claude.com/docs/en/bedrock-vertex-proxies).
@@ -71,26 +71,26 @@ and [Bedrock gateway setup](https://code.claude.com/docs/en/bedrock-vertex-proxi
 This npm package ships **only the JavaScript front-end** — one CLI entrypoint
 plus a lazy 25 KB interactive-learn chunk, with zero runtime dependencies.
 The heavy lifting (compression, metering, streaming
-recovery, browsing) runs in caveman's companion **Go binaries**:
+recovery, browsing) runs in onman's companion **Go binaries**:
 
 | Binary | Powers |
 |---|---|
-| `caveman-proxy` | `start` · `wrap` · `stats` — local compression + truthful metering |
-| `caveman-engine` | `compress` · `shrink` · `retrieve` · `toon` · `evals` |
-| `caveman-mcp` | agent-side recovery so streaming requests can compress |
-| `cavemem` | local remember · recall · learned-context offload |
-| `caveman-browse` | compressed page snapshots (optional) |
-| `caveman-shrink` | `tools compress catalog` — tool-schema compression, lint, and recovery (optional) |
+| `onman-proxy` | `start` · `wrap` · `stats` — local compression + truthful metering |
+| `onman-engine` | `compress` · `shrink` · `retrieve` · `toon` · `evals` |
+| `onman-mcp` | agent-side recovery so streaming requests can compress |
+| `onmem` | local remember · recall · learned-context offload |
+| `onman-browse` | compressed page snapshots (optional) |
+| `onman-shrink` | `tools compress catalog` — tool-schema compression, lint, and recovery (optional) |
 
-Two shrink surfaces stay explicit: `caveman tools shrink -- <command>` compresses
-command output; `caveman tools compress catalog [lint|recover]` delegates to
-`caveman-shrink` for MCP/OpenAI tool catalogs.
+Two shrink surfaces stay explicit: `onman tools shrink -- <command>` compresses
+command output; `onman tools compress catalog [lint|recover]` delegates to
+`onman-shrink` for MCP/OpenAI tool catalogs.
 
-On first interactive local wrap, `caveman <agent>` installs signed runtime bundle
-and continues same command. Explicit `CAVEMAN_*_BIN` overrides and non-interactive
+On first interactive local wrap, `onman <agent>` installs signed runtime bundle
+and continues same command. Explicit `ONMAN_*_BIN` overrides and non-interactive
 runs stay unchanged. Without binaries CLI degrades affected commands to explicit
 pass-through: nothing is compressed, savings report 0, and warning says why. Run
-`caveman setup` to see what works and how to repair missing pieces.
+`onman setup` to see what works and how to repair missing pieces.
 
 `wrap` is the one exception to "pass-through": it points the agent's
 `ANTHROPIC_BASE_URL`/`OPENAI_BASE_URL` at the proxy, so with no proxy listening
@@ -104,30 +104,30 @@ callers must ensure the proxy is up (or use `--no-proxy`).
 Normal install:
 
 ```sh
-npm i -g @caveman-ai/cli
-caveman claude
+npm i -g @onman-ai/cli
+onman claude
 ```
 
 First interactive wrap downloads key-signed release artifacts, verifies the
 checksum manifest plus every SHA-256, installs atomically into
-`~/.caveman/bin`, then launches the agent. Manual install/repair is
-`caveman setup --install`.
+`~/.onman/bin`, then launches the agent. Manual install/repair is
+`onman setup --install`.
 
-The npm CLI requires Node.js 22.13 or newer. Caveman exposes ten native agent
+The npm CLI requires Node.js 22.13 or newer. Onman exposes ten native agent
 shortcuts: `aider`, `claude`, `codex`, `gemini`, `hermes`, `kilo` (`kilocode`
 alias), `openclaw`, `opencode`, `pi`, and `qwen`.
 
-Install Qwen Code separately, then launch it through Caveman:
+Install Qwen Code separately, then launch it through Onman:
 
 ```sh
 npm i -g @qwen-code/qwen-code
-caveman qwen
+onman qwen
 ```
 
 Qwen wrapping deep-merges the local or managed OpenAI-compatible route into a
 temporary system-settings file selected through
 `QWEN_CODE_SYSTEM_SETTINGS_PATH`. An explicit existing system-settings path
-wins; otherwise Caveman starts from Qwen's macOS, Linux, or Windows enterprise
+wins; otherwise Onman starts from Qwen's macOS, Linux, or Windows enterprise
 platform default. It preserves unrelated policy and provider keys and never
 rewrites that source or `~/.qwen/settings.json`. Pinned real-CLI smokes cover
 Qwen Code 0.22.3 in local and managed modes.
@@ -135,17 +135,17 @@ Qwen Code 0.22.3 in local and managed modes.
 Install agent-side recovery into Qwen's user settings separately:
 
 ```sh
-caveman tools mcp install qwen --server caveman
-caveman tools mcp uninstall qwen --server caveman
+onman tools mcp install qwen --server onman
+onman tools mcp uninstall qwen --server onman
 ```
 
-The MCP lifecycle preserves sibling entries, journals Caveman ownership, and
+The MCP lifecycle preserves sibling entries, journals Onman ownership, and
 refuses to overwrite or remove a user-owned or subsequently changed entry.
 
 Contributors may still build from source with
 `./scripts/install-local-cli.sh` on macOS/Linux or
 `pwsh -File scripts/install-local-cli.ps1` on Windows. Lookup order:
-`CAVEMAN_*_BIN` env override → `PATH` → `~/.caveman/bin`.
+`ONMAN_*_BIN` env override → `PATH` → `~/.onman/bin`.
 
 ## Honesty rules
 
@@ -155,24 +155,24 @@ Contributors may still build from source with
   Missing safe recovery path, parse failure, or non-smaller output passes through
   unchanged and claims nothing. `record` mode is byte-preserving.
 
-Connected verbs (`login`, `plan`, `score`, `costs`, …) talk to Caveman Cloud
+Connected verbs (`login`, `plan`, `score`, `costs`, …) talk to Onman Cloud
 over HTTP and need no binaries.
 
 For a customer-owned installation, connect to its API origin:
 
 ```sh
-caveman login --instance https://caveman.example.com
+onman login --instance https://onman.example.com
 ```
 
 Approve the displayed code in your instance's browser, choose a project and
 grant its access scopes. This connection creates no inference key and does not
 sync local request history. The CLI's usage telemetry setting remains in effect;
-`caveman telemetry off` disables it. Credentials use the existing secure store;
-`caveman logout` revokes the session. HTTPS is required except for HTTP loopback development.
+`onman telemetry off` disables it. Credentials use the existing secure store;
+`onman logout` revokes the session. HTTPS is required except for HTTP loopback development.
 Hosted login remains unavailable during beta.
 
-Read agents in the connected project with `caveman cloud agent factory list`
-and `caveman cloud agent factory show <id>`. These commands need
+Read agents in the connected project with `onman cloud agent factory list`
+and `onman cloud agent factory show <id>`. These commands need
 `trace:read_metadata` access. Factory cases, execution approvals and policy
 remain in the dashboard; the CLI connection cannot grant that authority.
 The existing `cloud agent list|show|run` commands still address optimization
@@ -181,9 +181,9 @@ proposals.
 Connected telemetry imports stay under existing `cloud audit` governance verb:
 
 ```sh
-caveman cloud audit import --format langfuse traces.json
-caveman cloud audit eval-import evidence.jsonl --dry-run
-caveman cloud audit eval-import evidence.jsonl
+onman cloud audit import --format langfuse traces.json
+onman cloud audit eval-import evidence.jsonl --dry-run
+onman cloud audit eval-import evidence.jsonl
 ```
 
 Eval JSONL accepts one canonical external-evidence object per line, at most
@@ -193,18 +193,18 @@ mint verified savings.
 
 ## Agent-native setup
 
-Install complete native Caveman integration into Codex or Claude Code: local
+Install complete native Onman integration into Codex or Claude Code: local
 routing, lifecycle hooks, architecture-first Core, recovery MCP, project-scoped
 read tools, and setup/discovery/review/optimization/management skills:
 
 ```sh
-caveman setup --agent-native codex
+onman setup --agent-native codex
 # or
-caveman setup --agent-native claude
+onman setup --agent-native claude
 ```
 
 This writes an MCP command, not an access token, into the agent config. Runtime
-requests use the existing `caveman login` credential store and still pass through
+requests use the existing `onman login` credential store and still pass through
 control-api authentication, project scope, RBAC, audit, and tenant isolation.
 Read tools expose structured reports, Cave Plan, trace metadata/spans, and
 experiment evidence. Agent MCP intentionally exposes no lifecycle mutation:
@@ -215,16 +215,16 @@ Core changes coding behavior but remains independently controllable. Compression
 recovery, and telemetry continue when Core is off:
 
 ```sh
-caveman tools config get think.core
-caveman tools config set think.core off
-caveman tools config set think.core on
+onman tools config get think.core
+onman tools config set think.core off
+onman tools config set think.core on
 ```
 
-Run `caveman doctor codex` or `caveman doctor claude` to see active Core state,
+Run `onman doctor codex` or `onman doctor claude` to see active Core state,
 source, profile, and pack version. Changes affect later hook events; start a new
 agent session to clear Core already delivered into model context. Aider's shallow,
-static Core read cannot apply `think.core`; `caveman disable aider` removes it.
-`caveman disable <agent>` removes native routing/hooks while preserving unrelated
+static Core read cannot apply `think.core`; `onman disable aider` removes it.
+`onman disable <agent>` removes native routing/hooks while preserving unrelated
 host edits.
 
 Agent-native setup preflights host/runtime requirements before writes, journals
@@ -233,33 +233,33 @@ Rerunning converges journal-owned drift. Remove only bundle-owned pieces and
 restore prior skill/MCP bytes with:
 
 ```sh
-caveman setup --agent-native codex --remove
+onman setup --agent-native codex --remove
 ```
 
 Inspect before install:
 
 ```sh
-caveman tools skills list --json
-caveman tools skills preview caveman-evidence-review
-caveman tools skills install --suite agent-native --agent codex --no-pixel
-caveman tools mcp install codex --server caveman-cloud
+onman tools skills list --json
+onman tools skills preview onman-evidence-review
+onman tools skills install --suite agent-native --agent codex --no-pixel
+onman tools mcp install codex --server onman-cloud
 ```
 
 Install any third-party skill through the official Skills CLI, then store its
 instruction body as profitable pixel pages automatically:
 
 ```sh
-caveman tools skills add mattpocock/skills --skill tdd --agent codex -y
-caveman tools skills add https://github.com/vercel-labs/agent-skills --agent claude-code --global -y
+onman tools skills add mattpocock/skills --skill tdd --agent codex -y
+onman tools skills add https://github.com/vercel-labs/agent-skills --agent claude-code --global -y
 ```
 
 GitHub shorthand, Git/GitLab URLs, direct skill URLs, local paths, and upstream
 `--skill`/`--agent`/`--global`/`--list`/`--all` flags pass through unchanged.
-Caveman forces upstream copy mode when pixelizing, converts only new or changed
+Onman forces upstream copy mode when pixelizing, converts only new or changed
 Claude Code/Codex skills, keeps `SKILL.orig.md` for byte-exact revert, and
 reports measured estimated-token reduction as `inferred` per invocation.
 `--no-pixel` keeps upstream plain-text behavior. Third-party instructions and
-resources are installed as supplied; Caveman does not security-review them.
+resources are installed as supplied; Onman does not security-review them.
 Official Skills CLI telemetry behavior also applies; set
 `DISABLE_TELEMETRY=1` to opt out upstream.
 

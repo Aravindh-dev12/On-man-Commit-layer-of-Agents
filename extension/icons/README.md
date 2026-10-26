@@ -1,6 +1,6 @@
 # Icons
 
-The Caveman logo: the pixel-flame CaveMark, white on onyx (`#0a0a0a`).
+The Onman logo: the pixel-flame CaveMark, white on onyx (`#0a0a0a`).
 `mark.svg` is the logo; `mark-tight.svg` is the same drawing with the pixel
 gutters closed, because below ~32px the 1-unit gaps fall under a pixel and the
 flame smears. Every PNG here is rendered from one of the two — don't hand-edit

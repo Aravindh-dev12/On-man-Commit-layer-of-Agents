@@ -6,12 +6,12 @@ API references; this page explains how pieces fit together.
 
 ## TypeScript and Python SDKs
 
-Start with the [SDK overview](https://docs.caveman.so/docs/sdk), [TypeScript quickstart](https://docs.caveman.so/docs/sdk/typescript), or [Python quickstart](https://docs.caveman.so/docs/sdk/python). The guides cover configuration, provider routes and streaming, compression reports, deferred tools, context recovery, tracing, runtime policy, API signatures, and troubleshooting.
+Start with the [SDK overview](https://docs.onman.so/docs/sdk), [TypeScript quickstart](https://docs.onman.so/docs/sdk/typescript), or [Python quickstart](https://docs.onman.so/docs/sdk/python). The guides cover configuration, provider routes and streaming, compression reports, deferred tools, context recovery, tracing, runtime policy, API signatures, and troubleshooting.
 
 `packages/sdk/typescript` and `packages/sdk/python` implement matching high-level
 operations:
 
-- create a Caveman client;
+- create a Onman client;
 - configure provider calls;
 - define, defer, and search tools;
 - compress eligible context;

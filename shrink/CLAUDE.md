@@ -1,4 +1,4 @@
-# shrink — caveman-shrink, the tool-catalog compressor (Go core + launcher, Apache-2.0)
+# shrink — onman-shrink, the tool-catalog compressor (Go core + launcher, Apache-2.0)
 
 Compress MCP/OpenAI **tool definitions** before they fill the context window. A thin Go wrapper
 over the [engine](../engine/CLAUDE.md)'s `toolschema` compressor: it drops annotation metadata
@@ -8,9 +8,9 @@ tool and parameter names, types, enums, required — and every **argument-constr
 `default`, `const`, `$ref` targets — byte-for-byte. Everything is `inferred`.
 
 ## Layout
-- `shrink.go` — the library: `Shrink` (catalog → compressed, fail-open S4 transform, durable-CCR-backed), `Recover` (handle → original bytes), `Lint` (per-tool inferred token reductions), `SelectionProfile` (the structural surface — what must survive). `WithStore`/`WithStorePath` pick the recovery store; default is the shared `CAVEMAN_CCR_DB` / `~/.caveman/ccr.db`.
-- `cmd/caveman-shrink/` — the CLI: `caveman-shrink` / `shrink` (stdin→stdout), `lint <file>`, and `recover <handle>` (prints the original catalog for a handle a prior shrink minted).
-- `bin/caveman-shrink.mjs` + `package.json` — the `npx caveman-shrink` launcher around the prebuilt binary.
+- `shrink.go` — the library: `Shrink` (catalog → compressed, fail-open S4 transform, durable-CCR-backed), `Recover` (handle → original bytes), `Lint` (per-tool inferred token reductions), `SelectionProfile` (the structural surface — what must survive). `WithStore`/`WithStorePath` pick the recovery store; default is the shared `ONMAN_CCR_DB` / `~/.onman/ccr.db`.
+- `cmd/onman-shrink/` — the CLI: `onman-shrink` / `shrink` (stdin→stdout), `lint <file>`, and `recover <handle>` (prints the original catalog for a handle a prior shrink minted).
+- `bin/onman-shrink.mjs` + `package.json` — the `npx onman-shrink` launcher around the prebuilt binary.
 
 ## Two correctness boundaries
 1. **structural selection surface** — `SelectionProfile(input)` ==
@@ -44,6 +44,6 @@ tool and parameter names, types, enums, required — and every **argument-constr
 ## Gotchas (honesty invariants)
 - **S4 lossy, fail-open** — successful compression changes model-visible bytes; malformed/incompressible catalogs pass through unchanged (`ratio:0`, no handle).
 - **inferred-only** — token counts are estimates via the engine's offline counter; never `verified`, never re-projected.
-- **reversible for real** — a compressing shrink writes the exact original to the **durable** store (`engine.Compress` commits the recovery row before it publishes transformed bytes), so a printed handle resolves later, from a separate process, via `Recover` / `caveman-shrink recover`. It is NOT an in-memory store discarded on return — that minted handles that were unresolvable the instant `Shrink` returned. If the durable store cannot be opened, `Shrink` returns an error and the CLI forwards the original bytes: no handle, no reversibility claim.
+- **reversible for real** — a compressing shrink writes the exact original to the **durable** store (`engine.Compress` commits the recovery row before it publishes transformed bytes), so a printed handle resolves later, from a separate process, via `Recover` / `onman-shrink recover`. It is NOT an in-memory store discarded on return — that minted handles that were unresolvable the instant `Shrink` returned. If the durable store cannot be opened, `Shrink` returns an error and the CLI forwards the original bytes: no handle, no reversibility claim.
 
 See ../../CLAUDE.md (root) · ../engine/CLAUDE.md

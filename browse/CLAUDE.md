@@ -1,13 +1,13 @@
-# browse — `caveman-browse` browser driver
+# browse — `onman-browse` browser driver
 
 > **Repository routing:** do not continue Browse product work here. Source of
-> truth is `JuliusBrussee/caveman-browse`, local checkout
-> `/Users/julb/Desktop/GitHub/caveman-browse`. This directory is a consumer
+> truth is `Aravindh-dev12/onman-browse`, local checkout
+> `https://github.com/Aravindh-dev12/onman-browse`. This directory is a consumer
 > copy; edit only for pinned integration, migration/removal, or an explicit
 > cross-repo sync. Accessibility-compressor work stays here in
 > `engine/compressors/axtree.go` because Engine is owned by this repo.
 
-Local, agent-facing browser interaction for the open Caveman surface. It serves
+Local, agent-facing browser interaction for the open Onman surface. It serves
 stdio MCP tools that read a real Chrome accessibility tree, compress it with the
 engine's forced-only `a11y` compressor, act on `uid` handles, and recover the
 byte-exact original AX payload through CCR. Every saving here is `inferred`;
@@ -17,7 +17,7 @@ Browse never emits `verified`.
 - `session.go` — MCP tool handlers, engine/CCR integration, UID target cache.
 - `cdp.go` — chromedp-backed Mode-A dedicated Chrome driver and bounded
   actionability recipe.
-- `cmd/caveman-browse/` — stdio MCP binary.
+- `cmd/onman-browse/` — stdio MCP binary.
 
 ## Gotchas
 - This package may import CDP/network/browser dependencies. `public/mcp` may not.
@@ -33,7 +33,7 @@ Browse never emits `verified`.
   UIDs actually shown. Keep `tokens_after` equal to exact agent-visible result
   cost and `view_tokens` equal to serializer output cost.
 - Direct CLI Chrome is detached so separate `snapshot`/`act`/`eval` processes
-  can share a target. `close` must terminate it. Fresh `CAVEMAN_HOME` must work;
+  can share a target. `close` must terminate it. Fresh `ONMAN_HOME` must work;
   state writes stay atomic and mode `0600`.
 - CDP action acknowledgement is not application settlement. Non-wait actions
   return `settled:false` and require a focused resnapshot for proof.

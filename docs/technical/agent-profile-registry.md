@@ -1,6 +1,6 @@
-# agents — the agent-profile registry (`caveman wrap` data)
+# agents — the agent-profile registry (`onman wrap` data)
 
-Profiles for every AI coding agent `caveman wrap` can route through byte-safe gateway. The
+Profiles for every AI coding agent `onman wrap` can route through byte-safe gateway. The
 keystone is a **collapse toward data**, not an absolute: for
 most agents, adding one is a **data change** (one JSON file here) and the CLI's injection appliers
 + the proxy's wire-protocol adapters are the only code. But routing sits on a **three-tier honesty
@@ -12,7 +12,7 @@ scale** (`injection_completeness`), because several agents genuinely need code:
   `overlayBuilders.<id>` config-overlay builder (openclaw), or an auth/bedrock short-circuit
   (`applyClaudeBedrockWrap` for claude, `applyHermesAuthEnv` for hermes).
 - **code-only** — the declared `injection` is inert and all routing is code (codex ships
-  `injection.env: {}`; `buildCodexEphemeralWrapEnv` + `codexCavemanProviderToml` do the real work).
+  `injection.env: {}`; `buildCodexEphemeralWrapEnv` + `codexOnmanProviderToml` do the real work).
 
 `compile.mjs` DERIVES the true tier from the CLI (`overlayBuilders.<id>` + named wrap builders
 scanned from `index.ts`) plus the inert-injection rule, and **fails closed** when a profile's
@@ -58,7 +58,7 @@ OpenAI-compatible route proof; other pins remain unchanged until equivalent proo
   (so we never set an empty auth token). Base-URL/API-base keys may append a compiler-validated
   safe path such as `/openai/v1`; secret keys cannot.
 - `config-env-content` — render a mode-selected inline JSON config (`config_content.local` for
-  BYOK `caveman start`; `config_content.managed` when `CAVE_GATEWAY_URL` is off-loopback) and set
+  BYOK `onman start`; `config_content.managed` when `CAVE_GATEWAY_URL` is off-loopback) and set
   it as one env var. This is how **opencode** (`OPENCODE_CONFIG_CONTENT`) and **Kilo Code**
   (`KILO_CONFIG_CONTENT`) are wrapped without touching user config. An agent's own `{env:VAR}`
   tokens are left untouched.
@@ -69,34 +69,34 @@ OpenAI-compatible route proof; other pins remain unchanged until equivalent proo
   route, and preserves the source policy, sibling providers, and `~/.qwen/settings.json`.
 
 ## How a profile auto-shrinks command output (`command_hook`, optional)
-`command_hook` declares how `caveman wrap`/`caveman hooks` route the agent's noisy
-shell-command output through `caveman shrink` (RTK parity, byte-exact recoverable).
+`command_hook` declares how `onman wrap`/`onman hooks` route the agent's noisy
+shell-command output through `onman shrink` (RTK parity, byte-exact recoverable).
 Three honest tiers — never claim a rewrite an agent can't do:
 - `claude-pretooluse` / `codex-pretooluse` / `gemini-beforetool` / `opencode-plugin` / `hermes-plugin` /
   `openclaw-plugin` — **hard rewrite**: a `Bash` PreToolUse hook (Claude), a `BeforeTool`
   hook on `run_shell_command` (Gemini), or a `tool.execute.before`-style plugin
   (opencode/hermes/openclaw) deterministically reroutes the command before it runs.
   Claude + Gemini share one `installSettingsHook` (same settings.json shape, different
-  event/matcher); every hard-rewrite method routes the command through `caveman shrink-hook`.
+  event/matcher); every hard-rewrite method routes the command through `onman shrink-hook`.
   **`codex-pretooluse` is declared but inert** (#1037): Codex matches a saved approval
   against the command text, so rewriting it re-prompts the user for a command they had
-  already allowed, and the rewritten command leads with the resolved caveman/node path
+  already allowed, and the rewritten command leads with the resolved onman/node path
   that no `prefix_rule` can cover. `shrinkHook` therefore declines every Codex tool
   event and `hooks install codex` installs nothing. Retiring the method outright is
   still open: the same `command_hook` entry carries codex's directives
   instructions-file, and `nativeHooksDocument` would need to migrate the entry
-  `caveman enable codex` already wrote into existing installs.
+  `onman enable codex` already wrote into existing installs.
 - `instruction-note` (+ `file`) — **soft model-nudge**: append a delimited "prefer
-  `caveman shrink`" note to a file the agent auto-reads. Best-effort, idempotent,
+  `onman shrink`" note to a file the agent auto-reads. Best-effort, idempotent,
   install→uninstall is a byte-exact round-trip. Retained only for hosts without a
   current hard hook surface. (Codex was moved off this tier to its native
   `PreToolUse` hook; see the `codex-pretooluse` note above for why that hook no
   longer rewrites anything.)
 - **absent** — **manual-only**: no installable surface (e.g. Aider); `hooks` just prints
-  the `caveman shrink -- <cmd>` guidance.
+  the `onman shrink -- <cmd>` guidance.
 
 ## How a profile declares a skill surface (`skills`, optional)
-`skills` declares where the agent keeps on-disk skills so `caveman convert` can
+`skills` declares where the agent keeps on-disk skills so `onman convert` can
 pixel-compress their bodies (SKILL.md frontmatter stays text — it drives skill
 discovery; only the body becomes PNG pages). `format` is a closed enum (only
 `skill-md`: `<root>/<name>/SKILL.md` with YAML frontmatter — the Claude Code /

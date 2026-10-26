@@ -1,22 +1,22 @@
 ---
-name: caveman-setup
+name: onman-setup
 description: >
-  Wire a repository through the Caveman Cloud gateway so every LLM request is
-  measured, with no behavior change. Use for "set up caveman" or adding LLM
+  Wire a repository through the Onman Cloud gateway so every LLM request is
+  measured, with no behavior change. Use for "set up onman" or adding LLM
   spend observability.
 ---
 
-You are wiring this repository through the Caveman gateway. Caveman is a
+You are wiring this repository through the Onman gateway. Onman is a
 byte-preserving LLM proxy: in record mode it measures what your app sends and
 what it costs, and changes nothing else. Your job is a minimal, verified
 integration — not a refactor.
 
 The prompt that sent you here provides four values. Refer to them as:
 
-- `GATEWAY` — the gateway base URL (e.g. `https://gateway.caveman.so` or `http://127.0.0.1:8787`)
+- `GATEWAY` — the gateway base URL (e.g. `https://gateway.onman.so` or `http://127.0.0.1:8787`)
 - `CAVE_API_KEY` — the gateway auth secret (treat like any API key: env var only, never committed, never printed in full)
-- `PROVIDER_KEYS` — `stored` (provider keys live encrypted in Caveman Cloud) or `byok` (this app sends its own provider key per request)
-- `DASHBOARD` — the dashboard base URL (e.g. `https://app.caveman.so`)
+- `PROVIDER_KEYS` — `stored` (provider keys live encrypted in Onman Cloud) or `byok` (this app sends its own provider key per request)
+- `DASHBOARD` — the dashboard base URL (e.g. `https://app.onman.so`)
 
 If any value is missing, stop and ask for it. Do not guess a URL or mint a key.
 
@@ -127,7 +127,7 @@ default_headers={...})`. LangGraph inherits whatever model you pass it.
 `GATEWAY/w/<app>/v1/messages` (Anthropic protocol), add the header(s).
 
 Concretely, with slug `support-bot` and the hosted gateway, an OpenAI-SDK base
-URL reads `https://gateway.caveman.so/w/support-bot/openai/v1`. And in `stored`
+URL reads `https://gateway.onman.so/w/support-bot/openai/v1`. And in `stored`
 mode, drop every `x-cave-upstream-key` line entirely — it is byok-only.
 
 For frameworks not listed (google-genai, crewai, pydantic-ai, openai-agents),
@@ -180,7 +180,7 @@ the matching failure template below.
 End with exactly this shape, values filled from what you actually did and saw:
 
 ```
-## Caveman is live in this repo
+## Onman is live in this repo
 
 Wired: <n> callsite(s) in <n> file(s)
   - <file> — <one-line what changed>
@@ -202,7 +202,7 @@ and label every callsite by the job it does.
 
 - **Nothing to wire**: "I found no LLM callsites in this repo (searched SDKs,
   raw provider HTTP, base-URL env vars). If this repo runs a coding agent
-  rather than shipping LLM code, use `caveman wrap <agent>` instead — see
+  rather than shipping LLM code, use `onman wrap <agent>` instead — see
   <DASHBOARD>/getting-started."
 - **Gateway unreachable**: "The verification request could not reach GATEWAY
   (<error>). Wiring is in place but unverified — nothing will be measured

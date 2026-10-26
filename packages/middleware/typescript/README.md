@@ -1,16 +1,16 @@
-# Caveman Typescript middleware
+# Onman Typescript middleware
 
-Native framework adapters for the Caveman compression runtime. Your framework keeps its inference client, tools, retries, streams, and original conversation. Caveman projects eligible tool-result text into a copied outbound request. Inference stays with your provider.
+Native framework adapters for the Onman compression runtime. Your framework keeps its inference client, tools, retries, streams, and original conversation. Onman projects eligible tool-result text into a copied outbound request. Inference stays with your provider.
 
-This quickstart targets middleware `1.0.0` and SDK `1.2.0`. Read the [release notes and limitations](https://github.com/JuliusBrussee/caveman/blob/main/packages/middleware/typescript/CHANGELOG.md) before upgrading.
+This quickstart targets middleware `1.0.0` and SDK `1.2.0`. Read the [release notes and limitations](https://github.com/Aravindh-dev12/onman/blob/main/packages/middleware/typescript/CHANGELOG.md) before upgrading.
 
 ## Run a complete example
 
-Follow the [AI SDK quickstart](https://docs.caveman.so/docs/sdk/middleware/vercel-ai-sdk) for a fresh environment and [runtime installation](https://docs.caveman.so/docs/sdk/middleware/deployment#run-it-as-a-process). Start the local runtime separately; the client package does not include it.
+Follow the [AI SDK quickstart](https://docs.onman.so/docs/sdk/middleware/vercel-ai-sdk) for a fresh environment and [runtime installation](https://docs.onman.so/docs/sdk/middleware/deployment#run-it-as-a-process). Start the local runtime separately; the client package does not include it.
 
 ```sh
-npm install --save-exact @caveman-ai/sdk@1.2.0 @caveman-ai/middleware@1.0.0 ai@7.0.94 @ai-sdk/provider@4.0.11 zod@4.4.3
-curl -fsSLo quickstart.ts https://docs.caveman.so/examples/middleware/quickstart.ts
+npm install --save-exact @onman-ai/sdk@1.2.0 @onman-ai/middleware@1.0.0 ai@7.0.94 @ai-sdk/provider@4.0.11 zod@4.4.3
+curl -fsSLo quickstart.ts https://docs.onman.so/examples/middleware/quickstart.ts
 DEMO_MODE=record node --experimental-strip-types quickstart.ts
 DEMO_MODE=compress node --experimental-strip-types quickstart.ts
 DEMO_MODE=off node --experimental-strip-types quickstart.ts
@@ -20,12 +20,12 @@ The default example makes no provider request. It runs a deterministic native mo
 
 ## Choose an integration
 
-- [Framework guide](https://docs.caveman.so/docs/sdk/middleware/frameworks#typescript): public entrypoints, native APIs, recovery ownership, transports, and limitations.
-- [Compatibility matrix](https://docs.caveman.so/docs/sdk/middleware/frameworks): resolver ranges versus accepted ranges versus exact validation evidence. A range is not an exhaustive test result.
-- [Deployment](https://docs.caveman.so/docs/sdk/middleware/deployment): process/container lifecycle, remote TLS/authentication, persistence, session affinity, deadlines, and rollback.
-- [Recovery and scope](https://github.com/JuliusBrussee/caveman/blob/main/docs/technical/middleware-protocol.md): namespace/session/branch/cache epoch, exact originals, excerpts, and expiry.
-- [Troubleshooting](https://docs.caveman.so/docs/sdk/troubleshooting#middleware): final reason codes and strict readiness versus normal inference fallback.
-- [Measurement](https://docs.caveman.so/docs/sdk/middleware/deployment#what-to-measure): quality, latency, retries, recovery calls, cache effects, and provider usage.
+- [Framework guide](https://docs.onman.so/docs/sdk/middleware/frameworks#typescript): public entrypoints, native APIs, recovery ownership, transports, and limitations.
+- [Compatibility matrix](https://docs.onman.so/docs/sdk/middleware/frameworks): resolver ranges versus accepted ranges versus exact validation evidence. A range is not an exhaustive test result.
+- [Deployment](https://docs.onman.so/docs/sdk/middleware/deployment): process/container lifecycle, remote TLS/authentication, persistence, session affinity, deadlines, and rollback.
+- [Recovery and scope](https://github.com/Aravindh-dev12/onman/blob/main/docs/technical/middleware-protocol.md): namespace/session/branch/cache epoch, exact originals, excerpts, and expiry.
+- [Troubleshooting](https://docs.onman.so/docs/sdk/troubleshooting#middleware): final reason codes and strict readiness versus normal inference fallback.
+- [Measurement](https://docs.onman.so/docs/sdk/middleware/deployment#what-to-measure): quality, latency, retries, recovery calls, cache effects, and provider usage.
 
 ## Entry points: which ones compress
 
@@ -33,24 +33,24 @@ Compression needs a recovery tool the adapter registered itself, so the model ca
 
 | Adapter | Tier | Compresses | Records only (`recovery_unbound` in compress mode) |
 |---|---|---|---|
-| `ai-sdk` | certified | `withCaveman` | `createCavemanMiddleware` (`wrapLanguageModel`) |
-| `openai` | certified | `withCavemanOpenAITools`, `chat.completions.runTools` on `withCavemanOpenAI` | plain `create` calls on `withCavemanOpenAI` |
-| `anthropic` | certified | `beta.messages.toolRunner` on `withCavemanAnthropic` | `messages.create` / `messages.stream` |
-| `langchain` | certified | `withCavemanAgent`, `createCavemanLangChain` | `withCavemanModel`, `CavemanChatModel` |
-| `google` | experimental | `CavemanGoogleGenAI` with callable tools (automatic function calling) | calls without callable tools |
-| `strands` | experimental | `withCavemanStrands` | `withCavemanStrandsModel` |
-| `mastra` | experimental | `withCavemanMastra` | `createCavemanMastraProcessor` |
-| `mcp` | experimental | `CavemanMCPHost` with `register()`ed tools | |
+| `ai-sdk` | certified | `withOnman` | `createOnmanMiddleware` (`wrapLanguageModel`) |
+| `openai` | certified | `withOnmanOpenAITools`, `chat.completions.runTools` on `withOnmanOpenAI` | plain `create` calls on `withOnmanOpenAI` |
+| `anthropic` | certified | `beta.messages.toolRunner` on `withOnmanAnthropic` | `messages.create` / `messages.stream` |
+| `langchain` | certified | `withOnmanAgent`, `createOnmanLangChain` | `withOnmanModel`, `OnmanChatModel` |
+| `google` | experimental | `OnmanGoogleGenAI` with callable tools (automatic function calling) | calls without callable tools |
+| `strands` | experimental | `withOnmanStrands` | `withOnmanStrandsModel` |
+| `mastra` | experimental | `withOnmanMastra` | `createOnmanMastraProcessor` |
+| `mcp` | experimental | `OnmanMCPHost` with `register()`ed tools | |
 
-Certified adapters are gated by the conformance suite. Experimental ones get the same fail-open guard, logging and tests, but may change in a minor release. `CavemanGoogleGenAI` hooks the Google SDK's internal `ApiClient`; if that moves, the client falls back to the native one (`adapter_error`). `CavemanDocumentCompressor` (LangChain RAG) compresses only with a `sourceExpansion` reader. `@caveman-ai/middleware/langchain` loads `langchain`; if you only wrap a chat model or compress documents, import `withCavemanModel`, `CavemanChatModel`, `CavemanDocumentCompressor` and `scopeFromConfig` from `@caveman-ai/middleware/langchain-model` instead, which needs only `@langchain/core`. Every compressing entry point disables recovery if your tools already include one named `caveman_retrieve`; calls then report `recovery_name_conflict`.
+Certified adapters are gated by the conformance suite. Experimental ones get the same fail-open guard, logging and tests, but may change in a minor release. `OnmanGoogleGenAI` hooks the Google SDK's internal `ApiClient`; if that moves, the client falls back to the native one (`adapter_error`). `OnmanDocumentCompressor` (LangChain RAG) compresses only with a `sourceExpansion` reader. `@onman-ai/middleware/langchain` loads `langchain`; if you only wrap a chat model or compress documents, import `withOnmanModel`, `OnmanChatModel`, `OnmanDocumentCompressor` and `scopeFromConfig` from `@onman-ai/middleware/langchain-model` instead, which needs only `@langchain/core`. Every compressing entry point disables recovery if your tools already include one named `onman_retrieve`; calls then report `recovery_name_conflict`.
 
 ## Framework versions
 
 The package declares its frameworks as optional peers with no version range (`*`), so strict resolvers such as Yarn PnP let it import them. Ranged peers made a plain `npm install` fail with `ERESOLVE` (0.1.0-alpha.1), so the version check happens at run time instead, against the copy the adapter actually runs: for `openai` and `@anthropic-ai/sdk`, the version of the client you pass in; for every other framework, the copy this package resolves, whatever the working directory. When your application resolves a different copy of a framework than this package does, the gate still reads this package's copy and logs one warning naming both versions.
 
-In a workspace (npm, pnpm, Yarn), `@caveman-ai/middleware` can be hoisted to the repository root next to an older copy of a framework that another package pulled in (`ai@6`, say) while your app uses its own `ai@7`. The adapter then runs `ai@6` and passes through with `unsupported_version`. Make both resolve one copy: find the other one (`npm ls ai`, `pnpm why ai`), then dedupe it (`npm dedupe`, `pnpm dedupe`) or pin one version for the repository (`overrides` in npm, `pnpm.overrides`). Under pnpm with `hoist=false`, add the frameworks you use to `public-hoist-pattern`. `@strands-agents/sdk` itself declares peers on `openai` 6, `@ai-sdk/provider` 3 and `@anthropic-ai/sdk` 0.109, so npm needs `--legacy-peer-deps` to install it next to newer versions of those.
+In a workspace (npm, pnpm, Yarn), `@onman-ai/middleware` can be hoisted to the repository root next to an older copy of a framework that another package pulled in (`ai@6`, say) while your app uses its own `ai@7`. The adapter then runs `ai@6` and passes through with `unsupported_version`. Make both resolve one copy: find the other one (`npm ls ai`, `pnpm why ai`), then dedupe it (`npm dedupe`, `pnpm dedupe`) or pin one version for the repository (`overrides` in npm, `pnpm.overrides`). Under pnpm with `hoist=false`, add the frameworks you use to `public-hoist-pattern`. `@strands-agents/sdk` itself declares peers on `openai` 6, `@ai-sdk/provider` 3 and `@anthropic-ai/sdk` 0.109, so npm needs `--legacy-peer-deps` to install it next to newer versions of those.
 
-`inspectFrameworkCompatibility(adapter)` from `@caveman-ai/middleware/compatibility` reports the version of the copy this package resolves, supported range, tested releases and tier without importing a framework (it has no client, so for `openai` and `anthropic` it can differ from what the wrapped client reports). `package.json` lists the same data in `supportedFrameworkVersions` and `testedFrameworkVersions`.
+`inspectFrameworkCompatibility(adapter)` from `@onman-ai/middleware/compatibility` reports the version of the copy this package resolves, supported range, tested releases and tier without importing a framework (it has no client, so for `openai` and `anthropic` it can differ from what the wrapped client reports). `package.json` lists the same data in `supportedFrameworkVersions` and `testedFrameworkVersions`.
 
 - **Out of range** (including every prerelease, such as `7.1.0-canary.3`): calls pass through unchanged, reporting `unsupported_version`, with one warning. After testing that version, set `acceptFrameworkVersion: true` in the adapter options.
 - **Unreadable** (a deploy bundle with no `node_modules`): the adapter checks that the framework hooks it needs exist and runs, with one `version_unverified` warning. If a hook is missing it passes through with `version_unavailable`.
@@ -61,7 +61,7 @@ In a workspace (npm, pnpm, Yarn), `@caveman-ai/middleware` can be hoisted to the
 Every adapter takes `scope` as a value or a function. A function is called for each request, inside that request's async context, so one module-level client can serve many users, and `runtime.deleteSession(scope)` removes exactly one user's originals:
 
 ```ts
-const client = withCavemanOpenAI(new OpenAI(), { runtime, fetch, scope: () => ({ namespace: 'app', session_id: currentUser().id }) });
+const client = withOnmanOpenAI(new OpenAI(), { runtime, fetch, scope: () => ({ namespace: 'app', session_id: currentUser().id }) });
 ```
 
 LangChain passes the `RunnableConfig` (`config => scopeFromConfig(config, 'app')` reads `configurable.thread_id`), Mastra its `RequestContext`, Strands the agent. Any ID text works: values outside `[A-Za-z0-9._:/-]` (emails, `user 42 / chat #7`) become a stable `h-` hash. A missing scope (no `thread_id`) runs the call recovery-free with `recovery_unbound`. An unusable one reports `invalid_scope`. Neither throws, except `invalid_scope` in strict mode.
@@ -88,4 +88,4 @@ Close the runtime client and native framework/provider resources at shutdown. Cl
 
 ## Licence and support
 
-The client, adapters, and Engine runtime are all Apache-2.0. Read [LICENSING.md](https://github.com/JuliusBrussee/caveman/blob/main/LICENSING.md). This package is separate from Caveman Agent SDK. File sanitized reproducible issues in [Caveman](https://github.com/JuliusBrussee/caveman/issues).
+The client, adapters, and Engine runtime are all Apache-2.0. Read [LICENSING.md](https://github.com/Aravindh-dev12/onman/blob/main/LICENSING.md). This package is separate from Onman Agent SDK. File sanitized reproducible issues in [Onman](https://github.com/Aravindh-dev12/onman/issues).
