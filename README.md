@@ -12,7 +12,7 @@
 
 <div align="center">
 
-**[See it](#-see-it) · [Quick Start](#-quick-start) · [The Skill](#-the-skill-unpacked) · [The Proxy](#-the-proxy-unpacked) · [Wrap](#wrap-any-agent) · [Your own app](#-onman-in-your-own-app) · [When to Skip](#-when-to-use--when-to-skip) · [Docs](./docs/README.md)**
+**[See it](#-see-it) · [Quick Start](#-quick-start) · [Distributed & CUDA](#-distributed-llm-training--cuda-attention) · [The Skill](#-the-skill-unpacked) · [The Proxy](#-the-proxy-unpacked) · [Wrap](#wrap-any-agent) · [Your own app](#-onman-in-your-own-app) · [Docs](./docs/README.md)**
 
 </div>
 
@@ -392,6 +392,65 @@ Docs: [middleware overview](https://docs.onman.so/docs/sdk/middleware) · [Verce
 Rather not touch code? Point any SDK at the proxy with a `baseURL` swap instead: [`integrations/recipes/`](./integrations/recipes/).
 
 ---
+
+---
+
+## ⚡ Distributed LLM Training & CUDA Attention
+
+Onman features an end-to-end **Distributed LLM Training Engine** and a low-level **CUDA FlashAttention Kernel** to train and scale large transformer language models across multiple GPUs with minimal memory footprint.
+
+```
+                    Onman Distributed Training Stack
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                   3D Parallelism Orchestrator                   │
+  │     Tensor Parallel (TP) x Pipeline Parallel (PP) x ZeRO (DP)    │
+  └─────────────────┬─────────────────────────────┬─────────────────┘
+                    │                             │
+       ┌────────────▼───────────┐     ┌───────────▼───────────┐
+       │   Megatron TP Layers   │     │  ZeRO Memory Reducer  │
+       │  Parallel QKV & SwiGLU │     │ Stage 1, 2, 3 Sharding│
+       └────────────┬───────────┘     └───────────┬───────────┘
+                    │                             │
+  ┌─────────────────▼─────────────────────────────▼─────────────────┐
+  │            Onman Custom CUDA FlashAttention Kernel              │
+  │       Fused SRAM Tiling · Online Softmax · O(N) Memory          │
+  └─────────────────────────────────────────────────────────────────┘
+```
+
+### 1. CUDA Attention Kernel (`engine/cuda/`)
+Writing low-level GPU code in CUDA C++ for the transformer attention step ($O(N)$ memory instead of standard $O(N^2)$):
+- **IO-Aware Shared Memory (SRAM) Tiling**: Tiles queries ($B_r$), keys ($B_c$), and values ($B_c$) directly into ultra-fast on-chip GPU SRAM, avoiding quadratic memory roundtrips to GPU HBM.
+- **Online Softmax**: Computes softmax row-max and normalizers dynamically across blocks without materializing the full $[N 	imes N]$ attention matrix in global memory.
+- **PyTorch C++ Binding**: Seamless PyTorch autograd integration via Pybind11 and `torch.autograd.Function`.
+
+```python
+from engine.cuda.ops import onman_flash_attention
+
+# Exact attention computation in O(N) memory
+out = onman_flash_attention(q, k, v, is_causal=True)
+```
+
+Run the benchmark on your GPU:
+```bash
+python engine/cuda/benchmark.py
+```
+
+### 2. Distributed LLM Training System (`engine/distributed/`)
+Trains language models across many GPUs at the same time by splitting model weights and training data:
+- **Tensor Parallelism (TP)**: Megatron-LM style tensor splitting. Multi-head attention heads and MLP layers are partitioned across GPUs. Each GPU runs the Onman FlashAttention kernel locally on its own subset of heads with zero cross-GPU attention communication.
+- **Pipeline Parallelism (PP)**: Partitions transformer layers across GPU stages using a **1F1B (One Forward, One Backward)** schedule to keep activation memory bounded.
+- **ZeRO Optimizer (Stages 1, 2, 3)**: Eliminates memory redundancy by partitioning FP32 optimizer states (Stage 1), gradients (Stage 2), and parameters (Stage 3) across data-parallel ranks.
+
+Launch distributed training across GPUs:
+```bash
+# 2-GPU Tensor Parallelism + ZeRO Stage 1
+torchrun --nproc_per_node=2 engine/distributed/train.py --tp_size 2 --zero_stage 1
+
+# Local single-device test run
+python engine/distributed/train.py --steps 50 --hidden_size 512
+```
+
+[Read full Distributed Training Docs &raquo;](./engine/distributed/README.md) · [Read CUDA Attention Kernel Docs &raquo;](./engine/cuda/README.md)
 
 ## 🧭 When to use · when to skip
 
